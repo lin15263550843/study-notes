@@ -17,6 +17,8 @@ module.exports = {
     lintOnSave: 'default', //  将 lint 错误输出为编译错误
     productionSourceMap: false, // 设为 false 打包时不生成.map文件
     devServer: {
+        hot: true,
+        // open: true,
         // port: 8086,
         // headers: {
         //     'Access-Control-Allow-Origin': '*',
@@ -152,31 +154,31 @@ module.exports = {
         // config.optimization.runtimeChunk('single')
         // })
     },
-    // css: {
-    //     // modules: false, // 启用 CSS modules
-    //     // extract: true, // 是否使用css分离插件
-    //     // sourceMap: false, // 生成 .map
-    //     loaderOptions: {
-    //         // css预设器配置项
-    //         // css: {
-    //         //     // 这里的选项会传递给 css-loader
-    //         // },
-    //         // postcss: {
-    //         //     // 这里的选项会传递给 postcss-loader
-    //         // }
-    //         scss: {
-    //             prependData: `@import '@/styles/variables.scss';`,
-    //         },
-    //         // less: {
-    //         //     lessOptions: {
-    //         //         modifyVars: {
-    //         //             'primary-color': 'red',
-    //         //             'link-color': 'red',
-    //         //             'border-radius-base': '2px',
-    //         //         },
-    //         //         javascriptEnabled: true,
-    //         //     },
-    //         // },
-    //     },
-    // },
+    css: {
+        // modules: true, // 启用 CSS modules
+        // extract: true, // 是否使用css分离插件
+        // sourceMap: false, // 生成 .map
+        loaderOptions: {
+            //         // css预设器配置项
+            //         // css: {
+            //         //     // 这里的选项会传递给 css-loader
+            //         // },
+            //         // postcss: {
+            //         //     // 这里的选项会传递给 postcss-loader
+            //         // }
+            //         scss: {
+            //             prependData: `@import '@/styles/variables.scss';`,
+            //         },
+            less: {
+                //         //     lessOptions: {
+                //         //         modifyVars: {
+                //         //             'primary-color': 'red',
+                //         //             'link-color': 'red',
+                //         //             'border-radius-base': '2px',
+                //         //         },
+                javascriptEnabled: true, // 允许链式调用的换行
+                //         //     },
+            },
+        },
+    },
 };
