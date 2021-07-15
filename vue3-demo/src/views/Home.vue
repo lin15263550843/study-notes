@@ -33,7 +33,7 @@
                     theme="light"
                     mode="horizontal"
                     v-model:selectedKeys="selectedKeys1"
-                    @select="selectMenu"
+                    @select="selectHeaderMenu"
                 >
                     <a-menu-item v-for="item in menuList" :key="item.path">{{ item.meta.title }}</a-menu-item>
                 </a-menu>
@@ -94,14 +94,23 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     setup() {
         return {
-            selectedKeys: ref<string[]>(['1']),
-            selectedKeys1: ref<string[]>(['2']),
+            selectedKeys: ref<string[]>([]),
+            selectedKeys1: ref<string[]>([]),
             collapsed: ref<boolean>(false),
-            openKeys: ref<string[]>(['sub1']),
+            openKeys: ref<string[]>([]),
         };
     },
     methods: {
-        selectMenu({ item, key, selectedKeys }: unknown) {
+        /**
+         * 左侧导航栏
+         */
+        selectMenu({ key }: unknown) {
+            this.$router.push(key);
+        },
+        /**
+         * 顶部导航栏
+         */
+        selectHeaderMenu({ item, key }: unknown) {
             this.siderList = this.menuList[item.index]?.children || [];
             this.openKeys = [this.siderList[0].path];
             this.selectedKeys = [this.siderList[0]?.children[0].path];
@@ -109,10 +118,10 @@ export default defineComponent({
         },
     },
     created() {
+        this.selectedKeys1 = [this.menuList[0].path];
         this.siderList = this.menuList[0]?.children || [];
         this.openKeys = [this.siderList[0].path];
         this.selectedKeys = [this.siderList[0]?.children[0].path];
-        this.selectedKeys1 = [this.menuList[0].path];
     },
 });
 </script>

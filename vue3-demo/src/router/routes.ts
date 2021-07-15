@@ -32,7 +32,14 @@ const routes: Array<RouteRecordRaw> = [
                                 name: 'example',
                                 meta: { title: '示例' },
                                 component: () =>
-                                    import(/* webpackChunkName: "javascript" */ '@/views/javascript/Example.vue'),
+                                    import(/* webpackChunkName: "javascript" */ '@/views/javascript/example.vue'),
+                            },
+                            {
+                                path: 'exercise',
+                                name: 'exercise',
+                                meta: { title: '习题' },
+                                component: () =>
+                                    import(/* webpackChunkName: "javascript" */ '@/views/javascript/exercise.vue'),
                             },
                         ],
                     },
@@ -61,24 +68,42 @@ const routes: Array<RouteRecordRaw> = [
                                         /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/BinarySearch.vue'
                                     ),
                             },
-                            // {
-                            //     path: 'binarySearch',
-                            //     name: 'binarySearch',
-                            //     meta: { title: '选择排序' },
-                            //     component: () =>
-                            //         import(
-                            //             /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/BinarySearch.vue'
-                            //         ),
-                            // },
-                            // {
-                            //     path: 'binarySearch',
-                            //     name: 'binarySearch',
-                            //     meta: { title: '快速排序' },
-                            //     component: () =>
-                            //         import(
-                            //             /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/BinarySearch.vue'
-                            //         ),
-                            // },
+                            {
+                                path: 'selectSort',
+                                name: 'selectSort',
+                                meta: { title: '选择排序' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/selectSort/selectSort.vue'
+                                    ),
+                            },
+                            {
+                                path: 'quickSort',
+                                name: 'quickSort',
+                                meta: { title: '快速排序' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/quickSort/quickSort.vue'
+                                    ),
+                            },
+                            {
+                                path: 'breadthFirstSearch',
+                                name: 'breadthFirstSearch',
+                                meta: { title: '广度优先搜索' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/breadthFirstSearch/breadthFirstSearch.vue'
+                                    ),
+                            },
+                            {
+                                path: 'dijkstrasAlgorithm',
+                                name: 'dijkstrasAlgorithm',
+                                meta: { title: '狄克斯特拉算法' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/dijkstrasAlgorithm/dijkstrasAlgorithm.vue'
+                                    ),
+                            },
                         ],
                     },
                 ],
