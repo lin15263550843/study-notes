@@ -19,7 +19,7 @@ module.exports = {
     devServer: {
         hot: true,
         // open: true,
-        // port: 8086,
+        port: 2222,
         // headers: {
         //     'Access-Control-Allow-Origin': '*',
         // },

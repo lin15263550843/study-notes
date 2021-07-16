@@ -8,7 +8,7 @@
                 <span>题目：</span>
                 <span>根据下面的图实现迪克斯特拉算法</span>
                 <div class="description">
-                    <span>{{ graph }} </span>
+                    <span>{{ graph1 }} </span>
                 </div>
             </div>
             <div class="footer">
@@ -34,19 +34,50 @@
                 </div>
             </div>
         </div>
+        <div class="content">
+            <div class="title-description">
+                <span>题目：</span>
+                <span>根据下面的图实现迪克斯特拉算法</span>
+                <div class="description">
+                    <span>{{ graph2 }} </span>
+                </div>
+            </div>
+            <div class="footer">
+                <div>
+                    <div class="enter">
+                        <a-button type="primary" @click="execute2">执行</a-button>
+                        <a-button class="clear" @click="result12 = []">清空</a-button>
+                    </div>
+                    <div class="result">
+                        <span>结果：</span>
+                        <span class="result-text">{{ result12 }}</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="enter">
+                        <a-button type="primary" @click="verification">验证</a-button>
+                        <a-button class="clear" @click="result22 = ''">清空</a-button>
+                    </div>
+                    <div class="result">
+                        <span>结果：</span>
+                        <span class="result-text">{{ result22 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 // import { Options, Vue } from 'vue-class-component';
 import { defineComponent, ref } from 'vue';
-import { dijkstrasAlgorithm } from './dijkstrasAlgorithm';
+import { dijkstrasAlgorithm, dijkstrasAlgorithm2 } from './dijkstrasAlgorithm';
 
 export default defineComponent({
     data() {
         return {
-            // 图
-            graph: {
+            // 图 1
+            graph1: {
                 start: {
                     a: 6,
                     b: 2,
@@ -55,24 +86,27 @@ export default defineComponent({
                 b: { a: 3, fin: 5 },
                 fin: {},
             },
-            // 开销表
-            costs: {
-                a: 6,
-                b: 2,
-                fin: Infinity,
+            // 图 2
+            graph2: {
+                start: {
+                    a: 6,
+                    b: 2,
+                },
+                a: { fin: 1 },
+                b: { a: 3, fin: 5 },
+                fin: {},
             },
-            // 存储父节点
-            parents: {
-                a: 'start',
-                b: 'start',
-                fin: null,
-            },
-            // 记录处理过的节点
-            processed: [],
         };
     },
     setup() {
-        return { result1: ref<any>(''), result2: ref<any>(''), dijkstrasAlgorithm };
+        return {
+            result1: ref<any>(''),
+            result2: ref<any>(''),
+            dijkstrasAlgorithm,
+            result12: ref<any>(''),
+            result22: ref<any>(''),
+            dijkstrasAlgorithm2,
+        };
     },
     methods: {
         /**
@@ -88,7 +122,7 @@ export default defineComponent({
          * 执行
          */
         execute() {
-            const { costs, parents } = this.dijkstrasAlgorithm();
+            const { costs, parents } = this.dijkstrasAlgorithm(this.graph1);
             const chain = this.getChain(parents, 'fin', '');
             const res = chain.split(',').reverse().join(' > ');
             this.result1 = `结果：${costs.fin} => 顺序：${res}`;
@@ -98,6 +132,21 @@ export default defineComponent({
          */
         verification() {
             this.result2 = 6;
+        },
+        /**
+         * 执行
+         */
+        execute2() {
+            const { costs, parents } = this.dijkstrasAlgorithm2(this.graph2, 'start');
+            const chain = this.getChain(parents, 'fin', '');
+            const res = chain.split(',').reverse().join(' > ');
+            this.result12 = `结果：${costs.fin} => 顺序：${res}`;
+        },
+        /**
+         * 验证
+         */
+        verification2() {
+            this.result22 = 6;
         },
     },
     created() {
@@ -122,6 +171,7 @@ export default defineComponent({
         justify-content: center;
         align-items: flex-start;
         padding: 20px;
+        margin-bottom: 20px;
         border-radius: 4px;
         border: 1px solid #f0f0f0;
 

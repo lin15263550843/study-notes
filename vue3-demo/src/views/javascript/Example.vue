@@ -37,7 +37,10 @@
         </div>
         <div class="boxs-3">
             <div class="item-1">
-                <span>1</span>
+                <div class="inner"></div>
+                <div class="text">
+                    <span>1</span>
+                </div>
             </div>
             <div class="item-2">
                 <span>1</span>
@@ -230,6 +233,7 @@ export default defineComponent({
         display: flex;
 
         .item-1 {
+            position: relative;
             width: 100px;
             height: 100px;
             text-align: center;
@@ -237,24 +241,51 @@ export default defineComponent({
             background: green;
             border-radius: 100%;
             background: linear-gradient(to top, #387ef5, #dfdb06);
-
-            span {
-                color: white;
-                font-size: 50px;
-                font-weight: bold;
-            }
+            transform-style: preserve-3d;
+            // transform: translateZ(1000px) translate(50px, 50px);
 
             @keyframes spinframes {
                 to {
-                    transform: rotateZ(0deg);
+                    // transform: rotateZ(0deg);
+                    transform: rotateY(0deg);
                 }
 
                 from {
-                    transform: rotateZ(-360deg);
+                    // transform: rotateZ(-360deg);
+                    transform: rotateY(-360deg);
                 }
             }
 
             animation: spinframes 2s infinite linear;
+
+            // animation-play-state: paused;
+            transform: rotateY(30deg);
+
+            .text {
+                position: relative;
+                z-index: 2;
+                color: white;
+                font-size: 50px;
+                font-weight: bold;
+                transform: translateZ(5px);
+                text-shadow: 2px 2px 2px red;
+            }
+
+            .inner {
+                width: 100px;
+                height: 100px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 1;
+                transform: translate(-50%, -50%);
+
+                border-radius: 100%;
+                background: linear-gradient(to top, #dfdb06, #387ef5);
+
+                transform-origin: cent;
+                transform: translate(-50%, -50%) translateZ(5px);
+            }
         }
 
         .item-2 {
