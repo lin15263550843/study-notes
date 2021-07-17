@@ -9,13 +9,13 @@ export function binarySearch(list: number[], condition: number | undefined) {
     let low = 0; // 头部
     let high = list.length - 1; // 尾部
     if (condition > list[high]) return notText;
-    while (low <= high) {
+    while (low < high) {
         const middle = Math.floor((low + high) / 2);
         if (condition === list[middle]) {
             return middle;
         }
         if (condition < list[middle]) {
-            high = middle - 1;
+            high = middle;
         } else {
             low = middle + 1;
         }
