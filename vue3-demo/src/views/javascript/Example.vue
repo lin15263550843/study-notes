@@ -45,6 +45,14 @@
             <div class="item-2">
                 <span>1</span>
             </div>
+            <div class="item-3">
+                <img id="imghym" src="@/assets/images/hym.jpg" alt="" />
+            </div>
+            <div class="item-4">
+                <img src="@/assets/images/hg.jpg" alt="" />
+                <div class="reflection"></div>
+                <div class="reflection-mask"></div>
+            </div>
         </div>
     </div>
 </template>
@@ -225,6 +233,7 @@ export default defineComponent({
             width: 200px;
             height: 100px;
             background: darkseagreen;
+            transform: translate(60px, -20px);
         }
     }
 
@@ -310,6 +319,55 @@ export default defineComponent({
 
         .item-2:hover {
             transform: rotateZ(360deg);
+        }
+
+        .item-3 {
+            margin-left: 20px;
+
+            & > img {
+                width: 100px;
+                // height: 100px;
+                // -webkit-box-reflect: below 1px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.9)));
+                -webkit-box-reflect: below 1px
+                    linear-gradient(to bottom, transparent, transparent 50%, rgba(0, 0, 0, 0.8));
+                // linear-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.9)));
+            }
+            // background: element(imghym);
+        }
+
+        .item-4 {
+            margin-left: 20px;
+            position: relative;
+
+            & > img {
+                width: 100px;
+                // height: 50px;
+            }
+
+            .reflection {
+                width: 100px;
+                height: 50px;
+                // background: url(../../assets/images/hg.jpg);
+                // background: url('~@/assets/images/hg.jpg');
+                background-image: url(../../assets/images/hg.jpg);
+                background-size: 100px 50px;
+                background-origin: bottom center;
+                transform: scaleY(-1);
+                opacity: 0.5;
+                // filter: alpha(opacity= '50');
+            }
+
+            .reflection-mask {
+                width: 100px;
+                height: 50px;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                // background: url(../../assets/images/hg.jpg);
+                // background: url('~@/assets/images/hg.jpg');
+                // background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 1));
+                background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 1));
+            }
         }
     }
 }

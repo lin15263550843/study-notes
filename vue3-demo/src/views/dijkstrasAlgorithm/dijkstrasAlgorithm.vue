@@ -55,7 +55,7 @@
                 </div>
                 <div>
                     <div class="enter">
-                        <a-button type="primary" @click="verification">验证</a-button>
+                        <a-button type="primary" @click="verification2">验证</a-button>
                         <a-button class="clear" @click="result22 = ''">清空</a-button>
                     </div>
                     <div class="result">

@@ -53,16 +53,6 @@ function initParents(graph: any, startKey: string) {
  * @returns return { costs, parents, graph };
  */
 export function dijkstrasAlgorithm2(graph: any, startKey: string): any {
-    // // 图
-    // const graph: any = {
-    //     start: {
-    //         a: 6,
-    //         b: 2,
-    //     },
-    //     a: { fin: 1 },
-    //     b: { a: 3, fin: 5 },
-    //     fin: {},
-    // };
     // 开销表
     const costs = initCosts(graph, startKey);
     // 存储父节点
