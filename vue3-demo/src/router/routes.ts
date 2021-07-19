@@ -104,6 +104,15 @@ const routes: Array<RouteRecordRaw> = [
                                         /* webpackChunkName: "algorithmDiagram" */ '@/views/dijkstrasAlgorithm/dijkstrasAlgorithm.vue'
                                     ),
                             },
+                            {
+                                path: 'greedyAlgorithm',
+                                name: 'greedyAlgorithm',
+                                meta: { title: '贪婪算法' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/greedyAlgorithm/greedyAlgorithm.vue'
+                                    ),
+                            },
                         ],
                     },
                 ],
