@@ -148,7 +148,7 @@ export default defineComponent({
          * 验证
          */
         verification2() {
-            this.result22 = 6;
+            this.result22 = 8;
         },
     },
     created() {

@@ -1,13 +1,6 @@
 <template>
     <div class="example">
         <div class="boxs-1">
-            <div class="box-1">
-                <div class="item-1"></div>
-                <div>
-                    <div class="item-2"></div>
-                </div>
-                <div class="item-3"></div>
-            </div>
             <div class="box-2">
                 <div class="text">
                     <span>首字放大效果（span标签）必学父元素设置，span标签直接设置无效</span>
@@ -26,6 +19,13 @@
                 <p class="p4">
                     超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示
                 </p>
+            </div>
+            <div class="box-1">
+                <div class="item-1"></div>
+                <div>
+                    <div class="item-2"></div>
+                </div>
+                <div class="item-3"></div>
             </div>
         </div>
         <div class="boxs-2">
@@ -52,6 +52,19 @@
                 <img src="@/assets/images/hg.jpg" alt="" />
                 <div class="reflection"></div>
                 <div class="reflection-mask"></div>
+            </div>
+            <div class="item-6">
+                <div class="wrapper" />
+            </div>
+            <div class="item-5">
+                <div class="cube">
+                    <div class="comm up" />
+                    <div class="comm dowm" />
+                    <div class="comm left" />
+                    <div class="comm right" />
+                    <div class="comm front" />
+                    <div class="comm back" />
+                </div>
             </div>
         </div>
     </div>
@@ -81,6 +94,7 @@ export default defineComponent({
 
             .item-1 {
                 width: 200px;
+                height: 100px;
                 height: 100px;
                 margin: 20px;
                 background: #999;
@@ -207,7 +221,7 @@ export default defineComponent({
             margin: 20px;
             padding: 20px;
             // border: 20px solid #387ef5;
-            background: goldenrod;
+            background: burlywood;
             border: 20px;
             border: 20px solid transparent;
 
@@ -368,6 +382,98 @@ export default defineComponent({
                 // background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 1));
                 background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 1));
             }
+        }
+
+        .item-5 {
+            margin-left: 40px;
+            position: relative;
+
+            @keyframes cubespin {
+                from {
+                    transform: rotateY(360deg) rotateZ(360deg) rotateX(360deg);
+                }
+                to {
+                    transform: rotateY(0deg) rotateZ(0deg) rotateX(0deg);
+                }
+            }
+
+            .cube {
+                position: relative;
+                width: 100px;
+                height: 100px;
+                background: rgba(0, 0, 0, 0.2);
+                transform-style: preserve-3d;
+                transform-origin: center;
+                // transform: translateZ(100px);
+                transform: rotateY(10deg) rotateZ(10deg) rotateX(10deg);
+                // animation: cubespin 1s 1s infinite linear;
+                animation-name: cubespin;
+                animation-duration: 3s;
+                animation-iteration-count: infinite;
+                animation-timing-function: linear;
+                animation-fill-mode: forwards;
+                // animation-direction: normal;
+                // animation-delay: 0;
+                // animation-play-state: running
+
+                .comm {
+                    width: 100px;
+                    height: 100px;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+
+                .up {
+                    background: rgba(0, 255, 255, 0.6);
+                    transform: rotateX(90deg) translateZ(50px);
+                }
+
+                .dowm {
+                    background: rgba(0, 255, 255, 0.6);
+                    transform: rotateX(90deg) translateZ(-50px);
+                }
+
+                .front {
+                    background: rgba(255, 255, 0, 0.6);
+                    transform: translateZ(50px);
+                }
+
+                .back {
+                    background: rgba(255, 255, 0, 0.6);
+                    transform: translateZ(-50px);
+                }
+
+                .left {
+                    background: rgba(255, 0, 0, 0.6);
+                    transform: rotateY(90deg) translateZ(-50px);
+                }
+
+                .right {
+                    background: rgba(255, 0, 0, 0.6);
+                    transform: rotateY(90deg) translateZ(50px);
+                }
+            }
+        }
+
+        .item-6 {
+            width: 200px;
+            height: 100px;
+            margin-left: 20px;
+            position: relative;
+
+            .wrapper {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 0;
+                height: 0;
+                border-top: 100px solid transparent;
+                border-left: 100px solid transparent;
+                border-right: 100px solid transparent;
+                border-bottom: 100px solid yellowgreen;
+            }
+            position: relative;
         }
     }
 }
