@@ -17,23 +17,59 @@
                     超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示
                 </p>
                 <p class="p4">
-                    超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示
+                    超出两行文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示
                 </p>
+                <p class="p5">
+                    <span>超出文本修剪，省略号显示超出文本修剪，</span>
+                    <span class="d-flex">省略号显示超出文本修剪，省略号显示超出文本修剪，</span>
+                    <span>省略号显示超出文本修剪，省略号显示超出文本修剪，</span>
+                </p>
+                <div class="container">
+                    <div class="item">Floated</div>
+                    <p>Text following the float.</p>
+                </div>
             </div>
             <div class="box-1">
-                <div class="item-1"></div>
-                <div>
-                    <div class="item-2"></div>
+                <div class="item-1">
+                    <span>哈哈哈</span>
+                    <span>哈哈哈哈哈</span>
+                    <span>哈哈哈哈哈哈哈哈</span>
+                    <span>设置为 inline-block （块级行元素）后效果，多出的显示滚动条</span>
                 </div>
-                <div class="item-3"></div>
+                <div>
+                    <div class="item-2 item-2-2 item-2-1">css 权重</div>
+                </div>
+                <div class="item-3">position: sticky 布局</div>
+                <div class="item-4">
+                    <div class="childen">margin: auto 水平居中</div>
+                </div>
             </div>
         </div>
         <div class="boxs-2">
             <div class="item-1">
                 <div></div>
             </div>
-            <div class="item-2"></div>
-            <div class="item-3"></div>
+            <div class="item-2">
+                <div>display 所有值</div>
+            </div>
+            <div class="item-3">
+                <div class="childen">
+                    <div class="inner" />
+                </div>
+            </div>
+            <div class="item-4">
+                <div class="grid">
+                    <div>1</div>
+                    <div>2</div>
+                    <div>3</div>
+                    <div>4</div>
+                    <div>5</div>
+                    <div>6</div>
+                    <div>7</div>
+                    <div>8</div>
+                    <div>9</div>
+                </div>
+            </div>
         </div>
         <div class="boxs-3">
             <div class="item-1">
@@ -66,11 +102,22 @@
                     <div class="comm back" />
                 </div>
             </div>
+            <div class="item-7">
+                <div class="cube">
+                    <div class="comm up" />
+                    <div class="comm dowm" />
+                    <div class="comm left" />
+                    <div class="comm right" />
+                    <div class="comm front" />
+                    <div class="comm back" />
+                </div>
+            </div>
         </div>
     </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue';
+import './lexical/unicode';
 
 export default defineComponent({
     setup() {
@@ -98,6 +145,14 @@ export default defineComponent({
                 height: 100px;
                 margin: 20px;
                 background: #999;
+                line-height: 20px;
+                padding: 20px;
+                overflow: scroll;
+                overflow: auto;
+
+                & > span {
+                    display: inline-block;
+                }
             }
 
             .item-2 {
@@ -105,8 +160,18 @@ export default defineComponent({
                 height: 100px;
                 margin: 20px;
                 background: tan;
+                line-height: 100px;
+                text-align: center;
             }
 
+            // https://www.cnblogs.com/cnblogs-jcy/p/8574177.html
+            .item-2-2.item-2-1 {
+                background: darkcyan;
+            }
+
+            .item-2-2 {
+                background: salmon;
+            }
             // div {
             //     margin: 0;
             // }
@@ -117,7 +182,7 @@ export default defineComponent({
 
             .item-3 {
                 width: 200px;
-                height: 100px;
+                height: 150px;
                 // margin: 20px;
                 background: lightslategrey;
                 position: fixed;
@@ -128,8 +193,32 @@ export default defineComponent({
                 position: initial;
                 position: unset;
                 position: sticky;
-                bottom: 50px;
+                bottom: 20px;
                 left: 20px;
+                line-height: 100px;
+                text-align: center;
+            }
+            .item-4 {
+                position: relative;
+                top: -390px;
+                left: 250px;
+                width: 200px;
+                height: 150px;
+                padding: 0.1px;
+                margin: 0.1px;
+                background: coral;
+                display: inline-block;
+                line-height: 50px;
+                color: black;
+
+                .childen {
+                    display: block;
+                    width: 150px;
+                    height: 50px;
+                    background: cyan;
+                    margin: 50px auto;
+                    // margin: 50px auto;
+                }
             }
         }
 
@@ -200,6 +289,7 @@ export default defineComponent({
                 width: 500px;
                 white-space: nowrap;
                 overflow: hidden;
+                text-overflow: clip;
                 text-overflow: ellipsis;
             }
 
@@ -209,6 +299,24 @@ export default defineComponent({
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 2;
+            }
+
+            .p5 {
+                .d-flex {
+                    // display: inline flex;
+                    display: flow-root;
+                }
+            }
+
+            .container {
+                // display: flow-root;
+                // display: inline-block;
+                display: block;
+
+                .item {
+                    margin: 10px;
+                    float: left;
+                }
             }
         }
     }
@@ -240,14 +348,112 @@ export default defineComponent({
             top: -20px;
             left: 20px;
             background: cadetblue;
+
+            & > div {
+                position: absolute;
+                line-height: 50px;
+                text-align: center;
+                width: 150px;
+                height: 50px;
+                margin: 25px;
+                background: dodgerblue;
+
+                display: flex;
+                display: block;
+                display: none;
+                display: inline;
+                display: inline-block;
+                display: inline-flex;
+                display: inline-table;
+                display: inline-grid;
+                display: flow-root;
+                display: contents;
+                display: table;
+                display: table-caption;
+                display: table-cell;
+                display: table-column;
+                display: table-column-group;
+                display: table-footer-group;
+                display: table-header-group;
+                display: table-row;
+                display: table-row-group;
+                display: grid;
+                display: revert;
+                display: list-item;
+                display: ruby;
+                display: subgrid;
+                // 据说一共有 32 种
+            }
         }
 
         .item-3 {
-            display: inline-block;
             width: 200px;
             height: 100px;
+            position: relative;
+            display: inline-block;
             background: darkseagreen;
             transform: translate(60px, -20px);
+
+            .childen {
+                width: 60px;
+                height: 60px;
+                background: burlywood;
+                position: absolute;
+                top: 0;
+                left: 0;
+                margin: 20px;
+                padding: 20px;
+                box-sizing: border-box;
+
+                .inner {
+                    width: 20px;
+                    height: 20px;
+                    margin: 20px;
+                    // padding: 20px;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    background: coral;
+                }
+            }
+        }
+
+        .item-4 {
+            width: 200px;
+            height: 100px;
+            position: relative;
+            display: inline-block;
+            // background: dodgerblue;
+            transform: translate(100px, -20px);
+
+            .grid {
+                width: 100px;
+                height: 100px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                line-height: 30px;
+                text-align: center;
+
+                display: grid;
+
+                // grid-template-columns: 30px 30px 30px;
+                // grid-template-rows: 30px 30px 30px;
+                // grid-template-columns: 30% 30% 30%;
+                // grid-template-rows: 30% 30% 30%;
+                grid-template-rows: repeat(3, 30%);
+                grid-template-columns: repeat(3, 30%);
+                // grid-template-columns: repeat(3, auto-fill);
+                // grid-template-rows: repeat(3, auto-fill);
+
+                // grid-row-gap: 5%;
+                // grid-column-gap: 5%;
+                grid-gap: 5%;
+
+                & > div {
+                    background: darkorange;
+                }
+            }
         }
     }
 
@@ -452,6 +658,84 @@ export default defineComponent({
                 .right {
                     background: rgba(255, 0, 0, 0.6);
                     transform: rotateY(90deg) translateZ(50px);
+                }
+            }
+        }
+
+        .item-7 {
+            margin-left: 60px;
+            position: relative;
+
+            @keyframes cubespin {
+                from {
+                    transform: rotateY(360deg) rotateZ(360deg) rotateX(360deg);
+                }
+                to {
+                    transform: rotateY(0deg) rotateZ(0deg) rotateX(0deg);
+                }
+            }
+
+            .cube {
+                position: relative;
+                width: 100px;
+                height: 100px;
+                background: rgba(0, 0, 0, 0.1);
+                perspective: 250;
+                -webkit-perspective: 250; /* Safari 和 Chrome */
+                perspective-origin: center center;
+                -webkit-perspective-origin: center; /* Safari 和 Chrome */
+                // transform-style: flat;
+                transform-style: preserve-3d;
+                transform-origin: center;
+                // transform: translateZ(100px);
+                // transform: rotateY(10deg) rotateZ(10deg) rotateX(10deg) translateZ(-500px);
+                // animation: cubespin 1s 1s infinite linear;
+                animation-name: cubespin;
+                animation-duration: 3s;
+                animation-iteration-count: infinite;
+                animation-timing-function: linear;
+                animation-fill-mode: forwards;
+                // animation-direction: normal;
+                // animation-delay: 0;
+                // animation-play-state: running
+                // animation-play-state: paused;
+
+                .comm {
+                    width: 100px;
+                    height: 100px;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+
+                .up {
+                    background: rgba(0, 255, 255, 0.6);
+                    transform: rotateX(90deg) translateZ(25px);
+                }
+
+                .dowm {
+                    background: rgba(0, 255, 255, 0.6);
+                    transform: rotateX(90deg) translateZ(-25px);
+                }
+
+                .front {
+                    background: rgba(255, 255, 0, 0.6);
+                    transform: translateZ(25px);
+                }
+
+                .back {
+                    background: rgba(255, 255, 0, 0.6);
+                    transform: translateZ(-25px);
+                }
+
+                .left {
+                    background: rgba(255, 0, 0, 0.6);
+                    transform: rotateY(90deg) translateZ(-25px);
+                }
+
+                .right {
+                    background: rgba(255, 0, 0, 0.6);
+                    transform: rotateY(90deg) translateZ(25px);
                 }
             }
         }

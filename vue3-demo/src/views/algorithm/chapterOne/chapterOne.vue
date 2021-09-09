@@ -1,12 +1,12 @@
 <template>
-    <div class="binary-search">
+    <div class="dijkstras-algorithm">
         <div class="title">
-            <span>选择排序</span>
+            <span>第一章</span>
         </div>
         <div class="content">
             <div class="title-description">
                 <span>题目：</span>
-                <span>把下面数组降序排序</span>
+                <span>找出数组中的最大元素</span>
                 <div class="description">
                     <span>{{ arr }} </span>
                 </div>
@@ -15,7 +15,7 @@
                 <div>
                     <div class="enter">
                         <a-button type="primary" @click="execute">执行</a-button>
-                        <a-button class="clear" @click="result1 = []">清空</a-button>
+                        <a-button class="clear" @click="result1 = ''">清空</a-button>
                     </div>
                     <div class="result">
                         <span>结果：</span>
@@ -25,45 +25,11 @@
                 <div>
                     <div class="enter">
                         <a-button type="primary" @click="verification">验证</a-button>
-                        <a-button class="clear" @click="result2 = []">清空</a-button>
+                        <a-button class="clear" @click="result2 = ''">清空</a-button>
                     </div>
                     <div class="result">
                         <span>结果：</span>
                         <span class="result-text">{{ result2 }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="title margin-top">
-            <span>冒泡排序</span>
-        </div>
-        <div class="content">
-            <div class="title-description">
-                <span>题目：</span>
-                <span>把下面数组降序排序</span>
-                <div class="description">
-                    <span>{{ arr }} </span>
-                </div>
-            </div>
-            <div class="footer">
-                <div>
-                    <div class="enter">
-                        <a-button type="primary" @click="execute2">执行</a-button>
-                        <a-button class="clear" @click="result12 = []">清空</a-button>
-                    </div>
-                    <div class="result">
-                        <span>结果：</span>
-                        <span class="result-text">{{ result12 }}</span>
-                    </div>
-                </div>
-                <div>
-                    <div class="enter">
-                        <a-button type="primary" @click="verification2">验证</a-button>
-                        <a-button class="clear" @click="result22 = []">清空</a-button>
-                    </div>
-                    <div class="result">
-                        <span>结果：</span>
-                        <span class="result-text">{{ result22 }}</span>
                     </div>
                 </div>
             </div>
@@ -74,24 +40,17 @@
 <script lang="ts">
 // import { Options, Vue } from 'vue-class-component';
 import { defineComponent, ref } from 'vue';
-import { selectSort, bubbleSort } from './selectSort';
+import { greedyAlgorithm } from './chapterOne';
 
 export default defineComponent({
     data() {
-        return {
-            arr: [11, 6, 9, 34, 56, 78, 246, 89, 2, 46, 98, 12, 45, 67, 9, 8, 36, 27, 842, 19],
-            // arr: [11, 6, 4],
-        };
+        return { arr: [1, 5, 8, 2, 9, 3, 7, 6, 12, 75, 43, 98, 23, 99, 56, 78] };
     },
     setup() {
         return {
-            condition: ref<number>(),
-            result1: ref<number[]>([]),
-            result2: ref<number[]>([]),
-            selectSort,
-            result12: ref<number[]>([]),
-            result22: ref<number[]>([]),
-            bubbleSort,
+            result1: ref<any>(''),
+            result2: ref<any>(''),
+            greedyAlgorithm,
         };
     },
     methods: {
@@ -99,26 +58,36 @@ export default defineComponent({
          * 执行
          */
         execute() {
-            this.result1 = this.selectSort(this.arr);
+            // this.result1 = this.greedyAlgorithm();
+            let max = this.arr[0];
+            this.arr.forEach(value => {
+                if (value > max) {
+                    max = value;
+                }
+            });
+            this.result1 = max;
         },
         /**
          * 验证
          */
         verification() {
-            this.result2 = [...this.arr].sort((a, b) => a - b);
+            this.result2 = Math.max(...this.arr);
         },
-        /**
-         * 执行
-         */
-        execute2() {
-            this.result12 = this.bubbleSort([...this.arr]);
-        },
-        /**
-         * 验证
-         */
-        verification2() {
-            this.result22 = [...this.arr].sort((a, b) => a - b);
-        },
+        // /**
+        //  * 执行
+        //  */
+        // execute2() {
+        //     const { costs, parents } = this.dijkstrasAlgorithm2(this.graph2, 'start');
+        //     const chain = this.getChain(parents, 'fin', '');
+        //     const res = chain.split(',').reverse().join(' > ');
+        //     this.result12 = `结果：${costs.fin} => 顺序：${res}`;
+        // },
+        // /**
+        //  * 验证
+        //  */
+        // verification2() {
+        //     this.result22 = 8;
+        // },
     },
     created() {
         // console.log(this.arr);
@@ -126,7 +95,7 @@ export default defineComponent({
 });
 </script>
 <style scoped lang="less">
-.binary-search {
+.dijkstras-algorithm {
     padding: 20px;
 
     .title {
@@ -136,16 +105,13 @@ export default defineComponent({
         // font-weight: bold;
     }
 
-    .margin-top {
-        margin-top: 20px;
-    }
-
     .content {
         display: flex;
         flex-flow: column nowrap;
         justify-content: center;
         align-items: flex-start;
         padding: 20px;
+        margin-bottom: 20px;
         border-radius: 4px;
         border: 1px solid #f0f0f0;
 

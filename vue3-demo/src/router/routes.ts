@@ -115,6 +115,33 @@ const routes: Array<RouteRecordRaw> = [
                             },
                         ],
                     },
+                    {
+                        path: 'algorithm',
+                        name: 'algorithm',
+                        redirect: '/sf/algorithm/chapterOne',
+                        meta: { title: '算法第4版' },
+                        component: RouterView,
+                        children: [
+                            {
+                                path: 'chapterOne',
+                                name: 'chapterOne',
+                                meta: { title: '第一章（基础）' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithm" */ '@/views/algorithm/chapterOne/chapterOne.vue'
+                                    ),
+                            },
+                            {
+                                path: 'chapterTwo',
+                                name: 'chapterTwo',
+                                meta: { title: '第二章（排序）' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithm" */ '@/views/algorithm/chapterTwo/chapterTwo.vue'
+                                    ),
+                            },
+                        ],
+                    },
                 ],
             },
             // {

@@ -19,7 +19,7 @@
                                 <span>{{ item.meta.title }}</span>
                             </span>
                         </template>
-                        <a-menu-item v-for="item2 in item.children" :key="item2.path">
+                        <a-menu-item v-for="item2 in item.children" :key="`${headerPath}/${item.path}/${item2.path}`">
                             <span>{{ item2.meta.title }}</span>
                         </a-menu-item>
                     </a-sub-menu>
@@ -89,6 +89,7 @@ export default defineComponent({
         return {
             menuList: routes[0].children || [],
             siderList: [],
+            headerPath: '/js',
         };
     },
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -105,12 +106,17 @@ export default defineComponent({
          * 左侧导航栏
          */
         selectMenu({ key }: unknown) {
+            console.log('key', key);
+
             this.$router.push(key);
         },
         /**
          * 顶部导航栏
          */
         selectHeaderMenu({ item, key }: unknown) {
+            console.log('this.headerPath', this.headerPath);
+
+            this.headerPath = key;
             this.siderList = this.menuList[item.index]?.children || [];
             this.openKeys = [this.siderList[0].path];
             this.selectedKeys = [this.siderList[0]?.children[0].path];
@@ -122,6 +128,8 @@ export default defineComponent({
         this.siderList = this.menuList[0]?.children || [];
         this.openKeys = [this.siderList[0].path];
         this.selectedKeys = [this.siderList[0]?.children[0].path];
+
+        console.log('menuList', this.menuList);
     },
 });
 </script>

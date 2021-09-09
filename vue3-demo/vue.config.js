@@ -51,7 +51,7 @@ module.exports = {
         // resolve: {
         //     alias: {
         //         '@ant-design/icons/lib/dist$': resolve('src/assets/icons/index.ts'),
-        //         '@': resolve('src'),
+        //         '@': resolve('src'),  
         //         '@assets': resolve('src/assets'),
         //         '@comm': resolve('src/commons'),
         //         '@utils': resolve('src/commons/utils'),
