@@ -5,7 +5,7 @@
 // const resolve = dir => {
 //     return path.join(__dirname, dir);
 // };
-
+const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
     // publicPath: process.env.NODE_ENV === 'production' ? `/${name}/` : '/',
     // outputDir: `dist/${name}`,
@@ -51,7 +51,7 @@ module.exports = {
         // resolve: {
         //     alias: {
         //         '@ant-design/icons/lib/dist$': resolve('src/assets/icons/index.ts'),
-        //         '@': resolve('src'),  
+        //         '@': resolve('src'),
         //         '@assets': resolve('src/assets'),
         //         '@comm': resolve('src/commons'),
         //         '@utils': resolve('src/commons/utils'),
@@ -153,6 +153,35 @@ module.exports = {
         });
         // config.optimization.runtimeChunk('single')
         // })
+        // config.optimization.minimize(false); // 不压缩代码
+        // config.optimization.minimizer('terser').tap(args => {
+        //     args[0].terserOptions.compress.drop_console = false;
+        //     return args;
+        // });
+        // config.optimization.minimizer([
+        //     new TerserPlugin({
+        //         terserOptions: {
+        //             ecma: undefined,
+        //             warnings: false,
+        //             parse: {},
+        //             compress: {
+        //                 drop_console: false,
+        //                 drop_debugger: false,
+        //                 // pure_funcs: ['console.log'], // 移除console
+        //             },
+        //         },
+        //     }),
+        // ]);
+        // config.optimization.minimizer('terser').tap(args => {
+        //     // 移除 console.log
+        //     Object.assign(args[0].terserOptions.compress, {
+        //         warnings: false,
+        //         drop_console: true,
+        //         drop_debugger: true,
+        //         pure_funcs: ['console.log'],
+        //     });
+        //     return args;
+        // });
     },
     css: {
         // modules: true, // 启用 CSS modules
