@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>toy-vue</title>
+</head>
+
+<body>
+    <div id="app">
+        <p>{{ message }}</p>
+        <p>{{ obj.b }}</p>
+        <input eeee="eeee" v-model="message" HHH="" />
+        <input v-model="obj.b" />
+        <!-- <input> -->
+        <p>
+            <span v-bind:title="titleMessage">
+                鼠标悬停几秒钟查看此处动态绑定的提示信息！
+            </span>
+        </p>
+        <button v-on:click="reverseMessage">反转消息</button>
+    </div>
+</body>
+<script type="module">
+    import { ToyVue as Vue } from "./toy-vue.js";
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            titleMessage: `页面加载于 ${new Date().toLocaleString()}`,
+            obj: { a: 123, b: '哈哈哈' }
+        },
+        methods: {
+            reverseMessage: function (arg) {
+                console.log('this----------------------------->>>', this);
+                console.log('reverseMessage----------------------------->>>', this.reverseMessage);
+                this.message = this.message.split('').reverse().join('')
+            }
+        }
+    })
+    console.log('app', app);
+</script>
+<!-- <script type="module" src="./__test__.js"></script> -->
+
+</html>
