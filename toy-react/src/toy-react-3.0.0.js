@@ -85,13 +85,25 @@ export class Component {
             }
             newNode._range = oldNode._range
 
+            const { vchildren: newVchildren } = oldNode
             const { vchildren: oldVchildren } = oldNode
             const oldVchildrenLength = oldVchildren.length
+            let tailRange = oldVchildren[oldVchildrenLength - 1]._range
+
+            if (!newVchildren || !newVchildren.length) {
+                return
+            }
+
             newNode.vchildren.forEach((newVchild, i) => {
                 const oldVchild = oldVchildren[i]
                 if (i < oldVchildrenLength) {
                     update(oldVchild, newVchild)
                 } else {
+                    // const range = document.createRange()
+                    // range.setStart(tailRange.endContainer, tailRange.endOffset)
+                    // range.setEnd(tailRange.endContainer, tailRange.endOffset)
+                    // newNode[RENDER_TO_DOM](range)
+                    // tailRange = range
                     newNode[RENDER_TO_DOM](oldNode._range)
                 }
             })

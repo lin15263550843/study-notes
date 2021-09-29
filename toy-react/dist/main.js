@@ -63,7 +63,6 @@ var Component = /*#__PURE__*/function () {
     value: function value(range) {
       this._range = range;
       this._vdom = this.vdom;
-      console.log('this----------------------', this);
 
       this._vdom[RENDER_TO_DOM](range);
     }
@@ -138,14 +137,26 @@ var Component = /*#__PURE__*/function () {
         }
 
         newNode._range = oldNode._range;
+        var newVchildren = oldNode.vchildren;
         var oldVchildren = oldNode.vchildren;
         var oldVchildrenLength = oldVchildren.length;
+        var tailRange = oldVchildren[oldVchildrenLength - 1]._range;
+
+        if (!newVchildren || !newVchildren.length) {
+          return;
+        }
+
         newNode.vchildren.forEach(function (newVchild, i) {
           var oldVchild = oldVchildren[i];
 
           if (i < oldVchildrenLength) {
             update(oldVchild, newVchild);
           } else {
+            // const range = document.createRange()
+            // range.setStart(tailRange.endContainer, tailRange.endOffset)
+            // range.setEnd(tailRange.endContainer, tailRange.endOffset)
+            // newNode[RENDER_TO_DOM](range)
+            // tailRange = range
             newNode[RENDER_TO_DOM](oldNode._range);
           }
         });
@@ -202,8 +213,7 @@ var ElementWrapper = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, type);
     _this.type = type;
-    _this._range = null;
-    console.log('ElementWrapper this-----------------------------------', _assertThisInitialized(_this)); // this.root = document.createElement(type)
+    _this._range = null; // this.root = document.createElement(type)
 
     return _this;
   } // setAttribute(name, value) {
