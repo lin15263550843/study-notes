@@ -1,11 +1,6 @@
 <template>
-    <!-- <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link>
-    </div> -->
-    <div class="app-box">
-        <router-view />
-    </div>
+    <div class="app-box" ref="appRef">123</div>
+    <router-view />
 </template>
 
 <style lang="less">

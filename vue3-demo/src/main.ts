@@ -1,19 +1,20 @@
-import { createApp, compile } from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 import Antd from 'ant-design-vue';
+import About from './views/About.vue';
 
 import 'ant-design-vue/dist/antd.css';
 
-compile('123456')
-console.log('createApp------>>>', createApp);
-const app = createApp(App).use(store).use(router).use(Antd);
+console.log('App--------------------------------->>>', App);
+const app = createApp(App).use(store).use(router).use(Antd).component('About', About);
 
 // (app.config as any).productionTip = false;
-
-console.log('app------>>>', app);
 
 export default app.mount('#app');
 
 // import './views/test/test';
+
+// console.log('createApp--------------------->>>', createApp);
+console.log('app--------------------------------->>>', app);

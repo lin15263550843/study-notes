@@ -50,7 +50,7 @@
 // import { Options, Vue } from 'vue-class-component';
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 // import { ref } from 'vue';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, h } from 'vue';
 import { UserOutlined } from '@ant-design/icons-vue';
 import routes from '@/router/routes';
 
@@ -94,6 +94,11 @@ export default defineComponent({
     },
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     setup() {
+        let refString = ref('string');
+        refString = ref('string 222');
+        refString.value = 'string 333';
+        // refString = 'string 222';
+        console.log('refString-------------', refString);
         return {
             selectedKeys: ref<string[]>([]),
             selectedKeys1: ref<string[]>([]),
@@ -130,6 +135,8 @@ export default defineComponent({
         this.selectedKeys = [this.siderList[0]?.children[0].path];
 
         console.log('menuList', this.menuList);
+        console.log('headerPath', this);
+        console.log('h-------------', h);
     },
 });
 </script>

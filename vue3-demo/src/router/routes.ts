@@ -154,6 +154,11 @@ const routes: Array<RouteRecordRaw> = [
     },
     // { path: '/', name: 'main', redirect: '/home' },
     {
+        path: '/blank',
+        name: 'blank',
+        component: () => import(/* webpackChunkName: "about" */ '../views/blank.vue'),
+    },
+    {
         path: '/about',
         name: 'About',
         // route level code-splitting

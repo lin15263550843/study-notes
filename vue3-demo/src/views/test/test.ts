@@ -38,3 +38,30 @@ console.log(
     'typeof Type：',
     arr.map(value => typeof value),
 );
+
+// ------------------------------------------------------------------------------------------------------------------
+const obj: any = {};
+Object.defineProperty(obj, 'a', {
+    set(val) {
+        console.log(`开始设置新值: ${val}`);
+    },
+    get() {
+        console.log(`开始读取属性`);
+        return 1;
+    },
+    // writable: true,
+});
+
+obj.a = 2; // 开始设置新值: 2
+obj.a; // 开始获取属性
+
+// ------------------------------------------------------------------------------------------------------------------
+// Declare a tuple type
+let x: [string, number];
+// Initialize it
+x = ['hello', 10]; // OK
+x = ['hello', 10]; // OK
+console.log(x);
+
+// Initialize it incorrectly
+// x = [10, 'hello']; // Error
