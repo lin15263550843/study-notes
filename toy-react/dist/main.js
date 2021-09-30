@@ -137,27 +137,27 @@ var Component = /*#__PURE__*/function () {
         }
 
         newNode._range = oldNode._range;
-        var newVchildren = oldNode.vchildren;
+        var newVchildren = newNode.vchildren;
         var oldVchildren = oldNode.vchildren;
         var oldVchildrenLength = oldVchildren.length;
-        var tailRange = oldVchildren[oldVchildrenLength - 1]._range;
 
-        if (!newVchildren || !newVchildren.length) {
+        if (!newVchildren || newVchildren.length < 1) {
           return;
         }
 
-        newNode.vchildren.forEach(function (newVchild, i) {
+        var tailRange = oldVchildren[oldVchildrenLength - 1]._range;
+        newVchildren.forEach(function (newVchild, i) {
           var oldVchild = oldVchildren[i];
 
           if (i < oldVchildrenLength) {
             update(oldVchild, newVchild);
           } else {
-            // const range = document.createRange()
-            // range.setStart(tailRange.endContainer, tailRange.endOffset)
-            // range.setEnd(tailRange.endContainer, tailRange.endOffset)
-            // newNode[RENDER_TO_DOM](range)
-            // tailRange = range
-            newNode[RENDER_TO_DOM](oldNode._range);
+            // newNode[RENDER_TO_DOM](oldNode._range)
+            var range = document.createRange();
+            range.setStart(tailRange.endContainer, tailRange.endOffset);
+            range.setEnd(tailRange.endContainer, tailRange.endOffset);
+            newVchild[RENDER_TO_DOM](range);
+            tailRange = range;
           }
         });
       };
@@ -284,18 +284,12 @@ var ElementWrapper = /*#__PURE__*/function (_Component) {
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var child = _step.value;
-
-          var _range = document.createRange();
-
+          var childRange = document.createRange();
           var l = root.childNodes.length;
-
-          _range.setStart(root, l);
-
-          _range.setEnd(root, l);
-
-          _range.deleteContents();
-
-          child[RENDER_TO_DOM](_range);
+          childRange.setStart(root, l);
+          childRange.setEnd(root, l);
+          childRange.deleteContents();
+          child[RENDER_TO_DOM](childRange);
         }
       } catch (err) {
         _iterator.e(err);

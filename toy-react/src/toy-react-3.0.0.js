@@ -85,26 +85,27 @@ export class Component {
             }
             newNode._range = oldNode._range
 
-            const { vchildren: newVchildren } = oldNode
+            const { vchildren: newVchildren } = newNode
             const { vchildren: oldVchildren } = oldNode
             const oldVchildrenLength = oldVchildren.length
-            let tailRange = oldVchildren[oldVchildrenLength - 1]._range
 
-            if (!newVchildren || !newVchildren.length) {
+            if (!newVchildren || newVchildren.length < 1) {
                 return
             }
 
-            newNode.vchildren.forEach((newVchild, i) => {
+            let tailRange = oldVchildren[oldVchildrenLength - 1]._range
+
+            newVchildren.forEach((newVchild, i) => {
                 const oldVchild = oldVchildren[i]
                 if (i < oldVchildrenLength) {
                     update(oldVchild, newVchild)
                 } else {
-                    // const range = document.createRange()
-                    // range.setStart(tailRange.endContainer, tailRange.endOffset)
-                    // range.setEnd(tailRange.endContainer, tailRange.endOffset)
-                    // newNode[RENDER_TO_DOM](range)
-                    // tailRange = range
-                    newNode[RENDER_TO_DOM](oldNode._range)
+                    // newNode[RENDER_TO_DOM](oldNode._range)
+                    const range = document.createRange()
+                    range.setStart(tailRange.endContainer, tailRange.endOffset)
+                    range.setEnd(tailRange.endContainer, tailRange.endOffset)
+                    newVchild[RENDER_TO_DOM](range)
+                    tailRange = range
                 }
             })
         }
@@ -203,12 +204,12 @@ class ElementWrapper extends Component {
             this.vchildren = this.children.map(child => child.vdom)
         }
         for (const child of this.vchildren) {
-            const range = document.createRange()
+            const childRange = document.createRange()
             const l = root.childNodes.length
-            range.setStart(root, l)
-            range.setEnd(root, l)
-            range.deleteContents()
-            child[RENDER_TO_DOM](range)
+            childRange.setStart(root, l)
+            childRange.setEnd(root, l)
+            childRange.deleteContents()
+            child[RENDER_TO_DOM](childRange)
         }
 
         replaceContent(range, root)
