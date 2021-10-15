@@ -5,7 +5,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive } from 'vue';
+import vue from 'vue';
 // import About from './About.vue';
 export default defineComponent({
     // components: {
@@ -17,10 +18,14 @@ export default defineComponent({
         };
     },
     setup() {
-        return {};
+        const r1 = reactive({ a: 123, b: 'hhh' });
+        const r2 = reactive(r1);
+        return { r1, r2 };
     },
     created() {
+        console.log('blank  vue---------------------------------->>>', vue);
         console.log('blank  this---------------------------------->>>', this);
+        console.log('blank  this.r1 === this.r2---------------------------------->>>', this.r1 === this.r2);
     },
 });
 </script>
