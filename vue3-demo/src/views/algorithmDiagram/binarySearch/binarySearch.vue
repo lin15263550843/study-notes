@@ -14,7 +14,7 @@
             <div class="footer">
                 <div>
                     <div class="enter">
-                        <a-input type="number" placeholder="请输入要查找的数字" v-model:value="condition" />
+                        <a-input type="number" placeholder="请输入要查找的数字" v-model="condition" />
                         <a-button type="primary" @click="execute">执行</a-button>
                     </div>
                     <div class="result">
@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <div class="enter">
-                        <a-input type="number" placeholder="请输入要查找的数字" v-model:value="condition" />
+                        <a-input type="number" placeholder="请输入要查找的数字" v-model="condition" />
                         <a-button type="primary" @click="verification">验证</a-button>
                     </div>
                     <div class="result">
@@ -40,7 +40,7 @@
 <script lang="ts">
 // import { Options, Vue } from 'vue-class-component';
 import { defineComponent, ref } from 'vue';
-import { binarySearch } from './BinarySearch';
+import { binarySearch } from './binarySearch';
 
 // @Options({})
 // export default class Home extends Vue {

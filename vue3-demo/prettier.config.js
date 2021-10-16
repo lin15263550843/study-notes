@@ -13,7 +13,7 @@ module.exports = {
     arrowParens: 'avoid', //  (x) => {} 箭头函数参数只有一个时是否要有小括号。avoid：省略括号
     htmlWhitespaceSensitivity: 'css', // 指定HTML文件的全局空白区域敏感度。 有效选项： 'css' - 尊重CSS显示属性的默认值。 'strict' - 空格被认为是敏感的。 'ignore' - 空格被认为是不敏感的。
     vueIndentScriptAndStyle: false, // 是否缩进Vue文件中的代码<script>和<style>标记
-    endOfLine: 'lf', // 指定 prettier 的换行符    结尾是 \r(cr) \n(lf) \r\n(crlf) auto
+    endOfLine: 'crlf', // 指定 prettier 的换行符    结尾是 \r(cr) \n(lf) \r\n(crlf) auto
     // embeddedLanguageFormatting: 'auto', // 控制Prettier格式是否引用文件中嵌入的代码
     // proseWrap: 'preserve', // 默认值。因为使用了一些折行敏感型的渲染器（如GitHub comment）而按照markdown文本样式进行折行
     // arrayBracketSpacing: true,

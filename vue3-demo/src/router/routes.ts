@@ -65,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
                                 meta: { title: '二分查找' },
                                 component: () =>
                                     import(
-                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/BinarySearch.vue'
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/binarySearch/binarySearch.vue'
                                     ),
                             },
                             {
@@ -74,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
                                 meta: { title: '选择排序' },
                                 component: () =>
                                     import(
-                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/selectSort/selectSort.vue'
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/selectSort/selectSort.vue'
                                     ),
                             },
                             {
@@ -83,7 +83,7 @@ const routes: Array<RouteRecordRaw> = [
                                 meta: { title: '快速排序' },
                                 component: () =>
                                     import(
-                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/quickSort/quickSort.vue'
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/quickSort/quickSort.vue'
                                     ),
                             },
                             {
@@ -92,7 +92,7 @@ const routes: Array<RouteRecordRaw> = [
                                 meta: { title: '广度优先搜索' },
                                 component: () =>
                                     import(
-                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/breadthFirstSearch/breadthFirstSearch.vue'
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/breadthFirstSearch/breadthFirstSearch.vue'
                                     ),
                             },
                             {
@@ -101,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
                                 meta: { title: '狄克斯特拉算法' },
                                 component: () =>
                                     import(
-                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/dijkstrasAlgorithm/dijkstrasAlgorithm.vue'
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/dijkstrasAlgorithm/dijkstrasAlgorithm.vue'
                                     ),
                             },
                             {
@@ -110,7 +110,7 @@ const routes: Array<RouteRecordRaw> = [
                                 meta: { title: '贪婪算法' },
                                 component: () =>
                                     import(
-                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/greedyAlgorithm/greedyAlgorithm.vue'
+                                        /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/greedyAlgorithm/greedyAlgorithm.vue'
                                     ),
                             },
                         ],
@@ -156,7 +156,7 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/blank',
         name: 'blank',
-        component: () => import(/* webpackChunkName: "about" */ '../views/blank.vue'),
+        component: () => import(/* webpackChunkName: "about" */ '../views/other/blank.vue'),
     },
     {
         path: '/about',
@@ -164,7 +164,7 @@ const routes: Array<RouteRecordRaw> = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+        component: () => import(/* webpackChunkName: "about" */ '../views/other/About.vue'),
     },
 ];
 export default routes;

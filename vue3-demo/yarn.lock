@@ -2,16 +2,6 @@
 # yarn lockfile v1
 
 
-"@ant-design-vue/use@^0.0.1-0":
-  version "0.0.1-alpha.10"
-  resolved "https://registry.npmjs.org/@ant-design-vue/use/-/use-0.0.1-alpha.10.tgz#14697ced4aa3e6d76a63008e87dbf6d3ef3e07da"
-  integrity sha512-og9a6Glx3X/8WHPasTTNRBPg+e5Jsp6J7gKH2dQ1/HDvMTYP/BCy08HrUfvTk9crkGc0kbxDmY+7M8KEtC80zw==
-  dependencies:
-    async-validator "^3.4.0"
-    lodash-es "^4.17.15"
-    resize-observer-polyfill "^1.5.1"
-    vue "^3.0.0"
-
 "@ant-design/colors@^5.0.0":
   version "5.1.1"
   resolved "https://registry.npmjs.org/@ant-design/colors/-/colors-5.1.1.tgz#800b2186b1e27e66432e67d03ed96af3e21d8940"
@@ -2244,20 +2234,19 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-ant-design-vue@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.npmjs.org/ant-design-vue/-/ant-design-vue-2.1.2.tgz#2065d7e63199c0c584919458af57b6a0b597f677"
-  integrity sha512-gDG0wauGVt4LE63behrJaIcq4BB+dgs+dpj9jz17IgKr2MPYSEeKetU/x9Kk8d58cGonz4Ulncg7fBZJ7EljsQ==
+ant-design-vue@^2.1.2:
+  version "2.2.8"
+  resolved "https://registry.npmjs.org/ant-design-vue/-/ant-design-vue-2.2.8.tgz#fa87cf6842d8ee9a0d8af393ff4099ecc4072f2b"
+  integrity sha512-3graq9/gCfJQs6hznrHV6sa9oDmk/D1H3Oo0vLdVpPS/I61fZPk8NEyNKCHpNA6fT2cx6xx9U3QS63uuyikg/Q==
   dependencies:
-    "@ant-design-vue/use" "^0.0.1-0"
     "@ant-design/icons-vue" "^6.0.0"
     "@babel/runtime" "^7.10.5"
     "@simonwep/pickr" "~1.8.0"
     array-tree-filter "^2.1.0"
     async-validator "^3.3.0"
-    dom-align "^1.10.4"
+    dom-align "^1.12.1"
     dom-scroll-into-view "^2.0.0"
-    is-mobile "^2.2.1"
+    lodash "^4.17.21"
     lodash-es "^4.17.15"
     moment "^2.27.0"
     omit.js "^2.0.0"
@@ -2412,7 +2401,7 @@ async-limiter@~1.0.0:
   resolved "https://registry.npmjs.org/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
-async-validator@^3.3.0, async-validator@^3.4.0:
+async-validator@^3.3.0:
   version "3.5.2"
   resolved "https://registry.npmjs.org/async-validator/-/async-validator-3.5.2.tgz#68e866a96824e8b2694ff7a831c1a25c44d5e500"
   integrity sha512-8eLCg00W9pIRZSB781UUX/H6Oskmm8xloZfr09lz5bikRpBVDlJ3hRVuxxP1SxcwsEYfJ4IU8Q19Y8/893r3rQ==
@@ -4100,7 +4089,7 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dom-align@^1.10.4:
+dom-align@^1.12.1:
   version "1.12.2"
   resolved "https://registry.npmjs.org/dom-align/-/dom-align-1.12.2.tgz#0f8164ebd0c9c21b0c790310493cd855892acd4b"
   integrity sha512-pHuazgqrsTFrGU2WLDdXxCFabkdQDx72ddkraZNih1KsMcN5qsRSTR9O4VJRlwTPCPb5COYg3LOfiMHHcPInHg==
@@ -6016,11 +6005,6 @@ is-glob@^4.0.0, is-glob@^4.0.1, is-glob@~4.0.1:
   integrity sha512-5G0tKtBTFImOqDnLB2hG6Bp2qcKEFduo4tZu9MT/H6NQv/ghhy30o55ufafxJ/LdH79LLs2Kfrn85TLKyA7BUg==
   dependencies:
     is-extglob "^2.1.1"
-
-is-mobile@^2.2.1:
-  version "2.2.2"
-  resolved "https://registry.npmjs.org/is-mobile/-/is-mobile-2.2.2.tgz#f6c9c5d50ee01254ce05e739bdd835f1ed4e9954"
-  integrity sha512-wW/SXnYJkTjs++tVK5b6kVITZpAZPtUrt9SF80vvxGiF/Oywal+COk1jlRkiVq15RFNEQKQY31TkV24/1T5cVg==
 
 is-negative-zero@^2.0.1:
   version "2.0.1"
