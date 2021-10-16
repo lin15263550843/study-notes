@@ -21,8 +21,8 @@ export default {
             'div',
             null,
             h(ProblemCard, {
-                title: '选择排序',
-                description: '从小到大排序',
+                title: _this.title,
+                description: _this.description,
                 dataSource: _this.dataSource,
                 result: _this.result,
                 execute: _this.execute,

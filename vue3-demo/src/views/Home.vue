@@ -194,6 +194,7 @@ export default defineComponent({
         .header-menu {
             height: 64px;
             line-height: 64px;
+            background: white;
         }
     }
     .my-content {

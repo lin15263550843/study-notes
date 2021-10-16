@@ -94,14 +94,15 @@ export default defineComponent({
 </script>
 <style scoped lang="less">
 .components-problem-card {
-    padding: 20px;
+    padding: 20px 20px 5px 20px;
 
     .title {
         margin-bottom: 20px;
+        text-shadow: 1px 1px 2px #888;
 
         h3 {
             // font-size: 16px;
-            color: #000;
+            color: #333;
             font-weight: bold;
         }
     }
@@ -112,9 +113,9 @@ export default defineComponent({
         justify-content: center;
         align-items: flex-start;
         padding: 20px;
-        margin-bottom: 20px;
         border-radius: 4px;
         border: 1px solid #f0f0f0;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 
         .title-description {
             font-weight: bold;
