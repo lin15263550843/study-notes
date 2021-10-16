@@ -38,3 +38,14 @@ export default function dfn(): any {
 // export default () => {
 //     return this;
 // };
+
+let uncertain: any = 'Hello world!';
+uncertain.hello();
+uncertain = 12;
+const t1: number = uncertain;
+console.log(t1);
+
+// let unk: unknown = 'Hello world!';
+// unk = 12;
+// const t2: number = unk;
+// console.log(t2);

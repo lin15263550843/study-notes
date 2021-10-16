@@ -48,10 +48,37 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/sf',
                 name: 'algorithm',
-                redirect: '/sf/algorithmDiagram',
+                redirect: '/sf/algorithm',
                 meta: { title: '算法' },
                 component: RouterView,
                 children: [
+                    {
+                        path: 'algorithm',
+                        name: 'algorithm',
+                        redirect: '/sf/algorithm/chapterOne',
+                        meta: { title: '算法第4版' },
+                        component: RouterView,
+                        children: [
+                            {
+                                path: 'chapterOne',
+                                name: 'chapterOne',
+                                meta: { title: '第一章（基础）' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithm" */ '@/views/algorithm/chapterOne/chapterOne.vue'
+                                    ),
+                            },
+                            {
+                                path: 'chapterTwo',
+                                name: 'chapterTwo',
+                                meta: { title: '第二章（排序）' },
+                                component: () =>
+                                    import(
+                                        /* webpackChunkName: "algorithm" */ '@/views/algorithm/chapterTwo/chapterTwo.vue'
+                                    ),
+                            },
+                        ],
+                    },
                     {
                         path: 'algorithmDiagram',
                         name: 'algorithmDiagram',
@@ -111,33 +138,6 @@ const routes: Array<RouteRecordRaw> = [
                                 component: () =>
                                     import(
                                         /* webpackChunkName: "algorithmDiagram" */ '@/views/algorithmDiagram/greedyAlgorithm/greedyAlgorithm.vue'
-                                    ),
-                            },
-                        ],
-                    },
-                    {
-                        path: 'algorithm',
-                        name: 'algorithm',
-                        redirect: '/sf/algorithm/chapterOne',
-                        meta: { title: '算法第4版' },
-                        component: RouterView,
-                        children: [
-                            {
-                                path: 'chapterOne',
-                                name: 'chapterOne',
-                                meta: { title: '第一章（基础）' },
-                                component: () =>
-                                    import(
-                                        /* webpackChunkName: "algorithm" */ '@/views/algorithm/chapterOne/chapterOne.vue'
-                                    ),
-                            },
-                            {
-                                path: 'chapterTwo',
-                                name: 'chapterTwo',
-                                meta: { title: '第二章（排序）' },
-                                component: () =>
-                                    import(
-                                        /* webpackChunkName: "algorithm" */ '@/views/algorithm/chapterTwo/chapterTwo.vue'
                                     ),
                             },
                         ],

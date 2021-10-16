@@ -94,11 +94,11 @@ export default defineComponent({
     },
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     setup() {
-        let refString = ref('string');
-        refString = ref('string 222');
-        refString.value = 'string 333';
-        // refString = 'string 222';
-        console.log('refString-------------', refString);
+        // let refString = ref('string');
+        // refString = ref('string 222');
+        // refString.value = 'string 333';
+        // // refString = 'string 222';
+        // console.log('refString-------------', refString);
         return {
             selectedKeys: ref<string[]>([]),
             selectedKeys1: ref<string[]>([]),
@@ -111,32 +111,24 @@ export default defineComponent({
          * 左侧导航栏
          */
         selectMenu({ key }: unknown) {
-            console.log('key', key);
-
             this.$router.push(key);
         },
         /**
          * 顶部导航栏
          */
-        selectHeaderMenu({ item, key }: unknown) {
-            console.log('this.headerPath', this.headerPath);
-
+        selectHeaderMenu({ key }: unknown) {
             this.headerPath = key;
-            this.siderList = this.menuList[item.index]?.children || [];
-            this.openKeys = [this.siderList[0].path];
-            this.selectedKeys = [this.siderList[0]?.children[0].path];
+            this.siderList = this.menuList.find((item: any) => item.path === key)?.children || [];
+            this.openKeys = [this.siderList[0]?.path];
+            this.selectedKeys = [this.siderList[0]?.children[0]?.path];
             this.$router.push(key);
         },
     },
     created() {
         this.selectedKeys1 = [this.menuList[0].path];
         this.siderList = this.menuList[0]?.children || [];
-        this.openKeys = [this.siderList[0].path];
+        this.openKeys = [this.siderList[0]?.path];
         this.selectedKeys = [this.siderList[0]?.children[0].path];
-
-        console.log('menuList', this.menuList);
-        console.log('headerPath', this);
-        console.log('h-------------', h);
     },
 });
 </script>
