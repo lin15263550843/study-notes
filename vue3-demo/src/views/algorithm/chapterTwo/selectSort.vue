@@ -41,16 +41,16 @@ export default defineComponent({
          * 验证
          */
         verification() {
-            // executionCounter.start();
-            // this.vResult = [...this.dataSource].sort((a, b) => {
-            //     const flag = a - b;
-            //     if (flag) {
-            //         executionCounter.counter();
-            //     }
-            //     return flag;
-            // });
-            // executionCounter.end('Array  sort 方法的交换次数');
-            this.vResult = [...this.dataSource].sort((a, b) => a - b);
+            executionCounter.start();
+            this.vResult = [...this.dataSource].sort((a, b) => {
+                const flag = a - b;
+                if (flag) {
+                    executionCounter.counter();
+                }
+                return flag;
+            });
+            executionCounter.end('Array  sort 方法的交换次数');
+            // this.vResult = [...this.dataSource].sort((a, b) => a - b);
         },
     },
 });

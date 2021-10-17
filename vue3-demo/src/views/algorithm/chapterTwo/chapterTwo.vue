@@ -3,6 +3,7 @@
         <SelectSort />
         <InsertionSort />
         <HillSort />
+        <BubbleSort />
     </div>
 </template>
 
@@ -11,9 +12,10 @@ import { defineComponent } from 'vue';
 import SelectSort from './selectSort.vue';
 import InsertionSort from './insertionSort.vue';
 import HillSort from './hillSort.vue';
+import BubbleSort from './bubbleSort.vue';
 
 export default defineComponent({
-    components: { SelectSort, InsertionSort, HillSort },
+    components: { SelectSort, InsertionSort, HillSort, BubbleSort },
     // data() {
     //     return {};
     // },
