@@ -40,7 +40,7 @@ export default function dfn(): any {
 // };
 
 let uncertain: any = 'Hello world!';
-uncertain.hello();
+// uncertain.hello();
 uncertain = 12;
 const t1: number = uncertain;
 console.log(t1);

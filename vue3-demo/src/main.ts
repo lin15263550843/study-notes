@@ -14,7 +14,8 @@ const app = createApp(App).use(store).use(router).use(Antd).component('About', A
 
 export default app.mount('#app');
 
-// import './views/test/test';
-
 // console.log('createApp--------------------->>>', createApp);
 console.log('app--------------------------------->>>', app);
+
+import './views/javascript/commons';
+// import './views/test/test';
