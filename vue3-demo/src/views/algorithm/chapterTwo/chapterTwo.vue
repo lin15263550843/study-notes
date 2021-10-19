@@ -5,6 +5,7 @@
         <HillSort />
         <BubbleSort />
         <MergeSort />
+        <QuickSort />
     </div>
 </template>
 
@@ -15,9 +16,10 @@ import InsertionSort from './insertionSort.vue';
 import HillSort from './hillSort.vue';
 import BubbleSort from './bubbleSort.vue';
 import MergeSort from './mergeSort.vue';
+import QuickSort from './quickSort.vue';
 
 export default defineComponent({
-    components: { SelectSort, InsertionSort, HillSort, BubbleSort, MergeSort },
+    components: { SelectSort, InsertionSort, HillSort, BubbleSort, MergeSort, QuickSort },
     // data() {
     //     return {};
     // },

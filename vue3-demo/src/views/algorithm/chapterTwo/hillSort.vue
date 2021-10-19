@@ -14,7 +14,7 @@ export default defineComponent({
         };
     },
     methods: {
-        // 插入排序
+        // 希尔排序
         insertionSort(list: number[]) {
             executionCounter.start();
             const l = list.length;
