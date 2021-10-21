@@ -17,5 +17,5 @@ export default app.mount('#app');
 // console.log('createApp--------------------->>>', createApp);
 console.log('app--------------------------------->>>', app);
 
-import './views/javascript/commons';
+// import './views/javascript/commons';
 // import './views/test/test';
