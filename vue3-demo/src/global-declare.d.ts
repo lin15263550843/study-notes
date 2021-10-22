@@ -1,4 +1,5 @@
 declare interface Function {
-    myApply<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, args: A): R;
-    myCall<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, ...args: A): R;
+    myApply(thisArg: any, args: any[]): any;
+    myCall(thisArg: any, ...args: any[]): any;
+    myBind(thisArg: any, ...args: any[]): any;
 }
