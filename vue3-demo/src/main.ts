@@ -19,3 +19,4 @@ console.log('app--------------------------------->>>', app);
 
 // import './views/javascript/commons';
 // import './views/test/test';
+import '@/test/heepPriorityQueueTest';
