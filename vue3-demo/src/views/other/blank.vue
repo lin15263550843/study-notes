@@ -24,9 +24,9 @@ export default defineComponent({
         return { r1, r2 };
     },
     created() {
-        console.log('blank  vue---------------------------------->>>', vue);
-        console.log('blank  this---------------------------------->>>', this);
-        console.log('blank  this.r1 === this.r2---------------------------------->>>', this.r1 === this.r2);
+        // console.log('blank  vue---------------------------------->>>', vue);
+        // console.log('blank  this---------------------------------->>>', this);
+        // console.log('blank  this.r1 === this.r2---------------------------------->>>', this.r1 === this.r2);
     },
 });
 </script>
