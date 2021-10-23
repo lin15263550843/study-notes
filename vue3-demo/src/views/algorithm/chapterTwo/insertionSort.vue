@@ -27,11 +27,32 @@ export default defineComponent({
             executionCounter.end('插入排序交换次数');
             return list;
         },
+        // 更好的插入排序，减少数据交换
+        betterInsertionSort(list: number[]) {
+            executionCounter.start();
+            const l = list.length;
+            for (let i = 1; i < l; i++) {
+                let j = i - 1;
+                const v = list[i];
+                while (j >= 0) {
+                    if (list[j] > v) {
+                        list[j + 1] = list[j];
+                    } else {
+                        break;
+                    }
+                    j--;
+                    executionCounter.counter();
+                }
+                list[j + 1] = v;
+            }
+            executionCounter.end('插入排序交换次数');
+            return list;
+        },
         /**
          * 执行
          */
         execute() {
-            this.result = this.insertionSort([...this.dataSource]);
+            this.result = this.betterInsertionSort([...this.dataSource]);
         },
         /**
          * 验证

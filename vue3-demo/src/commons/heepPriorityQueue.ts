@@ -2,7 +2,7 @@
  * 基于二叉堆的优先队列
  */
 export class MaxPQ {
-    public constructor(max = 0) {
+    constructor(max = 0) {
         console.log('max', max);
         this.pq.length = max; // 意义不大
     }
