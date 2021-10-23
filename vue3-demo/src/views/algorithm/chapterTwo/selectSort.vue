@@ -1,7 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import problemCardBoxMixin from '@/components/problemCard/problemCardBoxMixin';
-import { executionCounter, exch } from '@/commons/utils';
+import { exch } from '@/commons/utils';
+import { executionCounter } from '@/commons/tools';
 
 export default defineComponent({
     ...problemCardBoxMixin,

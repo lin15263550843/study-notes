@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import problemCardBoxMixin from '@/components/problemCard/problemCardBoxMixin';
-import { executionCounter } from '@/commons/utils';
+import { executionCounter } from '@/commons/tools';
 
 export default defineComponent({
     ...problemCardBoxMixin,
@@ -74,7 +74,6 @@ export default defineComponent({
         bottomUpMergeSort(a: number[]) {
             executionCounter.start();
             const n = a.length;
-            console.log('a.length', n);
             // size = 1，两两归并，然后size 翻倍（把每个元素想象成一个大小为 1 的数组）
             // size = 2，四四归并，然后 size 再翻倍（将两个大小为 2 的数组归并成一个有 4 个元素的数组）
             // 以此类推，每次 size 都会翻倍...
