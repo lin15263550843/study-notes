@@ -4,3 +4,5 @@ export * from './heepPriorityQueue';
 export * from './utils';
 // 类型判断
 export * from './typeJudge';
+// 把 url 的拼接参数解析成对象
+export * from './parseUrl';

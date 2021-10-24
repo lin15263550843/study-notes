@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import problemCardBoxMixin from '@/components/problemCard/problemCardBoxMixin';
 import { exch } from '@/commons/utils';
-import { executionCounter } from '@/commons/tools';
+import { executionCounter, testExecTime } from '@/commons/tools';
 
 export default defineComponent({
     ...problemCardBoxMixin,
@@ -41,7 +41,7 @@ export default defineComponent({
                 exch(a, i, j);
             }
             if (lo === j) return j; // 阻止自己和自己原地交换
-            exch(a, lo, j);
+            exch(a, lo, j); // 将 v 切分位 放入正确的位置
             return j;
         },
         implementation(a: number[]) {
@@ -95,6 +95,11 @@ export default defineComponent({
         execute() {
             this.result = this.implementation([...this.dataSource]);
             // this.result = this.threeWaySplitQuickSort([...this.dataSource]);
+            testExecTime(this.implementation, 1000000, '快速排序');
+            function sort(arr: number[]) {
+                arr.sort((a, b) => a - b);
+            }
+            testExecTime(sort, 1000000, 'Array sort 排序');
         },
         /**
          * 验证

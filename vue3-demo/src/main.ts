@@ -21,8 +21,9 @@ export default app.mount('#app');
  * 测试
  */
 // import './views/javascript/commons';
-// import './views/test/test';
+// import '@/test/test';
 // import '@/test/heepPriorityQueueTest'; // 基于二叉堆的优先队列
 // import '@/views/javascript/commons/functionExtension'; // 手写 apply、call、bind
 // import '@/views/javascript/commons/functionExtensionJS'; // 适用于 es5 版本的手写 apply、call、bind
 // import '@/views/javascript/commons/myPromise'; // 手写 promise
+import '@/test/parseUrlTest'; // 测试把 url 的拼接参数解析成对象

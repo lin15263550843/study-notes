@@ -21,7 +21,7 @@ export const executionCounter = {
  */
 export function testExecTime(callback: any, length: number, msg: string) {
     const arr = new Array(length).fill(undefined).map(() => (Math.random() * length) >>> 0);
-    const s = `执行【${msg}】时间为：`;
+    const s = `[${length}]大小，执行【${msg}】时间为：`;
     // console.log(arr);
     console.time(s);
     isFunction(callback) && callback(arr);
