@@ -6,7 +6,7 @@
 //     return path.join(__dirname, dir);
 // };
 module.exports = {
-    // runtimeCompiler: true, // 支持运行时编译
+    runtimeCompiler: true, // 支持运行时编译
     // publicPath: process.env.NODE_ENV === 'production' ? `/${name}/` : '/',
     // outputDir: `dist/${name}`,
     publicPath: '/',
