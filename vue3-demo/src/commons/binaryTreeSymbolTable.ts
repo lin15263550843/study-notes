@@ -83,26 +83,66 @@ export class BST {
         const _floor = (x: Node | undefined, key: number): Node | undefined => {
             if (!x) return undefined;
             if (key === x.key) return x;
-            if (key < x.key) {
-                return _floor(x.left, key);
-            }
+            if (key < x.key) return _floor(x.left, key);
             const t = _floor(x.ringt, key);
             return t ? t : x;
         };
         const x = _floor(this.root, key);
         return x ? x.key : undefined;
     }
+    // 返回 大于等于 key 的最小值的节点
+    private _ceiling(x: Node | undefined, key: number): Node | undefined {
+        if (!x) return undefined;
+        if (key === x.key) return x;
+        if (key > x.key) return this._ceiling(x.ringt, key);
+        const t = this._ceiling(x.left, key);
+        return t ? t : x;
+    }
     /**
      * 大于等于 key 的最小值
      */
-    public ceiling() {
-        //
+    public ceiling(key: number) {
+        if (!key) return undefined;
+        const x = this._ceiling(this.root, key);
+        return x ? x.key : undefined;
     }
     /**
      * 表是否为空
      */
     public isEempty() {
         return !!this.root;
+    }
+    /**
+     * 删除节点的最小值
+     */
+    private _dmin(x: Node | undefined) {
+        if (!x) return x;
+        if (!x.left) return x.ringt;
+        x.left = this._dmin(x.left);
+        x.N = this._size(x.left) + this._size(x.ringt) + 1;
+        return x;
+    }
+    /**
+     * 删除最小的值
+     */
+    public deleteMin() {
+        this.root = this._dmin(this.root);
+    }
+    /**
+     * 删除节点的最大值
+     */
+    private _dmax(x: Node | undefined) {
+        if (!x) return x;
+        if (!x.ringt) return x.left;
+        x.ringt = this._dmax(x.ringt);
+        x.N = this._size(x.left) + this._size(x.ringt) + 1;
+        return x;
+    }
+    /**
+     * 删除最大的值
+     */
+    public deleteMax() {
+        this.root = this._dmax(this.root);
     }
     /**
      * 从表中删除键 key（机器对应的值）
@@ -117,28 +157,45 @@ export class BST {
         //
     }
     /**
-     * 小于 key 的键的数量
+     * 返回排名为 k 的节点
      */
-    public rank() {
-        //
+    private _select(x: Node | undefined, k: number): Node | undefined {
+        if (!x) return undefined;
+        const t = this._size(x.left);
+        if (t > k) {
+            return this._select(x.left, k);
+        } else if (t < k) {
+            return this._select(x.ringt, k - t - 1);
+        } else {
+            return x;
+        }
     }
     /**
-     * 排名为 k 的键
+     * 排名为 k 的键（树种正好有 k 个小于它的键）
      */
-    public select() {
-        //
+    public select(k: number) {
+        if (!k) return undefined;
+        return this._select(this.root, k)?.key;
     }
     /**
-     * 删除最小的值
+     * 返回排名为 k 的节点
      */
-    public deleteMin() {
-        //
+    private _rank(x: Node | undefined, key: number): number {
+        if (!x) return 0;
+        if (key < x.key) {
+            return this._rank(x.left, key);
+        } else if (key > x.key) {
+            return this._size(x.left) + 1 + this._rank(x.ringt, key);
+        } else {
+            return this._size(x.left);
+        }
     }
     /**
-     * 删除最大的值
+     * 小于 key 的键的数量，即键 key 的排名
      */
-    public deleteMax() {
-        //
+    public rank(key: number) {
+        if (!key) return undefined;
+        return this._rank(this.root, key);
     }
     /**
      * [lo ... hi] 之间键的数量
