@@ -22,7 +22,8 @@ function MyPromise(executor) {
             this.value = res;
             this.onResolvedArray.forEach(onResolved => {
                 //当状态从 pending 变为 resolved，就遍历执行里面的异步方法
-                this.value = onResolved(this.value);
+                // this.value = onResolved(this.value);
+                onResolved(this.value);
             });
         }
     };
@@ -37,7 +38,8 @@ function MyPromise(executor) {
             this.reason = res;
             this.onRejectedArray.forEach(onRejected => {
                 //当状态从 pending 变为 rejected，就遍历执行里面的异步方法
-                this.reason = onRejected(this.reason);
+                // this.reason = onRejected(this.reason);
+                onRejected(this.reason);
             });
         }
     };
@@ -52,39 +54,79 @@ function MyPromise(executor) {
      * @param {any} onResolved 解决，完成
      * @param {any} onReject 拒绝
      */
-    // this.then =
 }
 //因为 then 方法是公共的，所以定义在 MyPromise 的原型中，不用每次 new 的时候都去创建该方法
 MyPromise.prototype.then = function (onResolved, onRejected) {
-    switch (this.status) {
-        case STATUS.pending:
-            // 如果没有传入回调函数或者不是函数就忽略
-            // 否则就放入数组中等状态改变时用来执行相应的方法
-            isFunction(onResolved) && this.onResolvedArray.push(onResolved);
-            isFunction(onRejected) && this.onRejectedArray.push(onRejected);
-            break;
-        case STATUS.resolved:
-            // 如果没有传入回调函数或者不是函数就忽略
-            // 如果状态立即改变了就同步执行对应的方法
-            isFunction(onResolved) && (this.value = onResolved(this.value));
-            break;
-        case STATUS.rejected:
-            isFunction(onRejected) && (this.reason = onRejected(this.reason));
-            break;
-        default:
-            break;
-    }
-    return new MyPromise((onResolved, onRejected) => {
+    return new MyPromise((resolve, reject) => {
         switch (this.status) {
             case STATUS.pending:
-                isFunction(onResolved) && this.onResolvedArray.push(onResolved);
-                isFunction(onRejected) && this.onRejectedArray.push(onRejected);
+                // 如果没有传入回调函数或者不是函数就忽略
+                // 否则就放入数组中等状态改变时用来执行相应的方法
+                // isFunction(onResolved) && this.onResolvedArray.push(onResolved);
+                // isFunction(onRejected) && this.onRejectedArray.push(onRejected);
+                if (isFunction(onResolved)) {
+                    this.onResolvedArray.push(() => {
+                        setTimeout(() => {
+                            try {
+                                const res = onResolved(this.value);
+                                if (res instanceof MyPromise) {
+                                    res.then(res => {
+                                        resolve(res);
+                                    });
+                                } else {
+                                    resolve(res);
+                                }
+                            } catch (error) {
+                                reject(error);
+                            }
+                        }, 0);
+                    });
+                }
+                if (isFunction(onRejected)) {
+                    this.onRejectedArray.push(() => {
+                        setTimeout(() => {
+                            try {
+                                const err = onRejected(this.value);
+                                resolve(err);
+                            } catch (error) {
+                                reject(error);
+                            }
+                        }, 0);
+                    });
+                }
                 break;
             case STATUS.resolved:
-                isFunction(onResolved) && (this.value = onResolved(this.value));
+                // isFunction(onResolved) && (this.value = onResolved(this.value));
+                if (isFunction(onResolved)) {
+                    setTimeout(() => {
+                        try {
+                            const res = onResolved(this.value);
+                            // 将上次一then里面的方法传递进下一个 Promise 的状态
+                            if (res instanceof MyPromise) {
+                                res.then(res => {
+                                    resolve(res);
+                                });
+                            } else {
+                                resolve(res);
+                            }
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }, 0);
+                }
                 break;
             case STATUS.rejected:
                 isFunction(onRejected) && (this.reason = onRejected(this.reason));
+                if (isFunction(onRejected)) {
+                    setTimeout(() => {
+                        try {
+                            const err = onRejected(this.reason);
+                            reject(err);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }, 0);
+                }
                 break;
             default:
                 break;
@@ -97,14 +139,15 @@ const myPromise = new MyPromise((resolve, reject) => {
     setTimeout(() => {
         resolve(123);
         // reject(123);
-    }, 2000);
+    }, 1000);
 });
 // const myPromise = new Promise((resolve, reject) => {
+//     // resolve(123);
 //     setTimeout(() => {
 //         resolve(123);
+//         // reject(123);
 //     }, 1000);
 // });
-
 console.log('myPromise---------------------------------->>>', myPromise);
 
 const mp1 = myPromise
@@ -136,27 +179,25 @@ const mp2 = mp1
 const mp3 = mp1
     .then(res => {
         console.log('myPromise.then resolve--------------------------4>>>', res);
-        return 4;
-        // return new MyPromise((resolve, reject) => {
-        //     // resolve(123);
-        //     setTimeout(() => {
-        //         resolve(123);
-        //         // reject(123);
-        //     }, 8000);
-        // });
+        // return 4;
+        return new MyPromise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(456);
+            }, 1000);
+        });
     })
     .then(res => {
-        console.log('myPromise.then resolve--------------------------6>>>', res);
+        console.log('myPromise.then resolve--------------------------7>>>', res);
         return 6;
     });
 
 mp2.then(
     res => {
-        console.log('myPromise.then resolve--------------------------7>>>', res);
+        console.log('myPromise.then resolve--------------------------6>>>', res);
         return 7;
     },
     res => {
-        console.log('myPromise.then reject---------------------------7>>>', res);
+        console.log('myPromise.then reject---------------------------6>>>', res);
     },
 );
 
@@ -169,27 +210,3 @@ mp3.then(
         console.log('myPromise.then reject---------------------------8>>>', res);
     },
 );
-
-// const p = new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//         resolve(123);
-//     }, 1000);
-// });
-
-// console.log('p------->>>', p);
-// // p.then(res => {
-// //     // console.log('p.then res---------------------------------->>>', res);
-// // });
-
-/**
- * 用来支持 promises-aplus-tests 进行测试
- */
-// MyPromise.defer = MyPromise.deferred = function () {
-//     let dfd = {};
-//     dfd.promise = new MyPromise((resolve, reject) => {
-//         dfd.resolve = resolve;
-//         dfd.reject = reject;
-//     });
-//     return dfd;
-// };
-// module.exports = MyPromise;
