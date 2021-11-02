@@ -2,7 +2,7 @@
  * 基于二叉查找树的符号表
  */
 export class BST {
-    private root: Node | undefined;
+    public root: Node | undefined;
     /**
      * x 结点的大小
      */
@@ -219,7 +219,7 @@ export class BST {
 /**
  * 节点
  */
-class Node {
+export class Node {
     public key; // 建
     public val; // 值
     public left?: Node; // 指向左子树的链接
