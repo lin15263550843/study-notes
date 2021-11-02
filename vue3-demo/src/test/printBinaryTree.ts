@@ -2,6 +2,12 @@ import { BST, Node } from '@/commons/binaryTreeSymbolTable';
 
 /**
  * JavaScript 从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行
+ *  const btree = {
+ *      key: 0, // 键
+ *      val: 0, // 值
+ *      left: undefined, // 左子节点
+ *      right: undefined, // 右子节点
+ * };
  */
 export function printBinaryTree() {
     if (!bst.root) return;
@@ -21,7 +27,6 @@ export function printBinaryTree() {
         });
     }
 }
-
 // export function printBinaryTree() {
 //     if (!bst.root) return;
 //     const arr: Node[][] = [];
@@ -75,3 +80,48 @@ console.log('bst-------------------------->>>', bst);
 (window as any).bst = bst;
 
 printBinaryTree();
+
+/**
+ * JavaScript 从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行
+ *  const btree = {
+ *      key: 0, // 键
+ *      val: 0, // 值
+ *      left: undefined, // 左子节点
+ *      right: undefined, // 右子节点
+ * };
+ */
+// export function printBinaryTree() {
+//     if (!btree) return;
+//     let nodes = [];
+//     nodes = [btree];
+//     while (nodes.length > 0) {
+//         console.log(nodes.map(node => node.val).join('|'));
+//         const arr = nodes;
+//         nodes = [];
+//         arr.forEach(node => {
+//             if (node.left) {
+//                 nodes.push(node.left);
+//             }
+//             if (node.right) {
+//                 nodes.push(node.right);
+//             }
+//         });
+//     }
+// }
+// const btree = {
+//     key: 0, // 键
+//     val: 0, // 值
+//     // 左子节点
+//     left: {
+//         key: 1, // 键
+//         val: 1, // 值
+//         left: undefined, // 左子节点
+//         right: undefined, // 右子节点
+//     },
+//     right: {
+//         key: 2, // 键
+//         val: 2, // 值
+//         left: undefined, // 左子节点
+//         right: undefined, // 右子节点
+//     }, // 右子节点
+// };
