@@ -39,3 +39,23 @@ export function parseUrl(search: string) {
     return params; //返回这个数组.
 }
 // parseUrl(location.search);
+
+// function getUrlParam(sUrl, sKey) {
+//     if(typeof sUrl !== 'string' || !sUrl) return sKey ? '' : {}
+//     const s1 = sUrl.split('?')[1] || ''
+//     const s2 = s1.split('#')[0]
+//     const arr = s2.split('&')
+//     const params = {}
+
+//     arr.forEach(value => {
+//         const [k, v] = value.split('=')
+//         const v2 =  window.decodeURI(v || '')
+//         if (params[k]) {
+//             params[k] = [].concat(params[k], v2)
+//         } else {
+//             params[k] = v2
+//         }
+//     })
+
+//     return sKey ? params[sKey] || '' : params
+// }

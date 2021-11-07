@@ -1,4 +1,5 @@
 /**
+ * 文字输出
  * https://www.nowcoder.com/practice/b403d1051e5d4568912e6d265e1e2cde?tpId=2&&tqId=38374&rp=1&ru=/activity/oj&qru=/ta/front-end/question-ranking
     
     页面上存在id为jsBlink的下划线闪动节点，请按照如下需求实现 output 函数
@@ -31,7 +32,8 @@ function output(str) {
             newNode.appendChild(document.createElement('br'));
         } else {
             const span = document.createElement('span');
-            const rundom = Math.round(Math.random() * 23);
+            // const rundom = Math.round(Math.random() * 23);
+            const rundom = Math.floor(Math.random() * 24 + 1);
 
             span.className = 'word ' + 'color' + rundom;
 
@@ -87,7 +89,7 @@ function test() {
                     bResult = bResult && aRandom && aRandom.length === 2;
                     if (bResult) {
                         let nRandom = +aRandom[1];
-                        bResult = bResult && nRandom >= 1 && nRandom <= 24;
+                        bResult = bResult && nRandom >= 1 && nRandom <= 24; // 大坑！！！
                     }
                 }
             }
