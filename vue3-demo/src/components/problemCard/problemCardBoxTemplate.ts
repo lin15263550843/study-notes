@@ -2,8 +2,8 @@ export default () => {
     return `
         <div id="problem-card-box-template">
             <ProblemCard
-                title="选择排序"
-                description="从小到大排序"
+                :title="title"
+                :description="description"
                 :dataSource="dataSource"
                 :result="result"
                 :execute="execute"
