@@ -88,14 +88,14 @@ const o1 = { x: 123 };
 // // 绑定后的 this 类型会转换为 boolean 包装类型而不是原始类型
 // f.apply(true, [4, 5, 6]);
 // f.myApply(true, [4, 5, 6]);
-// console.log('测试 null-------------------------------------------------------------------------');
+console.log('测试 null-------------------------------------------------------------------------');
 // // 绑定后的 this 会转换为一个只含有 [Symbol.toPrimitive] 方法返回 null 的对象
-// f.apply(null, [4, 5, 6]);
-// f.myApply(null, [4, 5, 6]);
-// console.log('测试 undefined--------------------------------------------------------------------');
-// // 绑定后的 this 会转换为一个只含有 [Symbol.toPrimitive] 方法返回 undefined 的对象
-// f.apply(undefined, [4, 5, 6]);
-// f.myApply(undefined, [4, 5, 6]);
+f.apply(null, [4, 5, 6]);
+f.myApply(null, [4, 5, 6]);
+console.log('测试 undefined--------------------------------------------------------------------');
+// 绑定后的 this 会转换为一个只含有 [Symbol.toPrimitive] 方法返回 undefined 的对象
+f.apply(undefined, [4, 5, 6]);
+f.myApply(undefined, [4, 5, 6]);
 // console.log('测试 RegExp-----------------------------------------------------------------------');
 // f.apply(RegExp, [4, 5, 6]);
 // f.myApply(RegExp, [4, 5, 6]);
