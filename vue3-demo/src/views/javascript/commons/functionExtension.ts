@@ -3,14 +3,15 @@
  * 注意如下
  * 如果是原始数据类型，均返回对应的包装类型；绑定的 this 如果是 number、string、boolean、symbol 等原始类型，this 会转换为对应的包装对象类型，可以进行正常的 + - * / 等操作
  */
-Function.prototype.myApply = function (thisArg: any, args: any[]) {
+Function.prototype.myApply = function (thisArg: any, argsArray: any[] = []) {
     // thisArg = thisArg === null || thisArg === undefined ? window : Object(thisArg);
     // 如果是 null 和 undefined 需要特殊处理，其他类型都转成对象
     if (thisArg === null || thisArg === undefined) {
-        const o = Object.create(null);
-        const v = thisArg; // 保存原始值
-        o[Symbol.toPrimitive] = () => v;
-        thisArg = o;
+        // const o = Object.create(null);
+        // const v = thisArg; // 保存原始值
+        // o[Symbol.toPrimitive] = () => v;
+        // thisArg = o;
+        thisArg = window; // 给 null / undefined 绑定全局 window 对象
     } else {
         // 除了 this 的类型和原生 apply 不一样，效果基本能保持一致，使用起来问题不大
         // 注意：原始类型数据绑定会返回的 this 是它的对象包装类型！！！
@@ -22,8 +23,12 @@ Function.prototype.myApply = function (thisArg: any, args: any[]) {
     thisArg = thisArg || window; // 若没有传入this, 默认绑定window对象
     // this 指向调用 apply 的对象，即要改变 this 指向的函数
     thisArg[fn] = this;
+    // 如果不传 参数，会默认一个空数组，防止报错，不是数组抛异常
+    if (!(argsArray instanceof Array)) {
+        throw new Error('参数必须为数组');
+    }
     // 执行当前函数
-    const result = thisArg[fn](...args);
+    const result = thisArg[fn](...argsArray);
     // 删除声明的fn属性
     delete thisArg[fn];
     return result;
