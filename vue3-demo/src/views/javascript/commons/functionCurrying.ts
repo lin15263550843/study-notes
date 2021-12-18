@@ -3,12 +3,12 @@
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function currying(fn: Function) {
-    return function (this: any, ...args: any[]) {
+    return function curried(this: any, ...args: any[]) {
         if (fn.length <= args.length) {
             return fn.apply(this as any, args);
         } else {
             return function (this: any, ...args2: any[]) {
-                return currying.call(this, fn)(...args, ...args2);
+                return curried.apply(this, [...args, ...args2]);
             };
         }
     };
