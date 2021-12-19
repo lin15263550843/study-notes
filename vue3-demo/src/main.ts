@@ -30,4 +30,5 @@ console.log('app--------------------------------->>>', app);
 // import '@/test/binaryTreeSymbolTableTest'; // 基于二叉查找树的符号表
 // import '@/test/printBinaryTree'; // 从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行
 // import '@/views/javascript/commons/functionCurrying'; // 函数柯里化
-import '@/views/javascript/commons/functionCompose'; // 函数组合
+// import '@/views/javascript/commons/functionCompose'; // 函数组合
+import '@/test/testObject'; // 测试 Object

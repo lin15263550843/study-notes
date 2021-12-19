@@ -92,6 +92,10 @@ export default defineComponent({
     created() {
         // console.log(this.arr);
     },
+    // destroyed() {
+    unmounted() {
+        // console.log(this.arr);
+    },
 });
 </script>
 <style scoped lang="less">
