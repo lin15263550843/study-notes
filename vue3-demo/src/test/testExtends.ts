@@ -9,6 +9,10 @@ function ParentClass(name, firends) {
     this.firends = firends || [];
 }
 
+ParentClass.parentStaticMethod = function () {
+    return 'ParentClass parent static method~';
+};
+
 // ParentClass.prototype.runing = function () {
 //     return `${this.name}在跑步~`;
 // };
@@ -27,6 +31,10 @@ function SubClass(name, age, firends) {
     this.age = age;
 }
 
+SubClass.staticMethod = function () {
+    return 'SubClass static method~';
+};
+
 // 原型链继承
 // SubClass.prototype = new ParentClass();
 
@@ -35,13 +43,14 @@ function SubClass(name, age, firends) {
 
 // 寄生组合式继承
 // SubClass.prototype = Object.create(ParentClass.prototype);
-Object.setPrototypeOf(SubClass, Object.create(ParentClass.prototype));
-SubClass.prototype.constructor = SubClass;
-// inheritPrototype(ParentClass, SubClass);
+// SubClass.prototype.constructor = SubClass;
+inheritPrototype(ParentClass, SubClass);
 
-// 警告：不能使用该方法，它会设置（对象的） __proto__ 属性，而不是函数的 prototype
-// Object.setPrototypeOf(SubClass, proto);
-// 【SubClass 可以看做是 Object 的一个实例对象，所以它的】
+// 警告：不能使用该方法，它会设置该对象的 __proto__ 属性，而不是函数的 prototype
+Object.setPrototypeOf(SubClass, Object.create(ParentClass.prototype));
+
+// 静态方法的继承
+Object.setPrototypeOf(SubClass, ParentClass);
 
 // 必须写到继承后边后才有效，因为会重置 SubClass 的原型
 // SubClass.prototype.eating = function () {
@@ -88,6 +97,10 @@ console.log('sub2 instanceof ParentClass---------->>>', sub2 instanceof ParentCl
 console.log('sub2 instanceof SubClass------------->>>', sub2 instanceof SubClass);
 console.log('sub1 instanceof Object--------------->>>', sub1 instanceof Object);
 console.log('sub2 instanceof Object--------------->>>', sub2 instanceof Object);
+
+console.log('ParentClass.parentStaticMethod()----->>>', ParentClass.parentStaticMethod());
+console.log('SubClass.staticMethod()-------------->>>', SubClass.staticMethod());
+console.log('SubClass.parentStaticMethod()-------->>>', SubClass.parentStaticMethod());
 
 // 原型式继承
 function createPrototypeObject1(o) {

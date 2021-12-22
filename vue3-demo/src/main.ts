@@ -33,3 +33,4 @@ console.log('app--------------------------------->>>', app);
 // import '@/views/javascript/commons/functionCompose'; // 函数组合
 // import '@/test/testObject'; // 测试 Object
 import '@/test/testExtends'; // 测试 继承
+// import '@/test/testFunction'; // 测试 函数
