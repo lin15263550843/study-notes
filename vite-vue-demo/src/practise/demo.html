@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>demo</title>
+
+    <style>
+        /* body {
+            margin: 0;
+        } */
+
+        li {
+            cursor: pointer;
+        }
+
+        .parent {
+            background: bisque;
+            width: 400px;
+            height: 800px;
+            padding: 50PX;
+        }
+
+        .parent .childen {
+            background: cornflowerblue;
+            /* width: 100px; */
+            width: 0;
+            height: 0;
+            /* height: 100px; */
+            padding-top: 50%;
+            padding-left: 50%;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <span class="blink" id="jsBlink">|</span>
+    </div>
+    <div>
+        <span id="jsContainer"> www.testhaha.com </span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>price</th>
+                <th>sales</th>
+            </tr>
+        </thead>
+        <tbody id="jsList">
+            <tr>
+                <td>1</td>
+                <td>10.0</td>
+                <td>800</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>30.0</td>
+                <td>600</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>20.5</td>
+                <td>700</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>40.5</td>
+                <td>500</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>60.5</td>
+                <td>300</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>50.0</td>
+                <td>400</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>70.0</td>
+                <td>200</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>80.5</td>
+                <td>100</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="jsCountdown">
+        <span>01天</span>
+        <span>02:</span>
+        <span>03:</span>
+        <span>04</span>
+    </div>
+    <!-- <div>
+        <ul id="list"></ul>
+    </div> -->
+    <!-- <div class="parent">
+        <div class="childen">
+            <span>123</span>
+        </div>
+    </div> -->
+    <!-- <script src="./practise.js"></script> -->
+    <script src="./replaceConnection.js"></script>
+    <script src="./test.js"></script>
+    <script src="./countdown.js"></script>
+    <script>
+        // // 需要生成的数据
+        // const selecteds = [];
+        // // const selecteds = [{
+        // //     name: '提高政治能力',
+        // //     data: [{ 提高政治能力数据1 }, { 提高政治能力数据2 }, {}]
+        // // }, {
+        // //     name: '政治合格',
+        // //     data: [{ 政治合格数据1 }, {}, {}]
+        // // }],
+        // // 点击 item 事件
+        // function chooseItem(e) {
+        //     // 查看 selecteds 中是否已经存该名称的数据，最好对比 id 是否相同，有可能重名，如果不需要 id 就对比 name
+        //     const currentItem = e.item;
+        //     const existItem = selecteds.find(item => item.id === currentItem.question_type_id);
+        //     // 存在 同名的则往 data 里 添加数据，否则就添加一条该名字的数据
+        //     if (existItem) {
+        //         const index = existItem.data.findIndex(item => item.id === currentItem.id)
+        //         // 去重，如果 index 大于 0 说明已经添加过该项，不再添加
+        //         if (index < 0) {
+        //             existItem.data.push(currentItem)
+        //         }
+        //     } else {
+        //         selecteds.push({
+        //             id: currentItem.question_type_id,
+        //             name: currentItem.question_type_name,
+        //             data: [currentItem]
+        //         })
+        //     }
+        //     console.log('selecteds: ', selecteds);
+        // }
+        // const list = [
+        //     {
+        //         afraction: "5",
+        //         aoption: "A、好",
+        //         bfraction: "4",
+        //         boption: " B、较好",
+        //         cfraction: "3",
+        //         coption: "C、一般",
+        //         create_people: "小纳豆",
+        //         create_time: "2021-04-12 13:02:57",
+        //         dfraction: "1",
+        //         doption: " D、差",
+        //         dzbORdy_question: "1",
+        //         id: "ae8703cfb6d24c1ca96e8ca4686d1e1b",
+        //         question: "政治能力1111111111",
+        //         question_type_id: "8",
+        //         question_type_name: "提高政治能力",
+        //         testPaper_id: null,
+        //         testPaper_name: null
+        //     },
+
+        //     {
+        //         afraction: "5",
+        //         aoption: "A、好",
+        //         bfraction: "4",
+        //         boption: " B、较好",
+        //         cfraction: "3",
+        //         coption: "C、一般",
+        //         create_people: "小纳豆",
+        //         create_time: "2021-04-12 13:02:57",
+        //         dfraction: "1",
+        //         doption: " D、差",
+        //         dzbORdy_question: "1",
+        //         id: "ae8703cfb6d24c1ca96e8ca4686d1e2b",
+        //         question: "政治能力2222222222",
+        //         question_type_id: "8",
+        //         question_type_name: "提高政治能力",
+        //         testPaper_id: null,
+        //         testPaper_name: null
+        //     },
+        //     {
+        //         afraction: "5",
+        //         aoption: "A、好",
+        //         bfraction: "4",
+        //         boption: " B、较好",
+        //         cfraction: "3",
+        //         coption: "C、一般",
+        //         create_people: "小纳豆",
+        //         create_time: "2021-04-12 13:02:57",
+        //         dfraction: "1",
+        //         doption: " D、差",
+        //         dzbORdy_question: "1",
+        //         id: "ae8703cfb6d24c1ca96e8ca4686d3e1b",
+        //         question: "政治能力",
+        //         question_type_id: "2",
+        //         question_type_name: "政治合格",
+        //         testPaper_id: null,
+        //         testPaper_name: null
+        //     },
+        // ]
+
+        // const ul = document.querySelector('#list');
+        // const fragment = document.createDocumentFragment();
+        // list.forEach(item => {
+        //     const li = document.createElement('li');
+        //     li.onclick = chooseItem.bind(this, { item })
+        //     li.innerHTML = `${item.question_type_name} -> ${item.question}`;
+        //     fragment.appendChild(li);
+        // });
+        // ul.appendChild(fragment);
+    </script>
+</body>
+
+</html>
