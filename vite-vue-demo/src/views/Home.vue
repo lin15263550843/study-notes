@@ -1,3 +1,4 @@
+<!-- @ts-nocheck -->
 <template>
     <section class="home my-layout my-layout-has-sider">
         <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->

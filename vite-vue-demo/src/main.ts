@@ -34,3 +34,4 @@ console.log('app--------------------------------->>>', app);
 // import '@/test/testObject'; // 测试 Object
 // import '@/test/testExtends'; // 测试 继承
 // import '@/test/testFunction'; // 测试 函数
+import '@/test/finalizationRegistry'; // 测试 监听垃圾回收
