@@ -15,7 +15,7 @@ const app = createApp(App).use(router).use(store).use(Antd).component('About', A
 export default app.mount('#app');
 
 // console.log('createApp--------------------->>>', createApp);
-console.log('app----------------------------------------------------------->>>', app);
+// console.log('app----------------------------------------------------------->>>', app);
 
 /**
  * 测试
@@ -36,5 +36,6 @@ console.log('app----------------------------------------------------------->>>',
 // import '@/test/testFunction'; // 测试 函数
 // import '@/test/finalizationRegistry'; // 测试 监听垃圾回收
 // import '@/test/testPromise'; // 测试 Promise
-import '@/views/javascript/commons/iterableObj'; // 测试 迭代器
-import '@/views/javascript/commons/generator'; // 测试 生成器
+// import '@/views/javascript/commons/iterableObj'; // 测试 迭代器
+// import '@/views/javascript/commons/generator'; // 测试 生成器
+import '@/views/javascript/commons/async-await'; // 测试 async await
