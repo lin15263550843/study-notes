@@ -19,37 +19,37 @@ function requestData(url: string) {
  * 1 > 第一种方案：多次回调
  * 回调地域
  */
-// requestData('aaa').then(res => {
-//     requestData(`${res}-bbb`).then(res => {
-//         requestData(`${res}-ccc`).then(res => {
-//             requestData(`${res}-ddd`).then(res => {
-//                 requestData(`${res}-eee`).then(res => {
-//                     console.log('res------------>>>', res);
-//                 });
-//             });
-//         });
-//     });
-// });
+requestData('aaa').then(res => {
+    requestData(`${res}-bbb`).then(res => {
+        requestData(`${res}-ccc`).then(res => {
+            requestData(`${res}-ddd`).then(res => {
+                requestData(`${res}-eee`).then(res => {
+                    console.log('res------------>>>', res);
+                });
+            });
+        });
+    });
+});
 
 /**
  *  2 > 使用 Promise then 返回值解决
  */
-// requestData('aaa')
-//     .then(res => {
-//         return requestData(`${res}-bbb`);
-//     })
-//     .then(res => {
-//         return requestData(`${res}-ccc`);
-//     })
-//     .then(res => {
-//         return requestData(`${res}-ddd`);
-//     })
-//     .then(res => {
-//         return requestData(`${res}-eee`);
-//     })
-//     .then(res => {
-//         console.log('res------------>>>', res);
-//     });
+requestData('aaa')
+    .then(res => {
+        return requestData(`${res}-bbb`);
+    })
+    .then(res => {
+        return requestData(`${res}-ccc`);
+    })
+    .then(res => {
+        return requestData(`${res}-ddd`);
+    })
+    .then(res => {
+        return requestData(`${res}-eee`);
+    })
+    .then(res => {
+        console.log('res------------>>>', res);
+    });
 /**
  * 3 > 使用生成器函数解决
  */
@@ -109,3 +109,18 @@ async function getData2() {
     console.log('res5----------------->>>', res5);
 }
 getData2();
+
+/**
+ * async 和普通函数区别
+ */
+
+async function asyncFun() {
+    const msg = 'async function';
+    console.log('async function msg----------------->>>', msg);
+    throw new Error('error message~~~');
+
+    // return msg;
+}
+const asyncFunResult = asyncFun();
+console.log('asyncFun asyncFunResult----------- --->>>', asyncFunResult);
+console.log('***后继代码还会接着执行***');

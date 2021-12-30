@@ -38,4 +38,5 @@ export default app.mount('#app');
 // import '@/test/testPromise'; // 测试 Promise
 // import '@/views/javascript/commons/iterableObj'; // 测试 迭代器
 // import '@/views/javascript/commons/generator'; // 测试 生成器
-import '@/views/javascript/commons/async-await'; // 测试 async await
+// import '@/views/javascript/commons/async-await'; // 测试 async await
+// import '@/views/javascript/commons/try-catch'; // 测试 try catch
