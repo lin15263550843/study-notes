@@ -1,5 +1,28 @@
 /**
  * 对象拷贝
+ * #### 可以利用JSON 序列化进行对象的深拷贝
+
+    - 有局限性，例如不能转换函数类型等等。
+
+    - 对象中的
+    undefined => 忽略
+    function => 忽略
+    Error() => {}
+    new Error() => {}
+    RegExp() => {}
+    Symbol() => 忽略
+
+    - 对象中的
+    undefined => null
+    function => null
+    Error() => {}
+    new Error() => {}
+    RegExp() => {}
+    Symbol() => null
+
+    #### 总结
+    
+    - JSON 不存在的类型，能转成对象的先都转成 空对象；转不了的：对象中直接忽略，数组中转成 null。
  */
 function testJSONCopy() {
     function fn() {
@@ -48,6 +71,43 @@ function testJSONCopy() {
             '-3-',
             Symbol(''),
         ],
+        // JSON 序列化 实现深拷贝： {
+        //     "num": 123,
+        //     "str": "string",
+        //     "boo": true,
+        //     "nul": null,
+        //     "obj": {
+        //         "num": 123,
+        //         "str": "string",
+        //         "boolean": true,
+        //         "null": null,
+        //         "object": {},
+        //         "array": [],
+        //         "fnResult": "fn",
+        //         "e": {},
+        //         "Error": {},
+        //         "reg": {}
+        //     },
+        //     "arr": [
+        //         123,
+        //         "string",
+        //         true,
+        //         null,
+        //         null,
+        //         {},
+        //         [],
+        //         "-1-",
+        //         null,
+        //         "fn",
+        //         {},
+        //         {},
+        //         "-2-",
+        //         null,
+        //         {},
+        //         "-3-",
+        //         null
+        //     ]
+        // }
     };
     // 引用赋值
     const copyObj0 = obj;
