@@ -40,3 +40,4 @@ export default app.mount('#app');
 // import '@/views/javascript/commons/generator'; // 测试 生成器
 // import '@/views/javascript/commons/async-await'; // 测试 async await
 // import '@/views/javascript/commons/try-catch'; // 测试 try catch
+import '@/test/testJSONCopy'; // 测试 对象的拷贝
