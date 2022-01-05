@@ -8,7 +8,7 @@
         </div>
         <div class="throttle-demo">
             <div>节流</div>
-            <a-button @click="cancel">取消</a-button>
+            <a-button @click="cancel2">取消</a-button>
             <a-input placeholder="请输入" @input="oninput2" />
             <div>{{ inputValue2 }}</div>
         </div>
@@ -70,13 +70,16 @@ export default defineComponent({
         cancel() {
             (this.oninput as any).cancel();
         },
+        cancel2() {
+            (this.oninput2 as any).cancel();
+        },
     },
     created() {
         function resultCallback(res: any) {
             console.log('函数返回值 ------>>>', res);
         }
         this.oninput = debounce(this.inputCachage, 2000, { immediate: true, resultCallback });
-        this.oninput2 = throttle(this.inputCachage2, 2000, { leading: false });
+        this.oninput2 = throttle(this.inputCachage2, 2000, { leading: true, trailing: true });
     },
 });
 </script>
