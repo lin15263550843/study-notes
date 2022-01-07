@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>模拟 JSONP 请求数据</title>
+
+</head>
+
+<body>
+    <div>
+        <button id="send-button" onclick="sendRequest()">请求</button>
+    </div>
+    <script>
+        const jsonpCallbackName = 'jsonpCallback'
+
+        function sendRequest() {
+            console.log('sendRequest 开始发送请求');
+            const oScript = document.createElement('script')
+
+            oScript.onerror = function (oError) {
+                throw new URIError("The script " + oError.target.src + " is not accessible.");
+            }
+            oScript.onload = function (params) {
+                console.log('sendRequest onload 请求成功');
+                console.log('onload params', params);
+
+                document.body.removeChild(oScript)
+            }
+            oScript.type = 'application/javascript'
+            oScript.src = './jsonp.js?jsonpCallback=' + jsonpCallbackName
+            // document.currentScript.parentNode.insertBefore(oScript, document.currentScript);
+            document.body.appendChild(oScript)
+            delete window[jsonpCallbackName];
+        }
+
+
+        window[jsonpCallbackName] = (data) => {
+            console.log('请求回来的数据：', data);
+        }
+
+    </script>
+</body>
+
+</html>
