@@ -15,7 +15,7 @@
                 <div>
                     <div class="enter">
                         <a-button type="primary" @click="execute">执行</a-button>
-                        <a-button class="clear" @click="result1 = []">清空</a-button>
+                        <a-button class="clear" @click="result1 = undefined">清空</a-button>
                     </div>
                     <div class="result">
                         <span>结果：</span>
@@ -25,7 +25,7 @@
                 <div>
                     <div class="enter">
                         <a-button type="primary" @click="verification">验证</a-button>
-                        <a-button class="clear" @click="result2 = []">清空</a-button>
+                        <a-button class="clear" @click="result2 = undefined">清空</a-button>
                     </div>
                     <div class="result">
                         <span>结果：</span>

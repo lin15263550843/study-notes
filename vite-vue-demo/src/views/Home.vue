@@ -1,4 +1,3 @@
-<!-- @ts-nocheck -->
 <template>
     <section class="home my-layout my-layout-has-sider">
         <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
@@ -36,7 +35,7 @@
                     v-model:selectedKeys="selectedKeys1"
                     @select="selectHeaderMenu"
                 >
-                    <a-menu-item v-for="item in menuList" :key="item.path">{{ item.meta.title }}</a-menu-item>
+                    <a-menu-item v-for="item in menuList" :key="item.path">{{ item.meta?.title }}</a-menu-item>
                 </a-menu>
             </header>
             <main class="my-content">
@@ -51,7 +50,7 @@
 // import { Options, Vue } from 'vue-class-component';
 // import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 // import { ref } from 'vue';
-import { defineComponent, ref, h } from 'vue';
+import { defineComponent, ref, h, reactive } from 'vue';
 import { UserOutlined } from '@ant-design/icons-vue';
 import routes from '@/router/routes';
 
@@ -86,13 +85,13 @@ export default defineComponent({
         // NotificationOutlined,
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data(): any {
-        return {
-            menuList: routes[0].children || [],
-            siderList: [],
-            headerPath: '/js',
-        };
-    },
+    // data(): any {
+    //     return {
+    //         menuList: routes[0].children || [],
+    //         siderList: [],
+    //         headerPath: '/js',
+    //     };
+    // },
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     setup() {
         // let refString = ref('string');
@@ -105,6 +104,9 @@ export default defineComponent({
             selectedKeys1: ref<string[]>([]),
             collapsed: ref<boolean>(false),
             openKeys: ref<string[]>([]),
+            menuList: reactive<any[]>(routes[0].children || []),
+            siderList: reactive<any[]>([]),
+            headerPath: '/js',
         };
     },
     methods: {
