@@ -41,6 +41,6 @@ export default app.mount('#app');
 // import '@/views/javascript/commons/async-await'; // 测试 async await
 // import '@/views/javascript/commons/try-catch'; // 测试 try catch
 // import '@/test/testJSONCopy'; // 测试 对象的拷贝
-// import '@/views/javascript/commons/deepClone'; // 测试 自定义深拷贝函数
+import '@/views/javascript/commons/deepClone'; // 测试 自定义深拷贝函数
 // import '@/test/testEvent'; // 测试 事件流 冒泡 捕获
 // import '@/interviewQuestions/createObject'; // 测试 事件流 冒泡 捕获
