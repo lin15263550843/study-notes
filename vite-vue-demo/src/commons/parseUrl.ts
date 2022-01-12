@@ -59,3 +59,33 @@ export function parseUrl(search: string) {
 
 //     return sKey ? params[sKey] || '' : params
 // }
+
+/**
+ * 2022-1-12
+ */
+// function getUrlParam(sUrl, sKey) {
+//     if(!sUrl || typeof sUrl !== 'string') return sKey ? '' : {}
+
+//     const search = sUrl.split('?')[1] || ''
+//     const query = search.split('#')[0]
+//     // const query = sUrl.match(/\?([\s\S]+)\#/) // 不知道为啥牛客网上不好使
+
+//     if(!query || !query[1]) return {}
+
+//     const params = query.split('&')
+//     const result = {}
+
+//     params.forEach(item => {
+//         const [key, value = ''] = item.split('=')
+//         const v = result[key]
+//         if(v !== undefined) {
+//             result[key] = [].concat(v, window.decodeURI(value))
+//         } else {
+//             result[key] = value
+//         }
+//     })
+
+//     if(sKey) return result[sKey] || ''
+
+//     return result
+// }

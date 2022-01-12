@@ -11,9 +11,10 @@ export default defineComponent({
             title: '快速排序',
             description: '从小到大排序',
             // dataSource: [5, 7, 4, 3, 8, 5, 4, 9],
-            // dataSource: [58, 1, 5, 32, 21, 76, 8, 2, 23, 9, 3, 96, 7, 6, 12, 75, 43, 45, 23, 99, 56, 78, 90],
-            dataSource: [1, 3, 6, 11, 12, 23, 32, 43, 56, 75, 178, 198, 2, 5, 9, 21, 58, 75, 76, 96, 97, 99, 312, 512],
+            dataSource: [58, 11, 5, 32, 21, 76, 8, 2, 23, 9, 3, 96, 7, 6, 12, 75, 43, 45, 23, 32, 99, 56, 78, 90],
+            // dataSource: [1, 3, 6, 11, 12, 23, 32, 43, 56, 75, 178, 198, 2, 5, 9, 21, 58, 75, 76, 96, 97, 99, 312, 512],
             // dataSource: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+            // dataSource: [5, 3, 7, 7, 5, 7, 3, 5, 5, 7, 3, 5],
             aux: [] as any[],
         };
     },
@@ -64,30 +65,35 @@ export default defineComponent({
          * 三向切分的快速排序
          */
         threeWaySplitQuickSort(a: number[]) {
-            const exchange = (a: number[], x: number, y: number) => {
+            const exch = (a: number[], x: number, y: number) => {
                 const v = a[x];
                 a[x] = a[y];
                 a[y] = v;
             };
+
             const sort = (a: number[], lo: number, hi: number) => {
-                if (lo >= hi) return;
-                let gt = lo;
+                if (hi <= lo) return;
+
+                let lt = lo;
                 let ht = hi;
                 let i = lo + 1;
-                const p = a[lo];
+                const v = a[lo];
+
                 while (i <= ht) {
-                    if (a[i] < p) {
-                        exchange(a, gt++, i++);
-                    } else if (a[i] > p) {
-                        exchange(a, ht--, i);
+                    if (a[i] < v) {
+                        exch(a, lt++, i++);
+                    } else if (a[i] > v) {
+                        exch(a, ht--, i);
                     } else {
                         i++;
                     }
                 }
-                sort(a, lo, gt - 1);
+                sort(a, lo, lt - 1);
                 sort(a, ht + 1, hi);
             };
+
             sort(a, 0, a.length - 1);
+
             return a;
         },
         /**

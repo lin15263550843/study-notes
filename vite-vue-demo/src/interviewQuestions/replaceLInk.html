@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>替换链接</title>
+</head>
+
+<body>
+    <div>
+        <h3>描述</h3>
+        <p>
+            页面中存在id=jsContainer的DOM元素。
+            该DOM元素内会给出一段随机文本，可能包含一些链接，比如https://www.baidu.com，或者
+            www.baidu.com?from=onlineExam，如果出现链接文本，请给该链接文本加上链接标签，用户点击后能直接在新窗口中打开该链接。
+            请完成 link 函数，完成该功能
+            1、container只有纯文本内容，不包含其他dom元素
+            2、识别所有以http://、https://或者www.开始的链接
+            3、所有www.开头的链接，默认使用 http 协议
+            4、所有链接在新窗口打开
+        </p>
+    </div>
+    <span id="jsContainer"></span>
+    <script type="text/javascript">
+        function link() {
+            const container = document.getElementById('jsContainer')
+            const text = container.innerText || ''
+
+            container.innerHTML = text.replace(/(http:\/\/\S+|https:\/\/\S+|www\.\S+)/g, (v) => {
+                return `<a href="${v.startsWith('www.') ? `http://${v}` : v}" target="_blank">${v}</a>`
+            })
+        }
+    </script>
+    <script>
+        // function test() {
+        //     var content = 'www.';
+        //     var div = document.getElementById('jsContainer');
+        //     div.innerHTML = content;
+        //     link();
+
+        //     console.log('div.innerHTML', div.innerHTML);
+        //     var result = div.innerHTML === content;
+        //     return result;
+        // }
+        // console.log('结果:', test());
+
+        function test() {
+            var content = 'testwww.testhaha.com';
+            var div = document.getElementById('jsContainer');
+            div.innerHTML = content;
+            link();
+            console.log('div.innerHTML:', div.innerHTML);
+            var aLink = div.getElementsByTagName('a') || [];
+            var result = aLink.length === 1 && aLink[0].getAttribute('href') === 'http://www.testhaha.com' && aLink[0].getAttribute('target') === '_blank' && aLink[0].innerHTML === 'www.testhaha.com';
+            return result;
+        }
+
+        console.log('结果:', test());
+    </script>
+
+    <hr>
+    <div>
+        描述
+        请补全JavaScript代码，要求在页面上渲染出一个直角三角形，三角形换行要求使用"br"实现。三角形如下：
+    </div>
+
+    <div class='triangle'></div>
+    <script>
+        var triangle = document.querySelector('.triangle');
+        // 补全代码
+        let row = 0
+        let col = 0
+
+        while (row < 3) {
+            while (col <= row) {
+                const spanDOM = document.createElement('span')
+
+                spanDOM.innerHTML = '*'
+                triangle.appendChild(spanDOM)
+
+                col++
+            }
+            const brDOM = document.createElement('br')
+
+            triangle.appendChild(brDOM)
+
+            row++
+            col = 0
+        }
+    </script>
+
+    <hr>
+    <div>
+        描述
+        请补全JavaScript代码，实现以下效果：
+        2. 把"全选"框从选中状态勾选成未选中状态，其他复选框全部取消选中效果。
+        1. 选中"全选"框，以下所有选项全部勾选。
+        3. 当其他复选框全部选中，"全选框"为选中状态。
+        4. 当其他复选框有一个未选中，"全选框"取消选中状态。
+        注意：
+        1. 必须使用DOM0级标准事件（onchange）
+    </div>
+
+    <ul>
+        <li>全选<input type='checkbox' id='all'></li>
+        <li>Java<input type='checkbox' class='item'></li>
+        <li>javaScript<input type='checkbox' class='item'></li>
+        <li>C++<input type='checkbox' class='item'></li>
+        <li>python<input type='checkbox' class='item'></li>
+        <li>.net<input type='checkbox' class='item'></li>
+    </ul>
+
+    <script>
+        // 补全代码
+        const options = Array.from(document.querySelectorAll('.item'))
+        const allDOM = document.querySelector('#all')
+
+        allDOM.onchange = function () {
+            for (let i = 0; i < options.length; i++) {
+                options[i].checked = this.checked
+            }
+        }
+
+        for (let i = 0; i < options.length; i++) {
+            options[i].onchange = function () {
+                if (!this.checked) {
+                    allDOM.checked = this.checked
+                    return
+                }
+                allDOM.checked = options.every(item => item.checked)
+
+            }
+        }
+
+        function test() {
+            all.checked = true;
+            all.onchange();
+            var result = options.every(x => x.checked);
+            return result;
+        }
+        console.log('test()-----------------', test());
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组过滤</title>
+</head>
+
+<body>
+    <hr>
+    <div>
+        描述
+        请补全JavaScript代码，要求根据下拉框选中的条件变换重新渲染列表中展示的商品，且只展示符合条件的商品。
+        注意：
+        1. 必须使用DOM0级标准事件（onchange）
+        2. 建议使用ES6的filter方法
+    </div>
+    <select name="" id="">
+        <option value="0">请选择价格范围</option>
+        <option value="1">&lt100</option>
+        <option value="2">100~500</option>
+        <option value="3">&gt500</option>
+    </select>
+    <ul>
+        <li>牛客logo马克杯</li>
+        <li>无盖星空杯</li>
+        <li>老式茶杯</li>
+        <li>欧式印花杯</li>
+    </ul>
+
+    <script>
+        var cups = [
+            { type: 1, price: 100, color: 'black', sales: 60, name: '牛客logo马克杯' },
+            { type: 2, price: 40, color: 'blue', sales: 100, name: '无盖星空杯' },
+            { type: 4, price: 60, color: 'green', sales: 200, name: '老式茶杯' },
+            { type: 3, price: 50, color: 'green', sales: 600, name: '欧式印花杯' }
+        ]
+        var select = document.querySelector('select');
+        var ul = document.querySelector('ul');
+        // 补全代码
+        const checks = [
+            () => true,
+            price => price < 100,
+            price => price >= 100 && price <= 500,
+            price => price > 500
+        ]
+        const createLis = function (cups) {
+            ul.innerHTML = cups.map(item => `<li>${item.name}</li>`).join('')
+        }
+
+        select.onchange = function () {
+            const check = checks[this.value] || (() => false)
+            const currentCups = cups.filter(item => check(item.sales))
+            createLis(currentCups)
+        }
+        // const removeLiDOM = function (dom) {
+        //     while (dom.children.length) {
+        //         dom.removeChild(dom.children[0])
+        //     }
+        // }
+        // const createDOM = function (cups) {
+        //     removeLiDOM(ul)
+
+        //     cups.forEach(item => {
+        //         const liDOM = document.createElement('li')
+
+        //         liDOM.innerHTML = item.name
+
+        //         ul.appendChild(liDOM)
+        //     })
+        // }
+
+        // select.onchange = function () {
+        //     const val = Number(this.value)
+        //     const check = checks[val - 1] || (() => false)
+        //     const currentCups = cups.filter(item => check(item.sales))
+        //     createDOM(currentCups)
+        // }
+
+
+        function test() {
+            select.value = 1;
+            select.onchange();
+            var lis = document.querySelectorAll('li');
+            console.log('lis', lis);
+            var first = lis.length == 1 && lis[0].innerText == '牛客logo马克杯';
+            var result = first;
+            return result;
+        }
+        console.log('测试结果：', test());
+    </script>
+
+
+</body>
+
+</html>
