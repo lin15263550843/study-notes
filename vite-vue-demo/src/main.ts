@@ -44,4 +44,7 @@ export default app.mount('#app');
 // import '@/views/javascript/commons/deepClone'; // 测试 自定义深拷贝函数
 // import '@/test/testEvent'; // 测试 事件流 冒泡 捕获
 // import '@/interviewQuestions/createObject'; // 测试 事件流 冒泡 捕获
-import '@/interviewQuestions/delimiter'; // 测试 分隔符
+// import '@/interviewQuestions/delimiter'; // 测试 分隔符
+// import '@/commons/formatDate'; // 测试 时间格式化
+// import '@/interviewQuestions/findDuplicates'; // 测试 查找重复元素
+import '@/interviewQuestions/highDataType'; // 测试 高频数据类型

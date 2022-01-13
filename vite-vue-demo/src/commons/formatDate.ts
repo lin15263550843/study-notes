@@ -1,10 +1,9 @@
+// @ts-nocheck
+// import moment from 'moment';
 /**
  * 时间格式化
- * @param date
- * @param format
- * @returns
  */
-export function formatDate(date: any, format: string) {
+function formatDate(date, format) {
     if (typeof format !== 'string') return '';
     if (!(date instanceof Date)) {
         date = new Date(date);
@@ -18,7 +17,7 @@ export function formatDate(date: any, format: string) {
     const s = date.getSeconds();
     const day = date.getDay();
 
-    function add0(s: number) {
+    function add0(s) {
         return s < 10 ? '0' + s : s;
     }
 
@@ -41,12 +40,20 @@ export function formatDate(date: any, format: string) {
         w: days[day],
     };
 
-    for (const k in o) {
-        const key = k as keyof typeof o;
-        const flag = new RegExp(`(${k})`).test(format);
-        if (flag) {
-            format = format.replace(k, o[key]);
+    for (let k in o) {
+        const reg = new RegExp(`(${k}+)`).exec(format);
+
+        if (reg) {
+            format = format.replace(reg[1], o[k]);
         }
     }
+
     return format;
 }
+
+console.log(formatDate(new Date(), 'yyyy-MM-dd HH-mm-ss 星期w'));
+console.log(formatDate(new Date(), 'yy-M-d H:m:s 星期w'));
+console.log(formatDate(new Date(), 'yyy-M-d H:m:s 星期w'));
+console.log(formatDate(new Date(), 'yyyyy-MM-dd HH-mm-ss 星期w'));
+// console.log('moment --->>>', moment(new Date()).format('yyyy-MM-dd HH:mm:ss 星期w'));
+// console.log('moment --->>>', moment(new Date()).format('y-M-d H:m:s 星期w'));
