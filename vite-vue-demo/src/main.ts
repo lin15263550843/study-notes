@@ -47,4 +47,6 @@ export default app.mount('#app');
 // import '@/interviewQuestions/delimiter'; // 测试 分隔符
 // import '@/commons/formatDate'; // 测试 时间格式化
 // import '@/interviewQuestions/findDuplicates'; // 测试 查找重复元素
-import '@/interviewQuestions/highDataType'; // 测试 高频数据类型
+// import '@/interviewQuestions/highDataType'; // 测试 高频数据类型
+// import '@/commons/rangeRandom'; // 测试 生成范围随机数
+import '@/leetCode/fullArray'; // 测试 全排列

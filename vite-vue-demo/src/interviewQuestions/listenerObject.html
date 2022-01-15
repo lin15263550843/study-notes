@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>监听对象</title>
+</head>
+
+<body>
+    <style>
+        ul {
+            list-style: none;
+        }
+    </style>
+    <ul data-type="123456" data-type2="654321"></ul>
+
+    <script>
+        var ul = document.querySelector('ul');
+        var person = { sex: '男', age: '25', name: '王大锤', height: 28, weight: 32 };
+        const _render = element => {
+            var str = `<li>姓名：<span>${person.name}</span></li>
+                       <li>性别：<span>${person.sex}</span></li>
+                       <li>年龄：<span>${person.age}</span></li>
+                       <li>身高：<span>${person.height}</span></li>
+                       <li>体重：<span>${person.weight}</span></li>`
+            element.innerHTML = str;
+        }
+        _render(ul);
+        // 补全代码
+        const cache = { ...person }
+        Object.keys(person).forEach(key => {
+            Object.defineProperty(person, key, {
+                get() {
+                    return cache[key]
+                },
+                set(newVal, oldVal) {
+                    cache[key] = newVal
+                    _render(ul)
+                }
+            })
+        })
+
+        // setTimeout(() => {
+        //     person.age = 88
+        // }, 1000);
+        function test() {
+            person.age = 44;
+            var spans = document.querySelectorAll('span');
+            var result = spans[2].innerText == 44;
+            return result;
+        }
+        console.log('测试结果：', test());
+
+        console.log('ul', ul);
+        console.log('ul[\'data-type\']', ul['data-type']);
+        console.log('ul.getAttribute(\'data-type\')', ul.getAttribute('data-type'));
+        console.log('ul ul.dataset.type', ul.dataset.type);
+        console.log('ul ul.dataset.type', ul.dataset.type);
+    </script>
+</body>
+
+</html>
