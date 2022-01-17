@@ -41,7 +41,7 @@ export default app.mount('#app');
 // import '@/views/javascript/commons/async-await'; // 测试 async await
 // import '@/views/javascript/commons/try-catch'; // 测试 try catch
 // import '@/test/testJSONCopy'; // 测试 对象的拷贝
-// import '@/views/javascript/commons/deepClone'; // 测试 自定义深拷贝函数
+import '@/views/javascript/commons/deepClone'; // 测试 自定义深拷贝函数
 // import '@/test/testEvent'; // 测试 事件流 冒泡 捕获
 // import '@/interviewQuestions/createObject'; // 测试 事件流 冒泡 捕获
 // import '@/interviewQuestions/delimiter'; // 测试 分隔符
@@ -50,4 +50,5 @@ export default app.mount('#app');
 // import '@/interviewQuestions/highDataType'; // 测试 高频数据类型
 // import '@/commons/rangeRandom'; // 测试 生成范围随机数
 // import '@/leetCode/fullArray'; // 测试 全排列
-import '@/views/javascript/commons/arrayExtension'; // 测试 数组扩展方法
+// import '@/views/javascript/commons/arrayExtension'; // 测试 数组扩展方法
+// import '@/views/javascript/commons/objectExtension'; // 测试 Object 扩展方法

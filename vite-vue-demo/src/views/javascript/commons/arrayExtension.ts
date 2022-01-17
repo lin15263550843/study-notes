@@ -1,6 +1,6 @@
 //@ts-nocheck
 /**
- * 数组扩展  or 自定义方法
+ * 数组扩展  or 自定义实现
  */
 Array.prototype.myReduce = function (callback: Function, initialValue: any) {
     if (typeof callback != 'function') {
