@@ -32,6 +32,8 @@ export function inheritPrototype(SuperType, SubType) {
         value: SubType,
     });
     SubType.prototype = proto;
+    // 静态方法的继承
+    Object.setPrototypeOf(SubType, SuperType);
 }
 // 寄生组合式继承，工厂函数
 // function createProtoObject(parentClass, subClass) {

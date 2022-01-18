@@ -47,10 +47,7 @@ SubClass.staticMethod = function () {
 inheritPrototype(ParentClass, SubClass);
 
 // 警告：不能使用该方法，它会设置该对象的 __proto__ 属性，而不是函数的 prototype
-Object.setPrototypeOf(SubClass, Object.create(ParentClass.prototype));
-
-// 静态方法的继承
-Object.setPrototypeOf(SubClass, ParentClass);
+// Object.setPrototypeOf(SubClass, Object.create(ParentClass.prototype));
 
 // 必须写到继承后边后才有效，因为会重置 SubClass 的原型
 // SubClass.prototype.eating = function () {
