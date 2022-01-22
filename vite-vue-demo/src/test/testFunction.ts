@@ -12,3 +12,8 @@ const foo = new Foo('foo');
 console.log('foo.runing()------------------------------->>>', foo.runing());
 console.log('Foo.prototype.runing()--------------------->>>', Foo.prototype.runing());
 console.log('Foo.runing--------------------------------->>>', Foo.runing);
+
+const Fn = new Function('a', 'b', 'this.a =a; this.b = b; return a+ b');
+
+console.log('Fn', { Fn });
+console.log('new Fn', new Fn(1, 2));

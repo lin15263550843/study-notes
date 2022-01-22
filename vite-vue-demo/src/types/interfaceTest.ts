@@ -62,3 +62,27 @@ class TextBox extends Control {
 // }
 
 // class Location {}
+
+interface Person<other> {
+    name: string;
+    age: number;
+    run: () => void;
+    other: other;
+}
+
+const person1: Person<string> = {
+    name: '张三',
+    age: 18,
+    run: () => '跑步',
+    other: '哈哈哈',
+};
+const person2: Person<number> = {
+    name: '李四',
+    age: 18,
+    run: () => '睡觉',
+    other: 1998,
+};
+interface Result<T> {
+    code: number;
+    data: T;
+}
