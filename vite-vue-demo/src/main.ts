@@ -33,7 +33,7 @@ export default app.mount('#app');
 // import '@/views/javascript/commons/functionCompose'; // 函数组合
 // import '@/test/testObject'; // 测试 Object
 // import '@/test/testExtends'; // 测试 继承
-import '@/test/testFunction'; // 测试 函数
+// import '@/test/testFunction'; // 测试 函数
 // import '@/test/finalizationRegistry'; // 测试 监听垃圾回收
 // import '@/test/testPromise'; // 测试 Promise
 // import '@/views/javascript/commons/iterableObj'; // 测试 迭代器
