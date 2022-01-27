@@ -7,43 +7,34 @@ const _findMostType = array => {
     if (!Array.isArray(array)) return [];
 
     const map = new Map();
+    let max = 0;
 
-    array.forEach(v => {
-        let type = typeof v;
+    array.forEach(val => {
+        let type = typeof val;
 
         if (type === 'function') {
             type = 'object';
         }
 
+        const value = map.get(type);
         if (map.has(type)) {
-            map.set(type, map.get(type) + 1);
+            map.set(type, value + 1);
         } else {
             map.set(type, 1);
         }
-    });
 
-    const arr = Array.from(map);
-    const num = arr[0][1];
-
-    arr.sort((a, b) => b[1] - a[1]);
-
-    const res = [];
-
-    arr.forEach(([key, val], i) => {
-        if (i === 0) {
-            res.push(key);
-        } else {
-            if (val >= num) {
-                console.log('val=---', key, val);
-
-                res.push(key);
-            }
+        if (value + 1 > max) {
+            max = value + 1;
         }
     });
 
-    res.push(num);
+    const res = [];
+
+    map.forEach((val, key) => {
+        if (val === max) res.push(key);
+    });
+    res.push(max);
 
     return res;
 };
-
 console.log('结果：', _findMostType([1, '1', {}, {}, 2, 3, 4, 3, 3, '', '', '', '', '']));
