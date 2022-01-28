@@ -47,10 +47,11 @@ export default app.mount('#app');
 // import '@/interviewQuestions/delimiter'; // 测试 分隔符
 // import '@/commons/formatDate'; // 测试 时间格式化
 // import '@/interviewQuestions/findDuplicates'; // 测试 查找重复元素
-import '@/interviewQuestions/highDataType'; // 测试 高频数据类型
+// import '@/interviewQuestions/highDataType'; // 测试 高频数据类型
 // import '@/commons/rangeRandom'; // 测试 生成范围随机数
 // import '@/leetCode/fullArray'; // 测试 全排列
 // import '@/views/javascript/commons/arrayExtension'; // 测试 数组扩展方法
 // import '@/views/javascript/commons/objectExtension'; // 测试 Object 扩展方法
 // import '@/designPatterns/observer'; // 测试 观察者模式
 // import '@/designPatterns/publishSubscribe'; // 测试 发布订阅模式
+import '@/interviewQuestions/testPromise'; // 测试 promise
