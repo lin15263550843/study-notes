@@ -54,4 +54,5 @@ export default app.mount('#app');
 // import '@/views/javascript/commons/objectExtension'; // 测试 Object 扩展方法
 // import '@/designPatterns/observer'; // 测试 观察者模式
 // import '@/designPatterns/publishSubscribe'; // 测试 发布订阅模式
-import '@/interviewQuestions/testPromise'; // 测试 promise
+// import '@/interviewQuestions/testPromise'; // 测试 promise
+import '@/interviewQuestions/test'; // 测试 promise
