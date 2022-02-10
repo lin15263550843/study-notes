@@ -7,6 +7,7 @@ class EventEmitter {
     constructor(name = '') {
         this.name = name;
         this.events = {};
+        this.cached = {}; // 缓存事件，支持先发布后订阅
     }
     /**
      * 订阅（监听）事件
@@ -24,6 +25,13 @@ class EventEmitter {
             this.events[type] = [{ event, thisArg }];
         }
 
+        const cacheEvents = this.cached[type];
+        if (cacheEvents) {
+            cacheEvents.forEach(args => {
+                event.apply(thisArg, args);
+            });
+        }
+
         return this;
     }
     /**
@@ -32,8 +40,15 @@ class EventEmitter {
      * @param args 传递参数
      */
     emit(type, ...args) {
-        const events = this.events[type];
+        // 缓存发布的消息
+        const cacheEvents = this.cached[type];
+        if (cacheEvents) {
+            cacheEvents.push(args);
+        } else {
+            this.cached[type] = [args];
+        }
 
+        const events = this.events[type];
         if (!events) return;
 
         events.forEach(({ event, thisArg }) => {
@@ -88,3 +103,12 @@ eventBus.emit('abc', 123);
 // 移除监听
 eventBus.off('abc', handleCallback);
 eventBus.emit('abc', 456, 789);
+
+console.log('====== 先发布后订阅 ======');
+
+eventBus.emit('hhh', 666, 999);
+eventBus.emit('hhh', 888);
+eventBus.emit('hhh', 888);
+eventBus.on('hhh', function (...args) {
+    console.log('监听 hhh args : ', args);
+});
