@@ -56,4 +56,5 @@ export default app.mount('#app');
 // import '@/designPatterns/publishSubscribe'; // 测试 发布订阅模式
 // import '@/interviewQuestions/testPromise'; // 测试 promise
 // import '@/interviewQuestions/test'; // 测试 promise
-import '@/interviewQuestions/eligibleParentheses'; // 测试 合格括号
+// import '@/interviewQuestions/eligibleParentheses'; // 测试 合格括号
+import '@/test/testVue'; // 测试 Vue
