@@ -191,6 +191,29 @@ function createOnResolve(len, resolve) {
     };
 }
 
+// MyPromise.all2 = function (promises) {
+//     if (!(promises instanceof Array)) throw new Error('参数为非数组');
+//     return new MyPromise((resolve, reject) => {
+//         const result = [];
+//         const len = promises.length;
+//         let i = 0;
+//         promises.forEach((promise, index) => {
+//             MyPromise.resolve(promise).then(
+//                 res => {
+//                     result[index] = res;
+//                     i++;
+//                     if (i === len) {
+//                         resolve(result);
+//                     }
+//                 },
+//                 err => {
+//                     reject(err);
+//                 },
+//             );
+//         });
+//     });
+// };
+
 MyPromise.all = function (promises) {
     if (!(promises instanceof Array)) throw new Error('参数为非数组');
 

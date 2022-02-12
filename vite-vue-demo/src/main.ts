@@ -57,4 +57,5 @@ export default app.mount('#app');
 // import '@/interviewQuestions/testPromise'; // 测试 promise
 // import '@/interviewQuestions/test'; // 测试 promise
 // import '@/interviewQuestions/eligibleParentheses'; // 测试 合格括号
-import '@/test/testVue'; // 测试 Vue
+// import '@/test/testVue'; // 测试 Vue
+import '@/test/testThisBind'; // 测试 测试使用 bind 绑定 this 后,是否还能修改 this 的指向
