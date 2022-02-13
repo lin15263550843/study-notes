@@ -1,13 +1,13 @@
+// @ts-nocheck
 /**
  * 函数柯里化
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function currying(fn: Function) {
-    return function curried(this: any, ...args: any[]) {
+    return function curried(...args) {
         if (fn.length <= args.length) {
-            return fn.apply(this as any, args);
+            return fn.apply(this, args);
         } else {
-            return function (this: any, ...args2: any[]) {
+            return function (...args2) {
                 return curried.apply(this, [...args, ...args2]);
             };
         }
@@ -19,7 +19,7 @@ export function currying(fn: Function) {
 //     return args.toString();
 // }
 
-function test(arg1: number, arg2: number, arg3: number, arg4: number, arg5: number) {
+function test(arg1, arg2, arg3, arg4, arg5) {
     return arg1 + arg2 + arg3 + arg4 + arg5;
 }
 
