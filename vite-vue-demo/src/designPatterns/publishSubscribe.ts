@@ -8,6 +8,7 @@ class EventEmitter {
         this.name = name;
         this.events = {};
         this.cached = {}; // 缓存事件，支持先发布后订阅
+        // 注意缓存之后，以后每次再订阅同一个事件是，都会读到历史的发布消息 ！！！
     }
     /**
      * 订阅（监听）事件
@@ -30,6 +31,8 @@ class EventEmitter {
             cacheEvents.forEach(args => {
                 event.apply(thisArg, args);
             });
+            // 如果说只需要消费一次，消费后就清空缓存，否则会执行
+            // delete this.cached[type];
         }
 
         return this;
@@ -63,6 +66,17 @@ class EventEmitter {
      * @param event 事件
      */
     off(type, event) {
+        const cachedEvents = this.cached[type];
+
+        if (cachedEvents) {
+            for (let i = cachedEvents.length - 1; i >= 0; i--) {
+                const { event: e } = cachedEvents[i];
+                if (event === e) {
+                    cachedEvents.splice(i, 1);
+                }
+            }
+        }
+
         const events = this.events[type];
 
         if (!events) return;
@@ -110,5 +124,17 @@ eventBus.emit('hhh', 666, 999);
 eventBus.emit('hhh', 888);
 eventBus.emit('hhh', 888);
 eventBus.on('hhh', function (...args) {
-    console.log('监听 hhh args : ', args);
+    console.log('监听 hhh args 第一个: ', args);
+});
+eventBus.on('hhh', function (...args) {
+    console.log('监听 hhh args 第二个: ', args);
+});
+const hhhCallback = function (...args) {
+    console.log('监听 hhh args 第三个: ', args);
+};
+eventBus.on('hhh', hhhCallback);
+// eventBus.off('hhh', hhhCallback);
+eventBus.emit('hhh', 1024);
+eventBus.on('hhh', function (...args) {
+    console.log('监听 hhh args 第四个: ', args);
 });
