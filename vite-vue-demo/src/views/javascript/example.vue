@@ -70,6 +70,14 @@
                     <div>9</div>
                 </div>
             </div>
+            <div class="item-5">
+                <div class="margin-overlapping">
+                    <div>1</div>
+                    <div class="bfc">
+                        <div>2</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="boxs-3">
             <div class="item-1">
@@ -452,6 +460,46 @@ export default defineComponent({
 
                 & > div {
                     background: darkorange;
+                }
+            }
+        }
+        .item-5 {
+            width: 200px;
+            height: 100px;
+            position: relative;
+            display: inline-block;
+            // background: dodgerblue;
+            transform: translate(100px, -20px);
+
+            .margin-overlapping {
+                height: 100px;
+
+                & > div:first-child {
+                    height: 30px;
+                    margin-bottom: 20px;
+                    background: wheat;
+                    line-height: 30px;
+                    text-align: center;
+                }
+
+                .bfc {
+                    // 可以形成 BFC
+                    // position: absolute;
+                    // position: fixed;
+                    // display: inline-block;
+                    // float: left;
+                    // overflow: hidden;
+                    // overflow: scroll;
+                    overflow: auto;
+                    // overflow: visible; // overflow 除了 visible 其他都可以
+
+                    & > div {
+                        height: 30px;
+                        margin-top: 20px;
+                        background: wheat;
+                        line-height: 30px;
+                        text-align: center;
+                    }
                 }
             }
         }
