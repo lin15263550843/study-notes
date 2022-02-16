@@ -29,7 +29,7 @@ export default app.mount('#app');
 // import '@/test/parseUrlTest'; // 测试把 url 的拼接参数解析成对象
 // import '@/test/binaryTreeSymbolTableTest'; // 基于二叉查找树的符号表
 // import '@/test/printBinaryTree'; // 从上到下按层打印二叉树，同一层结点从左至右输出。每一层输出一行
-// import '@/views/javascript/commons/functionCurrying'; // 函数柯里化
+import '@/views/javascript/commons/functionCurrying'; // 函数柯里化
 // import '@/views/javascript/commons/functionCompose'; // 函数组合
 // import '@/test/testObject'; // 测试 Object
 // import '@/test/testExtends'; // 测试 继承
@@ -58,4 +58,5 @@ export default app.mount('#app');
 // import '@/interviewQuestions/test'; // 测试 promise
 // import '@/interviewQuestions/eligibleParentheses'; // 测试 合格括号
 // import '@/test/testVue'; // 测试 Vue
-import '@/test/testThisBind'; // 测试 测试使用 bind 绑定 this 后,是否还能修改 this 的指向
+// import '@/test/testThisBind'; // 测试 测试使用 bind 绑定 this 后,是否还能修改 this 的指向
+// import '@/interviewQuestions/testThis'; // 测试 this 指向
