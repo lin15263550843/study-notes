@@ -43,8 +43,8 @@ function testEvent() {
     document.querySelector('#app')?.addEventListener(
         'click',
         event => {
-            console.log('冒泡 #app event.target --------------------->>>', event.target);
-            console.log('冒泡 #app event.currentTarget -------------->>>', event.currentTarget);
+            console.log('捕获 #app event.target --------------------->>>', event.target);
+            console.log('捕获 #app event.currentTarget -------------->>>', event.currentTarget);
         },
         true,
     );
