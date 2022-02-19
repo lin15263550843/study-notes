@@ -78,6 +78,23 @@
                     </div>
                 </div>
             </div>
+            <div class="item-position">
+                <div class="static">
+                    <span>static</span>
+                </div>
+                <div class="relative">
+                    <span>relative</span>
+                </div>
+                <div class="sticky">
+                    <span>sticky</span>
+                </div>
+                <div class="absolute">
+                    <span>absolute</span>
+                </div>
+                <div class="fixed">
+                    <span>fixed</span>
+                </div>
+            </div>
         </div>
         <div class="boxs-3">
             <div class="item-1">
@@ -366,30 +383,41 @@ export default defineComponent({
                 margin: 25px;
                 background: dodgerblue;
 
-                display: flex;
+                // 外部值
                 display: block;
-                display: none;
+                display: flex;
+                display: grid;
                 display: inline;
                 display: inline-block;
                 display: inline-flex;
-                display: inline-table;
                 display: inline-grid;
+                display: inline-table;
+
+                display: none;
                 display: flow-root;
                 display: contents;
+
                 display: table;
-                display: table-caption;
-                display: table-cell;
+                display: table-row;
                 display: table-column;
+                display: table-cell;
+                display: table-caption;
+                display: table-row-group;
+                display: table-header-group;
                 display: table-column-group;
                 display: table-footer-group;
-                display: table-header-group;
-                display: table-row;
-                display: table-row-group;
-                display: grid;
+
                 display: revert;
                 display: list-item;
                 display: ruby;
                 display: subgrid;
+                display: -moz-box;
+                display: -moz-inline-box;
+                display: -moz-grid;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: -webkit-inline-box;
+                display: -webkit-inline-flex;
                 // 据说一共有 32 种
             }
         }
@@ -501,6 +529,75 @@ export default defineComponent({
                         text-align: center;
                     }
                 }
+            }
+        }
+
+        .item-position {
+            width: 220px;
+            height: 100px;
+            position: relative;
+            display: inline-block;
+            // background: dodgerblue;
+            transform: translate(150px, -20px);
+            z-index: 0;
+            overflow-x: auto;
+            overflow-y: visible;
+            // text-align: right;
+
+            & > div > span {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+            }
+
+            .static {
+                z-index: 0;
+                position: static;
+                top: 0;
+                left: 0;
+                width: 180px;
+                height: 100px;
+                background: yellowgreen;
+            }
+
+            .relative {
+                z-index: 0;
+                position: relative;
+                top: 0;
+                left: 0;
+                width: 160px;
+                height: 80px;
+                background: darkgray;
+            }
+            .absolute {
+                z-index: 0;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 140px;
+                height: 70px;
+                background: red;
+            }
+
+            .fixed {
+                z-index: 0;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                width: 120px;
+                height: 50px;
+                background: paleturquoise;
+            }
+            .sticky {
+                z-index: 0;
+                position: sticky;
+                // top: 0;
+                bottom: 0;
+                left: 0;
+                width: 100px;
+                height: 50px;
+                background: oldlace;
             }
         }
     }
