@@ -59,6 +59,7 @@ export default app.mount('#app');
 // import '@/interviewQuestions/eligibleParentheses'; // 测试 合格括号
 // import '@/test/testVue'; // 测试 Vue
 // import '@/test/testThisBind'; // 测试 测试使用 bind 绑定 this 后,是否还能修改 this 的指向
-import '@/interviewQuestions/testThis'; // 测试 this 指向
+// import '@/interviewQuestions/testThis'; // 测试 this 指向
 // import '@/test/testAssignOrSpreadOperator'; // 测试 浅拷贝
 // import '@/test/testMapOrObject'; // 测试 Map 和 Object 区别
+import '@/practice/handwriting';
