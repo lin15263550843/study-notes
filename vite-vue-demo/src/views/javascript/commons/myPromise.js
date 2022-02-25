@@ -48,6 +48,7 @@ function MyPromise(executor) {
         executor(resolve, reject);
     } catch (e) {
         reject(e);
+        console.log('这里可能会吞并一些内部错误：', e);
     }
     /**
      * then 方法
