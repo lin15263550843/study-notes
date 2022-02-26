@@ -12,6 +12,7 @@ export function debounce(fn, delay) {
         if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
             fn.apply(this, args);
+            timer = null;
         }, delay);
     };
 }
@@ -300,175 +301,30 @@ MyPromise.any = function (promises) {
         });
     });
 };
-// const p1 = new MyPromise((resovle, reject) => {
-//     setTimeout(() => {
-//         resovle(1);
-//         // reject(1);
-//     }, 10);
-// });
-// console.log('p1----------->>>', p1);
-// p1.then(
-//     res => {
-//         console.log('res111----------->>>', res);
-//         return 2;
-//     },
-//     err => {
-//         console.log('err----------->>>', err);
-//         return 2;
-//     },
-// )
-//     .then(undefined, res => {
-//         console.log('res222----------->>>', res);
-//         return 3;
-//     })
-//     .then(res => {
-//         console.log('res333----------->>>', res);
-//         // return 3;
-//         throw new Error('333');
-//     })
-//     .catch(err => {
-//         console.log('catch---err---------->>>', err);
-//     });
-const myPromise = new MyPromise((resolve, reject) => {
-    // resolve(123);
-    setTimeout(() => {
-        resolve(1);
-        // reject(1);
-    }, 1000);
-});
-// const myPromise = new Promise((resolve, reject) => {
-//     // resolve(123);
-//     setTimeout(() => {
-//         resolve(123);
-//         // reject(123);
-//     }, 1000);
-// });
-console.log('myPromise---------------------------------->>>', myPromise);
-
-const mp1 = myPromise
-    .then(
-        res => {
-            console.log('myPromise.then resolve--------------------------1>>>', res);
-            return 2;
-        },
-        res => {
-            console.log('myPromise.then reject---------------------------1>>>', res);
-            return 2;
-        },
-    )
-    .then(
-        res => {
-            console.log('myPromise.then resolve--------------------------2>>>', res);
-            return 3.4;
-        },
-        // res => {
-        //     console.log('myPromise.then reject---------------------------2>>>', res);
-        //     return 2;
-        // },
-    )
-    .catch(err => {
-        console.log('myPromise.then resolve------------------catch>>>', err);
-    })
-    .finally(() => {
-        console.log('myPromise.then resolve--------------------------------------------mp1---2---finally');
-        // return 'return mp1---2---finally';
-    });
-
-const mp2 = mp1
-    .then(res => {
-        console.log('myPromise.then resolve--------------------------3>>>', res);
-        return 5;
-    })
-    .then(res => {
-        console.log('myPromise.then resolve--------------------------5>>>', res);
-        return 7;
-    });
-
-const mp3 = mp1
-    .then(res => {
-        console.log('myPromise.then resolve--------------------------4>>>', res);
-        // return 4;
-        return new MyPromise((resolve, reject) => {
-            setTimeout(() => {
-                resolve(6);
-            }, 1000);
-        });
-    })
-    .then(res => {
-        console.log('myPromise.then resolve--------------------------6>>>', res);
-        return 8;
-    });
-setTimeout(() => {
-    mp2.then(
-        res => {
-            console.log('myPromise.then resolve--------------------------7>>>', res);
-            return 7;
-        },
-        // res => {
-        //     console.log('myPromise.then reject---------------------------6>>>', res);
-        // },
-    );
-
-    mp3.then(
-        res => {
-            console.log('myPromise.then resolve--------------------------8>>>', res);
-            return 9;
-        },
-        // res => {
-        //     console.log('myPromise.then reject---------------------------8>>>', res);
-        // },
-    ).finally(() => {
-        console.log('myPromise.then resolve--------------------------------------------mp3---8---finally');
-    });
-}, 3000);
-
-const p1 = new MyPromise((resolve, reject) => {
-    setTimeout(() => {
-        resolve('p1');
-    }, 3500);
-});
-const p2 = new MyPromise((resolve, reject) => {
-    setTimeout(() => {
-        resolve('p2');
-    }, 3200);
-});
-const p3 = new MyPromise((resolve, reject) => {
-    setTimeout(() => {
-        reject('p3');
-    }, 3500);
-});
-const p4 = new MyPromise((resolve, reject) => {
-    setTimeout(() => {
-        reject('p4');
-    }, 2500);
-});
-MyPromise.all([p1, p2]).then(res => {
-    console.log('MyPromise.all [ p1 + p2 ]-------------------->>>', res);
-});
-MyPromise.allSettled([p1, p2, p3]).then(res => {
-    console.log('MyPromise.allSettled [ p1 + p2 + p3 ]--------->>>', res);
-});
-MyPromise.race([p1, p2]).then(res => {
-    console.log('MyPromise.race [ p1 + p2 ]-------------------->>>', res);
-});
-MyPromise.any([p3, p4])
-    .then(res => {
-        console.log('MyPromise.any [ p3 + p4 ]--------------------->>>', res);
-    })
-    .catch(err => {
-        console.log('MyPromise.any [ p3 + p4 ]--------------------->>>', err.errors);
-    });
-
-// new MyPromise((resolve, reject) => {
-//     // resolve('test finally');
-//     reject('test finally');
-// })
-//     .then(res => {
-//         console.log('test finally then------------------------>>>', res);
-//     })
-//     .catch(err => {
-//         console.log('test finally catch----------------------->>>', err);
-//     })
-//     .finally(() => {
-//         console.log('test finally finally---------------------------------------------->>>finally');
-//     });
+/**
+ * 手写类型判断
+ */
+export function getType(value) {
+    if (value === null) {
+        return value + '';
+    }
+    if (typeof value === 'object') {
+        return Object.prototype.toString
+            .call(value)
+            .slice(8, -1)
+            .replace(/^(.)/, v1 => v1.toLowerCase());
+    } else {
+        return typeof value;
+    }
+}
+// console.log('getType(null)：', getType(null));
+// console.log('getType(123)：', getType(123));
+// console.log('getType(str)：', getType('str'));
+// console.log('getType(class)：', getType(class {}));
+// console.log(
+//     'getType(function)：',
+//     getType(function () {}),
+// );
+// console.log('getType(object)：', getType({}));
+// console.log('getType(date)：', getType(new Date()));
+// console.log('getType(array)：', getType([]));
