@@ -54,13 +54,14 @@ export function currying(arg) {
  * 普通函数转成柯里化函数
  */
 export function createCurrying(fn, ...args1) {
-    if (fn.length === args1.length) {
+    if (args1.length >= fn.length) {
         return fn.apply(this, args1);
     } else {
         return function (...args2) {
             return createCurrying(fn, ...args1, ...args2);
         };
     }
+    // return args1.length >= fn.length ? fn.apply(this, args1) : createCurrying.bind(this, fn, ...args1);
 }
 function testCreateCurrying(arg1, arg2, arg3) {
     return arg1 + arg2 + arg3;
@@ -77,7 +78,7 @@ export function objectCreate(proto) {
 }
 // console.log('objectCreate 结果：', objectCreate({ x: 123 }));
 /**
- * 手写 instanceof
+ * 实现 instanceof
  */
 export function myInstanceof(obj, constr) {
     if (obj === null || obj === undefined) return false;
@@ -94,7 +95,7 @@ export function myInstanceof(obj, constr) {
 }
 // console.log('myInstanceof 结果：', myInstanceof([], Object));
 /**
- * new 操作符的实现
+ * 实现 new 操作符
  */
 export function myNew(constr, ...args) {
     //注意要判断传进来的 constr 是不是函数
@@ -114,7 +115,7 @@ function ConstrMyNew(arg) {
 // 箭头函数会报错
 // console.log('myNew 结果：', myNew(ConstrMyNew, 123), 'new 结果：', new ConstrMyNew(123));
 /**
- * 手写 Promise
+ * 实现 Promise
  */
 const STATE = { PENDING: 'pending', RESOLVED: 'resolved', REJECTED: 'rejected' };
 export function MyPromise(exec) {
@@ -302,7 +303,7 @@ MyPromise.any = function (promises) {
     });
 };
 /**
- * 手写类型判断
+ * 类型判断
  */
 export function getType(value) {
     if (value === null) {
@@ -328,3 +329,135 @@ export function getType(value) {
 // console.log('getType(object)：', getType({}));
 // console.log('getType(date)：', getType(new Date()));
 // console.log('getType(array)：', getType([]));
+/**
+ * 实现 call 函数
+ */
+Function.prototype.myCall = function (thisArg, ...args) {
+    if (typeof this !== 'function') {
+        throw new Error(`the ${this} is not a function`);
+    }
+    if (thisArg === null || thisArg === undefined) {
+        // thisArg = window;
+        const o = Object.create(null);
+        const v = thisArg;
+        o.valueOf = () => v;
+        thisArg = o;
+    } else {
+        thisArg = Object(thisArg);
+    }
+    const fn = Symbol('fn');
+    thisArg[fn] = this;
+    const result = thisArg[fn](...args);
+    delete thisArg[fn];
+    return result;
+};
+function testMyCall(...args) {
+    console.log('args ---------->>>', args);
+    return this;
+}
+// console.log('myCall 结果：', testMyCall.myCall({ x: 123 }, 1, 2, 3));
+// console.log('myCall 结果：', testMyCall.myCall(null, 1, 2, 3) + 1);
+// console.log('myCall 结果：', testMyCall.myCall(999, 1, 2, 3) + 1);
+/**
+ * 实现 apply 函数
+ */
+Function.prototype.myApply = function (thisArg, args = []) {
+    if (typeof this !== 'function') {
+        throw new Error(`the ${this} is not a function`);
+    }
+
+    if (thisArg === null || thisArg === undefined) {
+        // thisArg = window;
+        const o = Object.create(null);
+        const v = thisArg;
+        o.valueOf = () => v;
+        thisArg = o;
+    } else {
+        thisArg = Object(thisArg);
+    }
+    const fn = Symbol('fn');
+    thisArg[fn] = this;
+    const result = thisArg[fn](...args);
+    delete thisArg[fn];
+    return result;
+};
+// console.log('myCall 结果：', testMyCall.myApply({ x: 123 }, [1, 2, 3]));
+// console.log('myCall 结果：', testMyCall.myApply(null, [1, 2, 3]) + 1);
+// console.log('myCall 结果：', testMyCall.myApply(999, [1, 2, 3]) + 1);
+/**
+ * 实现 bind 函数
+ */
+Function.prototype.myBind = function (thisArg, ...args1) {
+    if (typeof this !== 'function') {
+        throw new Error(`the ${this} is not a function`);
+    }
+    const fn = this;
+    return function (...args2) {
+        return fn.call(thisArg, ...args1, ...args2);
+    };
+};
+// console.log('myCall 结果：', testMyCall.myBind({ x: 123 }, 1, 2, 3)(4, 5, 6));
+// console.log('myCall 结果：', testMyCall.myBind(null, 1, 2, 3)(4, 5, 6));
+// console.log('myCall 结果：', testMyCall.myBind(999, 1, 2, 3)(4, 5, 6));
+
+/**
+ * ajax 请求
+ */
+// import data from '../assets/data.json';
+export function sendAjax() {
+    // console.log('data', data);
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        console.log('onreadystatechange readyState：', xhr.readyState);
+    };
+    xhr.onload = function () {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status !== 200) {
+            console.log('onload statusText ------>>>', xhr.statusText);
+            return;
+        }
+        console.log('onload response ------>>>', xhr.response);
+    };
+    xhr.onerror = function () {
+        console.log('onerror ------>>>', xhr);
+    };
+    xhr.onprogress = function () {
+        console.log('onprogress readyState：', xhr.readyState); // readyState 为 3
+    };
+    xhr.responseType = 'json';
+    xhr.open('get', 'http://localhost:3000/src/assets/data.json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.send(null);
+}
+// sendAjax();
+/**
+ * 使用 Promise 封装 ajax
+ */
+export function promiseAjax(config) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            console.log('onreadystatechange readyState：', xhr.readyState);
+            if (xhr.readyState !== 4) return;
+            if (xhr.status === 200) {
+                resolve(xhr.response);
+                console.log('onload response ------>>>', xhr.response);
+            } else {
+                console.log('onload statusText ------>>>', xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.log('onerror ------>>>', xhr);
+        };
+        xhr.onprogress = function () {
+            console.log('onprogress readyState：', xhr.readyState); // readyState 为 3
+        };
+        xhr.responseType = 'json';
+        xhr.open(config.method, config.url);
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send(config.params);
+    });
+}
+promiseAjax({ method: 'get', url: 'http://localhost:3000/src/assets/data.json' }).then(res => {
+    console.log('promiseAjax ------>>>', res);
+});
