@@ -458,6 +458,148 @@ export function promiseAjax(config) {
         xhr.send(config.params);
     });
 }
-promiseAjax({ method: 'get', url: 'http://localhost:3000/src/assets/data.json' }).then(res => {
-    console.log('promiseAjax ------>>>', res);
-});
+// promiseAjax({ method: 'get', url: 'http://localhost:3000/src/assets/data.json' }).then(res => {
+//     console.log('promiseAjax ------>>>', res);
+// });
+/**
+ * 深拷贝
+ */
+const types = [Date, RegExp, Set, Map, WeakMap, WeakSet];
+export function deepClone(obj, map = new WeakMap()) {
+    // if (typeof obj === 'function') return obj;
+    if (types.some(Type => obj instanceof Type)) {
+        const Constr = obj.constructor;
+        if (Constr && typeof Constr === 'function') {
+            return new Constr(obj);
+        }
+    }
+    if (obj instanceof Error) return obj;
+    if (typeof obj === 'symbol') return Symbol(obj.description);
+    if (typeof obj !== 'object' || obj === null) return obj;
+    if (map.has(obj)) return map.get(obj);
+
+    let newObj = Array.isArray(obj) ? [] : {};
+
+    map.set(obj, newObj);
+
+    Reflect.ownKeys(obj).forEach(key => {
+        newObj[key] = deepClone(obj[key], map);
+    });
+
+    Object.setPrototypeOf(newObj, Object.getPrototypeOf(obj));
+
+    return newObj;
+}
+
+/**
+ * 测试
+ */
+function testDeepClone() {
+    function fn() {
+        return 'fn';
+    }
+    let e = new Error('错了');
+    let reg = /d/g;
+    const symbolkey = Symbol('作为 key 值');
+    class MySet extends Set {
+        mySet: string;
+        constructor(...args) {
+            super(...args);
+            this.mySet = 'mySet';
+        }
+    }
+    const prototpyeObj = {};
+    Object.setPrototypeOf(prototpyeObj, { super: '原型上的值', fn() {} });
+    const obj = {
+        num: 123,
+        string: 'string',
+        boolean: true,
+        null: null,
+        undefined: undefined,
+        object: {},
+        array: [],
+        reg: reg,
+        date: new Date(),
+        Symbol: Symbol(''),
+        [symbolkey]: 'symbol 作为 key 值',
+        set: new Set([123, 456, 789]),
+        mySet: new MySet([111, 222, 333]),
+        map: new Map([
+            [123, 123],
+            [456, 456],
+            [789, 789],
+        ]),
+        prototpyeObj,
+        arr: [
+            'number: ',
+            123,
+            'string: ',
+            'string',
+            'boolean: ',
+            true,
+            'null: ',
+            null,
+            'undefined: ',
+            undefined,
+            'object: ',
+            {},
+            'array: ',
+            [],
+            'reg: ',
+            reg,
+            new Date(),
+            'Symbol: ',
+            Symbol(''),
+            'symbolkey: ',
+            symbolkey,
+            'set: ',
+            new Set([123, 456, 789]),
+            new MySet([111, 222, 333]),
+            'map: ',
+            new Map([
+                [123, 123],
+                [456, 456],
+                [789, 789],
+            ]),
+            'fn: ',
+            fn,
+            'e: ',
+            e,
+            'error: ',
+            Error('我错了'),
+        ],
+        fn: fn,
+        // fnResult: fn(),
+        e: e,
+        error: Error('我错了'),
+    };
+
+    const newObj = deepClone(obj);
+    console.log('obj --------------------------->>>', obj);
+    console.log('newObj ------------------------>>>', newObj);
+    console.log('obj === newObj ---------------->>>', obj === newObj);
+    console.log('obj.object === newObj.object--->>>', obj.object === newObj.object);
+    console.log('obj.array === newObj.array----->>>', obj.array === newObj.array);
+    console.log('obj.reg === newObj.reg--------->>>', obj.reg === newObj.reg);
+    console.log('obj.Symbol === newObj.Symbol--->>>', obj.Symbol === newObj.Symbol);
+    console.log('obj.set === newObj.set--------->>>', obj.set === newObj.set);
+    console.log('obj.mySet === newObj.mySet----->>>', obj.mySet === newObj.mySet);
+    console.log('obj.map === newObj.map--------->>>', obj.map === newObj.map);
+    newObj.set.add(110);
+    newObj.mySet.add(444);
+    newObj.map.set(110, 110);
+    console.log('Function 和 Error 直接使用同一个值-------------------------------');
+    console.log('obj.fn === newObj.fn----------->>>', obj.fn === newObj.fn);
+    console.log('obj.e === newObj.e------------->>>', obj.e === newObj.e);
+    console.log('obj.error === newObj.error----->>>', obj.error === newObj.error);
+    console.log('对象原型的属性和方法------------->>>', obj.prototpyeObj.super);
+    // 循环引用
+    let loopObj = { a: 123 };
+    loopObj.loopObj = loopObj;
+    const newLoopObj = deepClone(loopObj);
+    console.log('循环引用 ------------->>>', newLoopObj);
+    console.log('循环引用 ------------->>>', newLoopObj === newLoopObj.loopObj);
+    console.log('循环引用 ------------->>>', newLoopObj.loopObj === newLoopObj.loopObj.loopObj);
+    console.log('循环引用 ------------->>>', newLoopObj.loopObj.loopObj === newLoopObj.loopObj.loopObj.loopObj);
+}
+testDeepClone();
