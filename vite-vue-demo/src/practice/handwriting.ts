@@ -490,116 +490,67 @@ export function deepClone(obj, map = new WeakMap()) {
 
     return newObj;
 }
-
 /**
- * 测试
+ * sleep 函数
  */
-function testDeepClone() {
-    function fn() {
-        return 'fn';
-    }
-    let e = new Error('错了');
-    let reg = /d/g;
-    const symbolkey = Symbol('作为 key 值');
-    class MySet extends Set {
-        mySet: string;
-        constructor(...args) {
-            super(...args);
-            this.mySet = 'mySet';
-        }
-    }
-    const prototpyeObj = {};
-    Object.setPrototypeOf(prototpyeObj, { super: '原型上的值', fn() {} });
-    const obj = {
-        num: 123,
-        string: 'string',
-        boolean: true,
-        null: null,
-        undefined: undefined,
-        object: {},
-        array: [],
-        reg: reg,
-        date: new Date(),
-        Symbol: Symbol(''),
-        [symbolkey]: 'symbol 作为 key 值',
-        set: new Set([123, 456, 789]),
-        mySet: new MySet([111, 222, 333]),
-        map: new Map([
-            [123, 123],
-            [456, 456],
-            [789, 789],
-        ]),
-        prototpyeObj,
-        arr: [
-            'number: ',
-            123,
-            'string: ',
-            'string',
-            'boolean: ',
-            true,
-            'null: ',
-            null,
-            'undefined: ',
-            undefined,
-            'object: ',
-            {},
-            'array: ',
-            [],
-            'reg: ',
-            reg,
-            new Date(),
-            'Symbol: ',
-            Symbol(''),
-            'symbolkey: ',
-            symbolkey,
-            'set: ',
-            new Set([123, 456, 789]),
-            new MySet([111, 222, 333]),
-            'map: ',
-            new Map([
-                [123, 123],
-                [456, 456],
-                [789, 789],
-            ]),
-            'fn: ',
-            fn,
-            'e: ',
-            e,
-            'error: ',
-            Error('我错了'),
-        ],
-        fn: fn,
-        // fnResult: fn(),
-        e: e,
-        error: Error('我错了'),
-    };
-
-    const newObj = deepClone(obj);
-    console.log('obj --------------------------->>>', obj);
-    console.log('newObj ------------------------>>>', newObj);
-    console.log('obj === newObj ---------------->>>', obj === newObj);
-    console.log('obj.object === newObj.object--->>>', obj.object === newObj.object);
-    console.log('obj.array === newObj.array----->>>', obj.array === newObj.array);
-    console.log('obj.reg === newObj.reg--------->>>', obj.reg === newObj.reg);
-    console.log('obj.Symbol === newObj.Symbol--->>>', obj.Symbol === newObj.Symbol);
-    console.log('obj.set === newObj.set--------->>>', obj.set === newObj.set);
-    console.log('obj.mySet === newObj.mySet----->>>', obj.mySet === newObj.mySet);
-    console.log('obj.map === newObj.map--------->>>', obj.map === newObj.map);
-    newObj.set.add(110);
-    newObj.mySet.add(444);
-    newObj.map.set(110, 110);
-    console.log('Function 和 Error 直接使用同一个值-------------------------------');
-    console.log('obj.fn === newObj.fn----------->>>', obj.fn === newObj.fn);
-    console.log('obj.e === newObj.e------------->>>', obj.e === newObj.e);
-    console.log('obj.error === newObj.error----->>>', obj.error === newObj.error);
-    console.log('对象原型的属性和方法------------->>>', obj.prototpyeObj.super);
-    // 循环引用
-    let loopObj = { a: 123 };
-    loopObj.loopObj = loopObj;
-    const newLoopObj = deepClone(loopObj);
-    console.log('循环引用 ------------->>>', newLoopObj);
-    console.log('循环引用 ------------->>>', newLoopObj === newLoopObj.loopObj);
-    console.log('循环引用 ------------->>>', newLoopObj.loopObj === newLoopObj.loopObj.loopObj);
-    console.log('循环引用 ------------->>>', newLoopObj.loopObj.loopObj === newLoopObj.loopObj.loopObj.loopObj);
+export async function asyncSleep(delay) {
+    await new Promise(resolve => {
+        setTimeout(resolve, delay);
+    });
 }
-testDeepClone();
+// asyncSleep(1000).then(() => {
+//     console.log('我睡了 1s');
+// });
+/**
+ * 日期格式化函数
+ */
+export function formatDate(date, format) {
+    if (!(date instanceof Date)) {
+        if (!date) return '';
+        date = new Date(date);
+    }
+    if (Number.isNaN(date)) return '';
+    const opt = {
+        'y+': date.getFullYear(),
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds(),
+    };
+    for (let key in opt) {
+        const val = opt[key];
+        const reg = new RegExp(key);
+        console.log('reg', reg);
+        format = format.replace(reg, String(val).padStart(2, '0'));
+    }
+    return format;
+}
+// console.log('formatDate 结果：', formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss'));
+/**
+ * 交换 a b 的值，不用临时变量
+ */
+export function exch(a, b) {
+    a = a + b;
+    b = a - b;
+    a = a - b;
+    return { a, b };
+}
+// console.log('exch 结果:', exch(2, 6));
+/**
+ * 数组乱序
+ */
+export function randomArr(arr) {
+    // 方法一：使用 sort 方法返回随机数
+    // return arr.sort(() => (Math.random() > 0.5 ? -1 : 1));
+    // for (var j, x, i = arr.length; i; j = parseInt(Math.random() * i), x = arr[--i], arr[i] = arr[j], arr[j] = x);
+    const len = arr.length;
+    for (let i = 0; i < arr.length; i++) {
+        const v = arr[i];
+        const randomIndex = (Math.random() * (len - 1 - i) + i) >>> 0;
+        arr[i] = arr[randomIndex];
+        arr[randomIndex] = v;
+    }
+    return arr;
+}
+// console.log('randomArr --->>>', randomArr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
