@@ -1,6 +1,6 @@
 module.exports = {
     // packageManager: 'yarn',
-    printWidth: 120, // 超过最大值换行
+    printWidth: 160, // 超过最大值换行
     tabWidth: 4, // 缩进字节数
     useTabs: false, // 缩进不使用tab，使用空格
     semi: true, // 句尾添加分号

@@ -544,13 +544,226 @@ export function randomArr(arr) {
     // 方法一：使用 sort 方法返回随机数
     // return arr.sort(() => (Math.random() > 0.5 ? -1 : 1));
     // for (var j, x, i = arr.length; i; j = parseInt(Math.random() * i), x = arr[--i], arr[i] = arr[j], arr[j] = x);
-    const len = arr.length;
-    for (let i = 0; i < arr.length; i++) {
+    // 方法二：取出数组的第一个元素，随机产生一个索引值，将该第一个元素和这个索引对应的元素进行交换。
+    // const len = arr.length;
+    // for (let i = 0; i < arr.length; i++) {
+    //     const v = arr[i];
+    //     const randomIndex = (Math.random() * (len - 1 - i) + i) >>> 0;
+    //     arr[i] = arr[randomIndex];
+    //     arr[randomIndex] = v;
+    // }
+    // 方法三：倒倒序遍历
+    let len = arr.length;
+    for (let i = len - 1; i >= 0; i--) {
         const v = arr[i];
-        const randomIndex = (Math.random() * (len - 1 - i) + i) >>> 0;
-        arr[i] = arr[randomIndex];
-        arr[randomIndex] = v;
+        const index = (Math.random() * i) >>> 0;
+        arr[i] = arr[index];
+        arr[index] = v;
     }
     return arr;
 }
 // console.log('randomArr --->>>', randomArr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+/**
+ * 数组求和
+ */
+export function add(arr) {
+    if (!Array.isArray(arr)) return 0;
+    return arr.reduce((sum, cur) => {
+        return sum + cur;
+    });
+}
+// console.log('add 结果：', add([0, 1, 2, 3, 4, 5]));
+export function add2(arr) {
+    if (!Array.isArray(arr)) return 0;
+    // return arr
+    //     .toString()
+    //     .split(',')
+    //     .reduce((sum, cur) => {
+    //         return sum + Number(cur);
+    //     }, 0);
+    return arr.flat(Infinity).reduce((sum, cur) => {
+        return sum + cur;
+    });
+}
+// console.log('add2 结果：', add2([1, 2, 3, [[4, 5], 6], 7, 8, 9]));
+/**
+ * 数组扁平化
+ */
+export function flatArray(arr) {
+    // 1
+    // return arr.flat(Infinity);
+
+    // 2
+    // return arr.reduce((res, cur) => {
+    //     return res.concat(Array.isArray(cur) ? flatArray(cur) : cur);
+    // }, []);
+
+    // 3
+    // let res = [];
+    // for (const val of arr) {
+    //     if (Array.isArray(val)) {
+    //         res.push(...flatArray(val));
+    //         // res = res.concat(flatArray(val));
+    //     } else {
+    //         res.push(val);
+    //     }
+    // }
+    // return res;
+
+    // 4
+    return arr
+        .toString()
+        .split(',')
+        .map(val => Number(val));
+}
+// console.log('flatArray 结果：', flatArray([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]]));
+/**
+ * 数组去重
+ */
+export function unique(arr) {
+    if (!Array.isArray(arr)) return arr;
+    // 方法一
+    // return Array.from(new Set(arr));
+    // return [...new Set(arr)];
+
+    // 方法二：
+    // const set = new Set();
+    // const res = [];
+    // arr.forEach(val => {
+    //     if (!set.has(val)) {
+    //         set.add(val);
+    //         res.push(val);
+    //     }
+    // });
+    // return res;
+
+    // 方法三：会把 {} 这种当成重复的去掉
+    // const map = {};
+    // const res = [];
+    // arr.forEach(val => {
+    //     if (!map[val]) {
+    //         map[val] = true;
+    //         res.push(val);
+    //     }
+    // });
+    // return res;
+}
+// console.log('unique 结果：', unique([1, 1, 2, 3, 4, 5, 4, 3, 2, 1, 4, 5, 3, 2, 1, 2, 3, 4, 5, 2, 1, 3, 6, 3]));
+// unique([1,1,'true','true',true,true,15,15,false,false, undefined,undefined, null,null, NaN, NaN,'NaN', 0, 0, 'a', 'a',{},{}]);
+/**
+ * 数组的 flat 方法
+ */
+Array.prototype.myFlat = function (depth = 1) {
+    if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
+
+    let dep = 0;
+    const _flat = arr => {
+        dep++;
+        return arr.reduce((res, cur) => {
+            return res.concat(Array.isArray(cur) && dep < depth ? _flat(cur) : cur);
+        }, []);
+    };
+
+    return _flat(this);
+};
+// console.log('myFlat 结果：', [1, [2, [3, 4, 5], [6, [7, [8], [9]]]]].myFlat(7));
+/**
+ * 数组的 push 方法
+ * 注意：
+ *      push 方法返回数组的长度
+ *      push 可以对类数组使用
+ *      对对象使用时，Array.prototype.push.call({}, 1)会返回 {0: 1, length: 1}
+ *      如果为 null 或者 undefined 则报错
+ */
+Array.prototype.myPush = function (...items) {
+    if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
+
+    for (const item of items) {
+        this[this.length] = item;
+    }
+    return this.length;
+};
+/**
+ * 数组的 filter 方法
+ */
+Array.prototype.myFilter = function (callback, thisArg) {
+    if (!Array.isArray(this)) {
+        throw new Error(`the ${this} not is a array`);
+    }
+    if (typeof callback !== 'function') {
+        throw new Error(`the ${callback} not is a function`);
+    }
+
+    const res = [];
+    const len = this.length;
+    for (let i = 0; i < len; i++) {
+        const flag = callback.call(thisArg, this[i], i, this);
+        if (flag) {
+            res.push(this[i]);
+        }
+    }
+
+    return res;
+};
+// console.log(
+//     'myPush 结果：',
+//     [1, 2, 3].myFilter(function (cur, index) {
+//         console.log('this cur index::: ', this, cur, index);
+//         return cur > 1;
+//     }),
+// );
+/**
+ * 数组的 map 方法
+ */
+Array.prototype.myMap = function (callback, thisArg) {
+    if (!Array.isArray(this)) {
+        throw new Error(`the ${this} not is a array`);
+    }
+    if (typeof callback !== 'function') {
+        throw new Error(`the ${callback} not is a function`);
+    }
+
+    const res = [];
+    const len = this.length;
+    for (let i = 0; i < len; i++) {
+        const newVal = callback.call(thisArg, this[i], i, this);
+        res.push(newVal);
+    }
+
+    return res;
+};
+// console.log(
+//     'myPush 结果：',
+//     [1, 2, 3].myMap((cur, index) => {
+//         console.log('this cur index::: ', this, cur, index);
+//         return cur * 10;
+//     }),
+// );
+export function repeat(str, n) {
+    if (typeof str !== 'string') {
+        throw new Error(`the ${str} not is a string`);
+    }
+    if (n < 1) return '';
+
+    // let res = '';
+    // while (n > 0) {
+    //     console.log(str, n);
+    //     res += str;
+    //     n--;
+    // }
+    // return res;
+
+    return new Array(n + 1).join(str);
+}
+console.log('repeat 结果：', repeat('abc-', 3));
+/**
+ * 字符串翻转
+ */
+export function reverse(str) {
+    if (typeof str !== 'string') return str;
+    return str.split('').reverse().join('');
+}
+// console.log('reverse 结果：', reverse('abc-'));
+/**
+ * 将数字每千分位用逗号隔开
+ */
