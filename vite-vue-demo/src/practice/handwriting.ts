@@ -51,6 +51,23 @@ export function currying(arg) {
 }
 // console.log('currying 结果：' + currying(1)(2)(3)(4)(5)()());
 /**
+ * 参数长度不固定
+ */
+function currying2(...args1) {
+    const args = [...args1];
+    const _add = (...args2) => {
+        args.push(...args2);
+        return _add;
+    };
+    _add.toString = () => {
+        return args.reduce((sum, cur) => {
+            return sum + cur;
+        });
+    };
+    return _add;
+}
+// console.log('currying2 结果：' + currying2(1, 10000)(2, 20000)(3, 30000, 40000, 50000)(4)(5)()());
+/**
  * 普通函数转成柯里化函数
  */
 export function createCurrying(fn, ...args1) {
@@ -755,7 +772,7 @@ export function repeat(str, n) {
 
     return new Array(n + 1).join(str);
 }
-console.log('repeat 结果：', repeat('abc-', 3));
+// console.log('repeat 结果：', repeat('abc-', 3));
 /**
  * 字符串翻转
  */
@@ -766,4 +783,225 @@ export function reverse(str) {
 // console.log('reverse 结果：', reverse('abc-'));
 /**
  * 将数字每千分位用逗号隔开
+ * 注意：
+ *      要考虑小数的情况
+ *      要考虑负数的情况
+ *      要考虑不足三位的情况
  */
+export function comma(num) {
+    if (typeof num !== 'number') return num;
+    // 方法一：正则
+    // return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // 方法二：转成数组，添加豆号
+    // const str = String(Math.abs(num));
+    // const flag = num < 0;
+    // const [a, b] = str.split('.');
+    // const transform = val => {
+    //     if (!val) return '';
+    //     const nums = val.split('');
+    //     const len = nums.length;
+    //     for (let i = len; i > 3; i -= 3) {
+    //         nums.splice(i - 3, 0, ',');
+    //     }
+    //     return nums.join('');
+    // };
+    // const res = `${flag ? '-' : ''}${transform(a)}`;
+    // return b ? `${res}.${transform(b)}` : res;
+
+    // 方法三：使用正则匹配出来
+    const str = String(Math.abs(num));
+    const flag = num > 0;
+    const [a, b] = str.split('.');
+    const transform = val => {
+        if (!val) return '';
+        const len = val.length;
+        if (len < 3) return val;
+        const n = len % 3;
+        if (n > 0) {
+            const arr = val.slice(n, len).match(/\d{3}/g);
+            return `${val.slice(0, n)},${arr ? arr.join(',') : ''}`;
+        } else {
+            const arr = val.match(/\d{3}/g);
+            return arr ? arr.join(',') : '';
+        }
+    };
+    const res = `${flag ? '-' : ''}${transform(a)}`;
+    return b ? `${res}.${transform(b)}` : res;
+}
+
+// console.log('comma 结果：', comma(12345678.12345678));
+// console.log(comma(0));
+// console.log(comma(123));
+// console.log(comma(-123));
+// console.log(comma(1234567));
+// console.log(comma(-1234567));
+// console.log(comma(1234567.12345678));
+// console.log(comma(-1234567.12345678));
+/**
+ * 大数相加
+ */
+export function sumBigNumber(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return '';
+    if (isNaN(a) || isNaN(b)) return '';
+
+    a = a.split('');
+    b = b.split('');
+
+    let res = '';
+    let r = 0;
+
+    while (a.length > 0 || b.length > 0) {
+        // r = (Number(a.pop()) || 0) + (Number(b.pop()) || 0) + r;
+        r = ~~a.pop() + ~~b.pop() + r;
+        res = (r % 10) + res;
+        // r = Math.floor(r / 10);
+        r = r > 9;
+    }
+
+    if (r > 0) {
+        res = 1 + res;
+    }
+
+    return res.replace(/^0+/, '');
+}
+// console.log('sumBigNumber 结果：', sumBigNumber('012345678', '0123456'));
+/**
+ * 大数相乘
+ */
+export function multiplyBigNumber(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string') return '';
+    if (isNaN(a) || isNaN(b)) return '';
+    if (a === '0' || b === '0') return '0';
+
+    const len1 = a.length;
+    const len2 = b.length;
+    const res = [];
+
+    for (let i = len1 - 1; i >= 0; i--) {
+        for (let j = len2 - 1; j >= 0; j--) {
+            const i1 = i + j;
+            const i2 = i + j + 1;
+            const r = a[i] * b[j] + (res[i2] || 0);
+            res[i1] = Math.floor(r / 10) + (res[i1] || 0);
+            res[i2] = r % 10;
+        }
+    }
+
+    return res.join('').replace(/^0+/, '');
+}
+// console.log('multiplyBigNumber 结果：', multiplyBigNumber('01234', '2'));
+// console.log('multiplyBigNumber 结果：', multiplyBigNumber('012345678', '0123456'));
+/**
+ * 将对象转换为树形结构
+ */
+export function objToTree(arr) {
+    if (!Array.isArray(arr)) return [];
+    const tree = [];
+    const map = new Map();
+    for (let item of arr) {
+        const { id, pid } = item;
+        const children = map.get(id);
+        if (children) {
+            item.children = children;
+        } else {
+            item.children = [];
+            map.set(id, item.children);
+        }
+        if (pid) {
+            const children = map.get(pid);
+            if (children) {
+                children.push(item);
+            } else {
+                map.set(pid, [item]);
+            }
+        } else {
+            tree.push(item);
+        }
+    }
+    return tree;
+}
+// 转换前：
+const source = [
+    {
+        id: 1,
+        pid: 0,
+        name: 'body',
+    },
+    {
+        id: 2,
+        pid: 1,
+        name: 'title',
+    },
+    {
+        id: 3,
+        pid: 2,
+        name: 'div',
+    },
+];
+// 转换为:
+// const tree = [{
+//   id: 1,
+//   pid: 0,
+//   name: 'body',
+//   children: [{
+//     id: 2,
+//     pid: 1,
+//     name: 'title',
+//     children: [{
+//       id: 3,
+//       pid: 1,
+//       name: 'div'
+//     }]
+//   }
+// }]
+// console.log(' 结果：', objToTree(source));
+/**
+ * 使用ES5和ES6求函数参数的和
+ */
+export function funArgSum(...args) {
+    return args.reduce((sum, cur) => sum + Number(cur), 0);
+}
+export function funArgSum2() {
+    return Array.prototype.reduce.call(arguments, (sum, cur) => sum + Number(cur), 0);
+}
+// console.log('funArgSum 结果：', funArgSum(1, 2, 3, 4, 5));
+// console.log('funArgSum2 结果：', funArgSum2(1, 2, 3, 4, 5));
+/**
+ * 解析 URL Params 为对象
+ * let url = 'http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled';
+   parseParam(url)  结果
+    { 
+        user: 'anonymous',
+        id: [ 123, 456 ], // 重复出现的 key 要组装成数组，能被转成数字的就转成数字类型
+        city: '北京', // 中文需解码
+        enabled: true, // 未指定值得 key 约定为 true
+    }
+*/
+export function parseParams(url) {
+    if (typeof url !== 'string') return {};
+
+    const [, search] = url.split('?');
+    if (!search) return {};
+    const arr = search.split('&');
+    const result = {};
+    arr.forEach(param => {
+        if (param.includes('=')) {
+            const [key, val] = param.split('=');
+            const v = result[key];
+            if (result.hasOwnProperty(key)) {
+                result[key] = [].concat(v, val);
+            } else {
+                result[key] = window.decodeURI(val);
+            }
+        } else {
+            result[param] = true;
+        }
+    });
+
+    return result;
+}
+console.log(
+    'parseParams 结果：',
+    parseParams('http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled'),
+);
