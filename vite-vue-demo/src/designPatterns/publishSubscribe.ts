@@ -81,6 +81,11 @@ class EventEmitter {
 
         if (!events) return;
 
+        if (!event) {
+            // 如果只传入事件名，则删除所有的事件
+            delete this.events[type];
+        }
+
         for (let i = events.length - 1; i >= 0; i--) {
             const { event: e } = events[i];
             if (event === e) {

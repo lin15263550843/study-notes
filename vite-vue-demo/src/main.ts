@@ -49,7 +49,7 @@ export default app.mount('#app');
 // import '@/interviewQuestions/findDuplicates'; // 测试 查找重复元素
 // import '@/interviewQuestions/highDataType'; // 测试 高频数据类型
 // import '@/commons/rangeRandom'; // 测试 生成范围随机数
-// import '@/leetCode/fullArray'; // 测试 全排列
+// import '@/leetcode/fullArray'; // 测试 全排列
 // import '@/views/javascript/commons/arrayExtension'; // 测试 数组扩展方法
 // import '@/views/javascript/commons/objectExtension'; // 测试 Object 扩展方法
 // import '@/designPatterns/observer'; // 测试 观察者模式
@@ -63,3 +63,4 @@ export default app.mount('#app');
 // import '@/test/testAssignOrSpreadOperator'; // 测试 浅拷贝
 // import '@/test/testMapOrObject'; // 测试 Map 和 Object 区别
 import '@/practice/handwriting';
+import '@/leetcode/find';

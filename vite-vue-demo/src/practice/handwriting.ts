@@ -1001,7 +1001,356 @@ export function parseParams(url) {
 
     return result;
 }
-console.log(
-    'parseParams 结果：',
-    parseParams('http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled'),
-);
+// console.log(
+//     'parseParams 结果：',
+//     parseParams('http://www.domain.com/?user=anonymous&id=123&id=456&city=%E5%8C%97%E4%BA%AC&enabled'),
+// );
+/**
+ *  二维数组斜向打印
+ */
+export function printMatrix(arr) {
+    if (!Array.isArray(arr)) return [];
+
+    const len1 = arr.length;
+    const len2 = arr[0].length;
+    const res = [];
+    // 左上角，从0 到 n - 1 列进行打印
+    for (let i = 0; i < len2; i++) {
+        for (let x = 0, y = i; x < len1 && y >= 0; x++, y--) {
+            res.push(arr[x][y]);
+        }
+    }
+    // 右下角，从1 到 n - 1 行进行打印
+    for (let i = 1; i < len1; i++) {
+        for (let x = i, y = len2 - 1; x < len1 && y >= 0; x++, y--) {
+            res.push(arr[x][y]);
+        }
+    }
+    return res;
+}
+
+// console.log(
+//     'printMatrix 结果；',
+//     printMatrix([
+//         [1, 2, 3],
+//         [4, 5, 6],
+//         [7, 8, 9],
+//         // [10, 11, 12],
+//     ]),
+// );
+// [0,0]
+// [0,1] [1,0]
+// [0,2] [1,1] [2, 0]
+// [1,2]
+// [2,1]
+// [2,2]
+/**
+ * 找出 Element 元素的全部 Input 子元素
+ */
+export function findAllInputElement(element) {
+    if (!(element instanceof Element)) return [];
+    const res = [];
+    const recursion = element => {
+        if (element.nodeName.toUpperCase() === 'DIV') {
+            res.push(element);
+        }
+        const children = element.children;
+        if (children.length > 0) {
+            for (let item of element.children) {
+                recursion(item);
+            }
+        }
+    };
+    recursion(element);
+    return res;
+}
+// setTimeout(() => {
+//     console.log('findAllInputElement 结果：', findAllInputElement(document.getElementById('app')));
+// }, 1000);
+/**
+ * 将手机号中间四位变成 *
+ */
+export function hidePhoneNumber(str) {
+    if (typeof str !== 'string') return '';
+    // return str.slice(0, 3) + '****' + str.slice(-4);
+    return str.replace(/^(\d{3})\d*(\d{4}$)/, '$1****$2');
+}
+// console.log('hidePhoneNumber 结果：', hidePhoneNumber('13612361236'));
+/**
+ * 循环打印红黄绿
+ * 1. 循环打印红黄绿
+ * 下面来看一道比较典型的问题，通过这个问题来对比几种异步编程方法：
+ * 红灯 3s 亮一次，绿灯 1s 亮一次，黄灯 2s 亮一次；如何让三个灯不断交替重复亮灯？
+ */
+export function loopPrint() {
+    function red() {
+        console.log('red');
+    }
+    function green() {
+        console.log('green');
+    }
+    function yellow() {
+        console.log('yellow');
+    }
+
+    function sleep(delay) {
+        return new Promise(resolve => {
+            setTimeout(resolve, delay);
+        });
+    }
+    async function task() {
+        await sleep(3000);
+        red();
+        await sleep(1000);
+        green();
+        await sleep(2000);
+        yellow();
+
+        task();
+    }
+    task();
+
+    // function sleep(delay, callback) {
+    //     return new Promise(resolve => {
+    //         setTimeout(() => {
+    //             callback();
+    //             resolve();
+    //         }, delay);
+    //     });
+    // }
+    // async function task() {
+    //     sleep(3000, red)
+    //         .then(() => sleep(1000, green))
+    //         .then(() => sleep(2000, yellow))
+    //         .then(task);
+    // }
+    // task();
+}
+// console.log('loopPrint 结果：', loopPrint());
+/**
+ * 实现每隔一秒打印 1,2,3,4
+ */
+export function printNumber(n) {
+    for (let i = 1; i <= n; i++) {
+        setTimeout(() => {
+            console.log('i: ', i);
+        }, 1000 * i);
+    }
+}
+// console.log('loopPrint 结果：', printNumber(4));
+/**
+ *
+ * @param num
+ * @param count
+ * @returns
+ */
+function childNum(num, count) {
+    // 方法一
+    const arr = new Array(num).fill(1).map((v, i) => i + 1);
+    let curIndex = 0;
+    let curNum = 1;
+    while (arr.length > 1) {
+        if (curNum === count) {
+            curNum = 1;
+            arr.splice(curIndex, 1);
+        } else {
+            curIndex++;
+            curNum++;
+        }
+
+        if (curIndex === arr.length) {
+            curIndex = 0;
+        }
+    }
+    return arr[0];
+    // 方法二
+    // const arr = new Array(num).fill(1).map((v, i) => i + 1);
+    // let execCount = 0;
+    // let curIndex = 0;
+    // let curNum = 0;
+    // while (execCount < num - 1) {
+    //     if (arr[curIndex] !== 0) curNum++;
+
+    //     if (curNum === count) {
+    //         curNum = 0;
+    //         arr[curIndex] = 0;
+    //         execCount++;
+    //     }
+    //     curIndex++;
+    //     if (curIndex === num) {
+    //         curIndex = 0;
+    //     }
+    //     console.log(execCount, arr);
+    // }
+    // return arr.find(n => n !== 0);
+}
+// console.log('childNum 结果：', childNum(30, 3));
+/**
+ * 用 Promise 实现图片的异步加载
+ */
+export function asyncLoadImage(url) {
+    return new Promise((resolve, reject) => {
+        if (!url || !String(url).match(/^https?:\/\//)) {
+            reject('图片地址错误！');
+        }
+
+        const img = new Image();
+        img.src = url;
+        img.onload = function () {
+            resolve(img);
+        };
+        img.onerror = function (err) {
+            reject(err);
+        };
+    });
+}
+// asyncLoadImage(
+//     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F4k%2Fs%2F02%2F2109242332225H9-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648885122&t=02370f63aa93f0f3526f0750589a2b3a',
+// )
+//     .then(img => {
+//         console.log('加载成功：', img);
+//     })
+//     .catch(error => {
+//         console.log('加载失败：', error);
+//     });
+/**
+ * 查找文章中出现频率最高的单词
+ */
+export function findMostWord(str) {
+    if (typeof str !== 'string') return [];
+    str = str.trim().toLowerCase();
+    const arr = str.match(/\w+/g);
+    // console.log('arr', arr);
+    let max = 0;
+    let res = '';
+    const map = new Map();
+    arr.forEach(val => {
+        if (map.has(val)) {
+            const v = map.get(val) + 1;
+            map.set(val, v);
+            if (v > max) {
+                max = v;
+                res = val;
+            }
+        } else {
+            map.set(val, 1);
+        }
+    });
+    return [res, map.get(res)];
+}
+// console.log(
+//     findMostWord(
+//         'Age has reached the end of the beginning of a word. May be guilty in his seems to passing a lot of different life became the appearance of the same day;',
+//     ),
+// );
+/**
+ * 封装异步的fetch，使用async await方式来使用
+ */
+export class FetchHttpRequest {
+    /**
+     * get 请求
+     */
+    static async get(url, search) {
+        const params = new URLSearchParams(search);
+        const response = await fetch(params ? `${url}${params}` : url);
+        const data = await response.json();
+        return data;
+    }
+    /**
+     * post 请求
+     */
+    static async post(url, data) {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        return result;
+    }
+}
+// FetchHttpRequest.get('http://localhost:3000/src/assets/data.json').then(res => {
+//     console.log('请求结果：', res);
+// });
+// FetchHttpRequest.post('http://localhost:3000/src/assets/data.json', { name: 'lhd', age: 18 }).then(res => {
+//     console.log('请求结果：', res);
+// });
+/**
+ * 实现 prototype 继承
+ */
+export function inheritPrototype(Super, Sub) {
+    const proto = Object.create(Super.prototype);
+    // proto.constructor = Sub;
+    Object.defineProperty(proto, 'constructor', {
+        configrable: true,
+        enumerable: false,
+        writable: true,
+        value: Sub,
+    });
+    Sub.prototype = proto;
+    Object.setPrototypeOf(Sub, Super);
+}
+// //父方法
+// function SupperFunction(flag1) {
+//     this.flag1 = flag1;
+// }
+// //子方法
+// function SubFunction(flag2) {
+//     SupperFunction.call(this, true);
+//     this.flag2 = flag2;
+// }
+// inheritPrototype(SupperFunction, SubFunction);
+// //子实例
+// var subInstance = new SubFunction(false);
+// //子调用自己和父的属性
+// console.log('子类：', subInstance, subInstance);
+/**
+ * 实现双向数据绑定
+ */
+function twoWayDataBinding(params: type) {
+    const dom = document.getElementById('app');
+    const span = document.createElement('span');
+    const input = document.createElement('input');
+    dom.appendChild(input);
+    dom.appendChild(span);
+    const render = val => {
+        input.value = val;
+        span.innerHTML = val;
+    };
+    const obj = {};
+    // const _obj = {};
+    // Object.defineProperty(obj, 'text', {
+    //     configurable: true,
+    //     enumerable: true,
+    //     get() {
+    //         return _obj.text;
+    //     },
+    //     set(val) {
+    //         _obj.text = val;
+    //         render(val);
+    //     },
+    // });
+    const proxyObj = new Proxy(obj, {
+        get(target, key) {
+            return Reflect.get(target, key);
+        },
+        set(target, key, val) {
+            render(val);
+            return Reflect.set(target, key, val);
+        },
+    });
+    input.addEventListener('input', function (e) {
+        proxyObj.text = e.target.value;
+    });
+}
+// setTimeout(() => {
+//     twoWayDataBinding();
+// }, 1000);
+/**
+ * 实现简单路由
+ */
+export class Router {
+    constructor() {}
+}
