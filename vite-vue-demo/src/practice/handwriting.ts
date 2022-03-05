@@ -1035,15 +1035,15 @@ export function printMatrix(arr) {
 //         [1, 2, 3],
 //         [4, 5, 6],
 //         [7, 8, 9],
-//         // [10, 11, 12],
+//         [10, 11, 12],
 //     ]),
 // );
 // [0,0]
 // [0,1] [1,0]
-// [0,2] [1,1] [2, 0]
-// [1,2]
-// [2,1]
-// [2,2]
+// [0,2] [1,1] [2,0]
+// [1,2] [2,1] [3,0]
+// [2,2] [3,1]
+// [3,2]
 /**
  * 找出 Element 元素的全部 Input 子元素
  */
@@ -1139,10 +1139,7 @@ export function printNumber(n) {
 }
 // console.log('loopPrint 结果：', printNumber(4));
 /**
- *
- * @param num
- * @param count
- * @returns
+ * 小孩报数问题
  */
 function childNum(num, count) {
     // 方法一
@@ -1220,7 +1217,6 @@ export function findMostWord(str) {
     if (typeof str !== 'string') return [];
     str = str.trim().toLowerCase();
     const arr = str.match(/\w+/g);
-    // console.log('arr', arr);
     let max = 0;
     let res = '';
     const map = new Map();
@@ -1352,5 +1348,84 @@ function twoWayDataBinding(params: type) {
  * 实现简单路由
  */
 export class Router {
-    constructor() {}
+    constructor() {
+        this.routes = {};
+        this.currentHash = '';
+        this.freshRoute = this.freshRoute.bind(this);
+        window.addEventListener('load', this.freshRoute, false);
+        window.addEventListener('hashchange', this.freshRoute, false);
+    }
+    // 存储路由
+    storeRoute(path, callback) {
+        this.routes[path] = callback || function () {};
+    }
+    // 更新路由
+    freshRoute() {
+        this.currentHash = location.hash.slice(1) || '/';
+        this.routes[this.currentHash]();
+    }
 }
+// const router = new Router();
+// router.storeRoute('/', () => console.log('//////'));
+// router.storeRoute('test', () => console.log('哈哈哈'));
+/**
+ * 使用 setTimeout 实现 setInterval
+ */
+export function mySetInterval(callback, delay) {
+    // let obj = { timer: null };
+    // const fn = () => {
+    //     obj.timer = setTimeout(() => {
+    //         callback();
+    //         fn.call(this);
+    //     }, delay);
+    // };
+    // fn();
+    // return obj;
+    let obj = { timer: null };
+    const interval = () => {
+        callback();
+        obj.timer = setTimeout(interval, delay);
+    };
+    setTimeout(interval, delay);
+    return obj;
+}
+// const obj = mySetInterval(() => {
+//     console.log(new Date().getTime());
+// }, 1000);
+// setTimeout(() => {
+//     clearTimeout(obj.timer);
+// }, 6000);
+/**
+ * F
+ */
+/**
+ * 判断对象是否存在循环引用
+//  */
+function isObject(val) {
+    return typeof val === 'object' && val !== null;
+}
+export function isLoopObject(obj, set = new WeakSet()) {
+    if (!isObject(obj)) return false;
+    let res = false;
+    for (let key of Object.keys(obj)) {
+        const val = obj[key];
+        if (!isObject(val)) continue;
+        if (set.has(val)) return true;
+        set.add(val);
+        res = isLoopObject(val, set);
+    }
+    return res;
+}
+// const o1 = { x: 1, y: { z: 3 } };
+// console.log('判断对象是否存在循环引用：', isLoopObject(o1));
+// const o2 = { x: 2, o1 };
+// const obj = { o1, o2 };
+// obj.o1.o2 = o2;
+// console.log('判断对象是否存在循环引用：', isLoopObject(obj));
+// var a = {
+//     b: {
+//         c: {},
+//     },
+// };
+// a.b.c.d = a;
+// console.log('判断对象是否存在循环引用：', isLoopObject(a));

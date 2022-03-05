@@ -64,3 +64,4 @@ export default app.mount('#app');
 // import '@/test/testMapOrObject'; // 测试 Map 和 Object 区别
 import '@/practice/handwriting';
 import '@/leetcode/find';
+import '@/leetcode/other';
