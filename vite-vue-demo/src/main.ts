@@ -65,3 +65,5 @@ export default app.mount('#app');
 import '@/practice/handwriting';
 import '@/leetcode/find';
 import '@/leetcode/other';
+import '@/leetcode/sort';
+import '@/leetcode/tree';

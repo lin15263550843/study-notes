@@ -26,7 +26,7 @@ export class BST {
             if (key < x.key) {
                 return _get(x.left, key);
             } else if (key > x.key) {
-                return _get(x.ringt, key);
+                return _get(x.right, key);
             } else {
                 return x?.val;
             }
@@ -44,11 +44,11 @@ export class BST {
             if (key < x.key) {
                 x.left = _put(x.left, key, val);
             } else if (key > x.key) {
-                x.ringt = _put(x.ringt, key, val);
+                x.right = _put(x.right, key, val);
             } else {
                 x.val = val; // 覆盖旧的值
             }
-            x.N = this._size(x.left) + this._size(x.ringt) + 1;
+            x.N = this._size(x.left) + this._size(x.right) + 1;
             return x;
         };
         this.root = _put(this.root, key, val);
@@ -70,8 +70,8 @@ export class BST {
     public max() {
         if (!this.root) return undefined;
         const _max = (x: Node): Node => {
-            if (!x.ringt) return x;
-            return _max(x.ringt);
+            if (!x.right) return x;
+            return _max(x.right);
         };
         return _max(this.root).key;
     }
@@ -84,7 +84,7 @@ export class BST {
             if (!x) return undefined;
             if (key === x.key) return x;
             if (key < x.key) return _floor(x.left, key);
-            const t = _floor(x.ringt, key);
+            const t = _floor(x.right, key);
             return t ? t : x;
         };
         const x = _floor(this.root, key);
@@ -94,7 +94,7 @@ export class BST {
     private _ceiling(x: Node | undefined, key: number): Node | undefined {
         if (!x) return undefined;
         if (key === x.key) return x;
-        if (key > x.key) return this._ceiling(x.ringt, key);
+        if (key > x.key) return this._ceiling(x.right, key);
         const t = this._ceiling(x.left, key);
         return t ? t : x;
     }
@@ -117,9 +117,9 @@ export class BST {
      */
     private _dmin(x: Node | undefined) {
         if (!x) return x;
-        if (!x.left) return x.ringt;
+        if (!x.left) return x.right;
         x.left = this._dmin(x.left);
-        x.N = this._size(x.left) + this._size(x.ringt) + 1;
+        x.N = this._size(x.left) + this._size(x.right) + 1;
         return x;
     }
     /**
@@ -133,9 +133,9 @@ export class BST {
      */
     private _dmax(x: Node | undefined) {
         if (!x) return x;
-        if (!x.ringt) return x.left;
-        x.ringt = this._dmax(x.ringt);
-        x.N = this._size(x.left) + this._size(x.ringt) + 1;
+        if (!x.right) return x.left;
+        x.right = this._dmax(x.right);
+        x.N = this._size(x.left) + this._size(x.right) + 1;
         return x;
     }
     /**
@@ -165,7 +165,7 @@ export class BST {
         if (t > k) {
             return this._select(x.left, k);
         } else if (t < k) {
-            return this._select(x.ringt, k - t - 1);
+            return this._select(x.right, k - t - 1);
         } else {
             return x;
         }
@@ -185,7 +185,7 @@ export class BST {
         if (key < x.key) {
             return this._rank(x.left, key);
         } else if (key > x.key) {
-            return this._size(x.left) + 1 + this._rank(x.ringt, key);
+            return this._size(x.left) + 1 + this._rank(x.right, key);
         } else {
             return this._size(x.left);
         }
@@ -223,7 +223,7 @@ export class Node {
     public key; // 建
     public val; // 值
     public left?: Node; // 指向左子树的链接
-    public ringt?: Node; // 指向右子树的链接
+    public right?: Node; // 指向右子树的链接
     public N; // 以该节点为根的子树中的节点总数
     constructor(key: number, val: any, N: number) {
         this.key = key;

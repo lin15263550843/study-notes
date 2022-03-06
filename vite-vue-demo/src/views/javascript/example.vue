@@ -13,9 +13,7 @@
                     <br />
                     第三行
                 </p>
-                <p class="p3">
-                    超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示
-                </p>
+                <p class="p3">超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示</p>
                 <p class="p4">
                     超出两行文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示超出文本修剪，省略号显示
                 </p>
@@ -59,6 +57,19 @@
             </div>
             <div class="item-4">
                 <div class="grid">
+                    <div>1</div>
+                    <div>2</div>
+                    <div>3</div>
+                    <div>4</div>
+                    <div>5</div>
+                    <div>6</div>
+                    <div>7</div>
+                    <div>8</div>
+                    <div>9</div>
+                </div>
+            </div>
+            <div class="item-4">
+                <div class="flex">
                     <div>1</div>
                     <div>2</div>
                     <div>3</div>
@@ -490,6 +501,34 @@ export default defineComponent({
                     background: darkorange;
                 }
             }
+
+            .flex {
+                width: 100px;
+                height: 100px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                line-height: 30px;
+                text-align: center;
+
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                // align-items: stretch;
+                & > div {
+                    width: 30%;
+                    margin-bottom: 5%;
+                    background: greenyellow;
+                }
+
+                // & > div:nth-of-type(n + 7) {
+                //     margin-bottom: 0;
+                // }
+                & > div:nth-last-of-type(-n + 3) {
+                    margin-bottom: 0;
+                }
+            }
         }
         .item-5 {
             width: 200px;
@@ -693,8 +732,7 @@ export default defineComponent({
                 width: 100px;
                 // height: 100px;
                 // -webkit-box-reflect: below 1px -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.9)));
-                -webkit-box-reflect: below 1px
-                    linear-gradient(to bottom, transparent, transparent 50%, rgba(0, 0, 0, 0.8));
+                -webkit-box-reflect: below 1px linear-gradient(to bottom, transparent, transparent 50%, rgba(0, 0, 0, 0.8));
                 // linear-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.9)));
             }
             // background: element(imghym);
