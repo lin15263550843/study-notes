@@ -15,7 +15,7 @@ bst.put(200, 200);
 bst.put(300, 300);
 bst.put(180, 180);
 bst.put(360, 360);
-console.log('bst-------------------------->>>', bst);
+// console.log('bst-------------------------->>>', bst);
 (window as any).bst = bst;
 /**
  * 104. 二叉树的最大深度
@@ -52,4 +52,4 @@ var levelOrder = function (root) {
     }
     return res;
 };
-console.log('二叉树的层序遍历：', levelOrder(bst.root));
+// console.log('二叉树的层序遍历：', levelOrder(bst.root));
