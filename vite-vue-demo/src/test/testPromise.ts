@@ -1,7 +1,6 @@
 // @ts-nocheck
 // function testPromise() {
 //     const obj = { name: 'obj' };
-
 //     const p0 = new Promise((resolve, reject) => {
 //         setTimeout(() => {
 //             // resolve('resolve ~~~');
@@ -56,58 +55,60 @@
 //         console.log('reject 执行了，返回结果：', err); // 不能捕获到上边抛出的异常
 //     },
 // );
+
+// ----------------------------------------------------------------------------------
 /**
  * 面试题
  */
-Promise.resolve()
-    // then 1-1
-    .then(() => {
-        console.log(0);
-        // 1.直接 return 一个值，相当于直接 resolve(4)
-        // return 4;
+// Promise.resolve()
+//     // then 1-1
+//     .then(() => {
+//         console.log(0);
+//         // 1.直接 return 一个值，相当于直接 resolve(4)
+//         // return 4;
 
-        // 2.return thenable 的值
-        // return {
-        //     // 本次的事件循环，不会执行  resolve(4)，会产生个新的微任务，添加到微任务队列里，放到下一次的微任务执行
-        //     // then 1-1-1
-        //     then: function (resolve) {
-        //         // 大量的计算
-        //         resolve(4);
-        //     },
-        // };
+//         // 2.return thenable 的值
+//         // return {
+//         //     // 本次的事件循环，不会执行  resolve(4)，会产生个新的微任务，添加到微任务队列里，放到下一次的微任务执行
+//         //     // then 1-1-1
+//         //     then: function (resolve) {
+//         //         // 大量的计算
+//         //         resolve(4);
+//         //     },
+//         // };
 
-        // 3.return Promise
-        // 不是普通的值, 多加一次微任务
-        // Promise.resolve(4), 多加一次微任务
-        // 一共多加两次微任务
-        return Promise.resolve(4);
-    })
-    // then 1-2
-    .then(res => {
-        console.log(res);
-    });
+//         // 3.return Promise
+//         // 不是普通的值, 多加一次微任务
+//         // Promise.resolve(4), 多加一次微任务
+//         // 一共多加两次微任务
+//         return Promise.resolve(4);
+//     })
+//     // then 1-2
+//     .then(res => {
+//         console.log(res);
+//     });
 
-Promise.resolve()
-    // then 2-1
-    .then(() => {
-        console.log(1);
-    })
-    // then 2-2
-    .then(() => {
-        console.log(2);
-    })
-    // then 2-3
-    .then(() => {
-        console.log(3);
-    })
-    // then 2-4
-    .then(() => {
-        console.log(5);
-    })
-    // then 2-5
-    .then(() => {
-        console.log(6);
-    });
+// Promise.resolve()
+//     // then 2-1
+//     .then(() => {
+//         console.log(1);
+//     })
+//     // then 2-2
+//     .then(() => {
+//         console.log(2);
+//     })
+//     // then 2-3
+//     .then(() => {
+//         console.log(3);
+//     })
+//     // then 2-4
+//     .then(() => {
+//         console.log(5);
+//     })
+//     // then 2-5
+//     .then(() => {
+//         console.log(6);
+//     });
 
 // ----------------------------------------------------------------------------------
 
@@ -158,7 +159,7 @@ Promise.resolve()
 // ----------------------------------------------------------------------------------
 
 /**
- * 2. return thenable 的值
+ * 2. return Promise 的值
  */
 // 输出结果
 // 0
@@ -180,4 +181,46 @@ Promise.resolve()
 // then 2-4 => log(5) ; return undefined
 // then 2-5 => log(6) ; return undefined
 
+// ----------------------------------------------------------------------------------
+/**
+ * async await 相关面试题
+ */
+async function asyncF2() {
+    console.log('asyncF2');
+}
+const asyncF1 = async () => {
+    console.log('asyncF1 start');
+    await asyncF2();
+    console.log('asyncF1 end');
+};
+console.log('script start');
+setTimeout(() => {
+    console.log('setTimeout');
+});
+asyncF1();
+new Promise(resolve => {
+    console.log('promise1');
+    resolve();
+})
+    .then(() => {
+        console.log('promise2');
+        return new Promise(resolve => {
+            resolve();
+        });
+    })
+    .then(result => {
+        console.log('promise3', result);
+    });
+console.log('scirpt end');
+
+// 输出结果
+// script start
+// asyncF1 start
+// asyncF2
+// promise1
+// script end
+// asyncF1 end  !!! 注意 asyncF1 end 被加入到了微任务
+// promise2
+// promise3 undefined
+// setTimeout
 // ----------------------------------------------------------------------------------

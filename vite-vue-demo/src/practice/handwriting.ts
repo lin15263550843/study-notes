@@ -9,7 +9,10 @@ export function debounce(fn, delay) {
     let timer = null;
 
     return function (...args) {
-        if (timer) clearTimeout(timer);
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
         timer = setTimeout(() => {
             fn.apply(this, args);
             timer = null;
@@ -28,6 +31,20 @@ export function throttle(fn, interval) {
             fn.apply(this, args);
             last = now;
         }
+    };
+}
+/**
+ * 节流 定时器版
+ */
+export function throttle2(fn, interval) {
+    let timer;
+
+    return function (...args) {
+        if (timer) return;
+        timer = setTimeout(() => {
+            fn.apply(this, args);
+            timer = null;
+        }, interval);
     };
 }
 /**

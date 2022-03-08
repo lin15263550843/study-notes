@@ -62,8 +62,8 @@ export default app.mount('#app');
 // import '@/interviewQuestions/testThis'; // 测试 this 指向
 // import '@/test/testAssignOrSpreadOperator'; // 测试 浅拷贝
 // import '@/test/testMapOrObject'; // 测试 Map 和 Object 区别
-import '@/practice/handwriting';
-import '@/leetcode/find';
-import '@/leetcode/other';
-import '@/leetcode/sort';
-import '@/leetcode/tree';
+// import '@/practice/handwriting';
+// import '@/leetcode/find';
+// import '@/leetcode/other';
+// import '@/leetcode/sort';
+// import '@/leetcode/tree';
