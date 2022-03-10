@@ -2,24 +2,31 @@
     <div class="blank">
         <h3>blank</h3>
         <span v-bind:title="message"> 鼠标悬停几秒钟查看此处动态绑定的提示信息！ </span>
-        <div>{{ computedMsg }}</div>
+        <div v-if="vif">v-if {{ computedMsg }}</div>
+        <div v-else>v-else</div>
+        <button @click="vif = !vif">切换 v-if</button>
+        <button @click="vshow = !vshow">切换 v-show</button>
+        <div v-show="vshow">v-show</div>
+        <!-- <HelloWorld v-show="vshow" msg="Hello Vue 3 + TypeScript + Vite" /> -->
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, getCurrentInstance } from 'vue';
-import vue from 'vue';
-import { log } from 'console';
+import HelloWorld from '@/components/HelloWorld.vue';
 // import About from './About.vue';
 export default defineComponent({
-    // components: {
-    //     About,
-    // },
+    components: {
+        // About,
+        HelloWorld,
+    },
     data() {
         return {
             msg1: 111,
             msg2: 222,
             message: '页面加载于 ' + new Date().toLocaleString(),
+            vif: true,
+            vshow: true,
         };
     },
     computed: {
@@ -47,7 +54,7 @@ export default defineComponent({
     },
     created() {
         // console.log('blank  vue---------------------------------->>>', vue);
-        // console.log('blank  this---------------------------------->>>', this);
+        console.log('blank  this---------------------------------->>>', this);
         // console.log('blank  this.r1 === this.r2---------------------------------->>>', this.r1 === this.r2);
         this.msg1 = 1;
         this.msg2 = 2;
@@ -57,6 +64,9 @@ export default defineComponent({
         //         this.msg2 = 'updatedMsg2';
         //     }, 0);
         // }, 1000);
+    },
+    updated() {
+        console.log('v-if 和 v-show 都会触发 updated', this.vif, this.vshow);
     },
 });
 </script>
