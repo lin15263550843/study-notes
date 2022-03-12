@@ -23,9 +23,9 @@ module.exports = {
     extends: [
         'plugin:vue/essential',
         'eslint:recommended',
-        '@vue/typescript/recommended',
+        // '@vue/typescript/recommended',
         '@vue/prettier',
-        '@vue/prettier/@typescript-eslint',
+        // '@vue/prettier/@typescript-eslint',
     ],
     parserOptions: {
         ecmaVersion: 2020,
@@ -287,9 +287,9 @@ module.exports = {
         // yoda: ['error', 'always'],
         // '@typescript-eslint/no-inferrable-types': 'off', // 关闭类型推断
         // '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-var-requires': 0,
+        // '@typescript-eslint/no-var-requires': 0,
         // '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/no-explicit-any': ['off'],
+        // '@typescript-eslint/no-explicit-any': ['off'],
         'require-atomic-updates': 'off',
     },
 };

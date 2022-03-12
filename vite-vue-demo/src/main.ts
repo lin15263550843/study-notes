@@ -67,3 +67,4 @@ export default app.mount('#app');
 // import '@/leetcode/other';
 // import '@/leetcode/sort';
 // import '@/leetcode/tree';
+import '@/test/testThis'; // 测试 this
