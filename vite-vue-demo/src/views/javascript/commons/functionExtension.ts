@@ -46,8 +46,9 @@ Function.prototype.myCall = function (thisArg: any, ...args: any) {
  */
 Function.prototype.myBind = function (thisArg: any, ...args: any) {
     const self = this;
-    return function (...argArray: any[]) {
-        return self.myApply(thisArg, [...args, ...argArray]);
+    return function Fn(...argArray: any[]) {
+        const bindThis = this instanceof Fn ? this : thisArg;
+        return self.myApply(bindThis, [...args, ...argArray]);
     };
 };
 /**
@@ -120,3 +121,16 @@ console.log('测试 myBind------------------------------------------------------
 f.bind(o1, 4, 5, 6)(7, 8, 9);
 f.myBind(o1, 4, 5, 6)(7, 8, 9);
 console.log('----------------------------------------------------------------------------------');
+
+setTimeout(() => {
+    console.log('-----FooFooFoo-----------------------------------------------------------------------------');
+    function Foo() {
+        console.log('Foo', this);
+
+        this.name = 'foo';
+    }
+    var Fn = Foo.myBind({ name2: 'fn' });
+    // var Fn = Foo.bind({ name2: 'fn' });
+    console.log(222, Fn());
+    console.log(111, new Fn());
+}, 1000);
