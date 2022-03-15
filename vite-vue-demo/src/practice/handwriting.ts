@@ -330,12 +330,31 @@ MyPromise.any = function (promises) {
             MyPromise.resolve(promise).then(resolve, err => {
                 errs.push(err);
                 if (len === errs.length) {
-                    reject(new AggregateError(err));
+                    reject(errs);
+                    // reject(new AggregateError(errs));
                 }
             });
         });
     });
 };
+// const p3 = new MyPromise((resolve, reject) => {
+//     setTimeout(() => {
+//         reject('p3');
+//     }, 200);
+// });
+// const p4 = new MyPromise((resolve, reject) => {
+//     setTimeout(() => {
+//         reject('p4');
+//     }, 150);
+// });
+// MyPromise.any([p3, p4])
+//     .then(res => {
+//         console.log('MyPromise.any [ p3 + p4 ] res--------------------->>>', res);
+//     })
+//     .catch(err => {
+//         console.log('MyPromise.any [ p3 + p4 ] err--------------------->>>', err);
+//         // console.log('MyPromise.any [ p3 + p4 ] err--------------------->>>', err.errors);
+//     });
 /**
  * 类型判断
  */
@@ -387,6 +406,9 @@ Function.prototype.myCall = function (thisArg, ...args) {
 };
 function testMyCall(...args) {
     console.log('args ---------->>>', args);
+    if (typeof this === 'object' && this !== null) {
+        this.name = 'testMyCall';
+    }
     return this;
 }
 // console.log('myCall 结果：', testMyCall.myCall({ x: 123 }, 1, 2, 3));
@@ -426,13 +448,17 @@ Function.prototype.myBind = function (thisArg, ...args1) {
         throw new Error(`the ${this} is not a function`);
     }
     const fn = this;
-    return function (...args2) {
-        return fn.call(thisArg, ...args1, ...args2);
+    return function Fn(...args2) {
+        const bindThis = this instanceof Fn ? this : thisArg;
+        return fn.call(bindThis, ...args1, ...args2);
     };
 };
 // console.log('myCall 结果：', testMyCall.myBind({ x: 123 }, 1, 2, 3)(4, 5, 6));
 // console.log('myCall 结果：', testMyCall.myBind(null, 1, 2, 3)(4, 5, 6));
 // console.log('myCall 结果：', testMyCall.myBind(999, 1, 2, 3)(4, 5, 6));
+// const bindTestMyCall = testMyCall.myBind({ x: 123 }, 1, 2, 3);
+// const bindTestMyCall = testMyCall.bind({ x: 123 }, 1, 2, 3);
+// console.log('bindTestMyCall 结果：', new bindTestMyCall(4, 5, 6));
 
 /**
  * ajax 请求

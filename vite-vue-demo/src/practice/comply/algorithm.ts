@@ -49,3 +49,27 @@ function lengthOfLongestSubstring(str) {
     return res;
 }
 // console.log('最长不含重复字符的子字符串:', lengthOfLongestSubstring('abcabcbb'));
+/**
+ * 全排列
+ */
+const _permute = string => {
+    // 补全代码 16:37 |
+    if (typeof string !== 'string') {
+        throw new Error(`the ${string} is not a string`);
+    }
+    const len = string.length;
+    const result = [];
+    const arr = string.split('');
+    const rec = (arr, l, res) => {
+        if (res.length === len) {
+            result.push(res);
+            return;
+        }
+        for (let i = l; i < len; i++) {
+            rec(arr, l + 1, (res += arr[i]));
+        }
+    };
+    rec(arr, 0, '');
+    return result;
+};
+console.log('全排列结果：', _permute('abc'));
