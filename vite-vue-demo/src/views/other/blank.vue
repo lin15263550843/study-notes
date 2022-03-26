@@ -3,11 +3,12 @@
         <h3>blank</h3>
         <span v-bind:title="message"> 鼠标悬停几秒钟查看此处动态绑定的提示信息！ </span>
         <!-- <div v-if="vif">v-if {{ computedMsg }}</div> -->
-        <!-- <div v-else>v-else</div>
-        <button @click="vif = !vif">切换 v-if</button>
+        <!-- <div v-else>v-else</div> -->
+        <!-- <button @click="vif = !vif">切换 v-if</button> -->
         <button @click="vshow = !vshow">切换 v-show</button>
-        <div v-show="vshow">v-show</div>
-        <input v-if="vif" type="text" /> -->
+        <div v-show="vshow" style="display: inline-block">v-show</div>
+        <span>v-show 会直接移除 style 的 display 属性，无论之前设置了啥</span>
+        <!-- <input v-if="vif" type="text" /> -->
         <!-- <HelloWorld v-show="vshow" msg="Hello Vue 3 + TypeScript + Vite" /> -->
         <div>{{ obj1.obj2.obj3.obj4.obj5.obj6.x }}</div>
     </div>

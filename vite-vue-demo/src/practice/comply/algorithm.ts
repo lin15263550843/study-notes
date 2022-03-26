@@ -26,7 +26,7 @@ function getFrequency(arr) {
 // console.log(getFrequency([1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 3, 3, 5, 6, 78, 82]));
 /**
  * 剑指 Offer 48. 最长不含重复字符的子字符串
- * 字符串出现的不重复最长长度
+ * 字符串出现的不重复最长子字符串长度
  */
 // abcaaab
 function lengthOfLongestSubstring(str) {
