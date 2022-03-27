@@ -50,26 +50,92 @@ function lengthOfLongestSubstring(str) {
 }
 // console.log('最长不含重复字符的子字符串:', lengthOfLongestSubstring('abcabcbb'));
 /**
- * 全排列
+ * 47. 全排列 II
+ * 给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。
  */
-const _permute = string => {
-    // 补全代码 16:37 |
-    if (typeof string !== 'string') {
-        throw new Error(`the ${string} is not a string`);
-    }
-    const len = string.length;
+const permuteUnique = function (nums) {
+    if (!Array.isArray(nums)) return [];
+    const len = nums.length;
+    const flags = new Array(len).fill(false);
     const result = [];
-    const arr = string.split('');
-    const rec = (arr, l, res) => {
-        if (res.length === len) {
-            result.push(res);
+    const rec = (arr, res) => {
+        if (len === res.length) {
+            result.push([...res]);
             return;
         }
-        for (let i = l; i < len; i++) {
-            rec(arr, l + 1, (res += arr[i]));
+        for (let i = 0; i < len; i++) {
+            if (flags[i] || (i > 0 && arr[i] === arr[i - 1] && !flags[i - 1])) {
+                continue;
+            }
+            res.push(arr[i]);
+            flags[i] = true;
+            rec(arr, res);
+            res.pop();
+            flags[i] = false;
         }
     };
-    rec(arr, 0, '');
+    nums.sort((a, b) => a - b);
+    rec(nums, []);
     return result;
 };
-console.log('全排列结果：', _permute('abc'));
+/**
+ * 剑指 Offer 38. 字符串的排列
+ * 输入一个字符串，打印出该字符串中字符的所有排列。
+ */
+const permutation = function (s) {
+    if (typeof s !== 'string') return [];
+    const arr = s.split('');
+    const len = arr.length;
+    const flags = new Array(len).fill(false);
+    const result = [];
+    const rec = (arr, res) => {
+        if (res.length === len) {
+            result.push(res.join(''));
+            return;
+        }
+        for (let i = 0; i < len; i++) {
+            if (flags[i] || (i > 0 && arr[i] === arr[i - 1] && !flags[i - 1])) {
+                continue;
+            }
+            // if (flags[i]) {
+            //     continue;
+            // }
+            res.push(arr[i]);
+            flags[i] = true;
+            rec(arr, res);
+            res.pop();
+            flags[i] = false;
+        }
+    };
+    arr.sort((a, b) => a.charCodeAt() - b.charCodeAt());
+    rec(arr, []);
+    // return [...new Set(result)];
+    return result;
+};
+// console.log('全排列结果：', permutation('abc'));
+// console.log('全排列结果：', permutation('aab'));
+console.log('全排列结果：', permutation('suvyls'));
+
+/**
+ * 全排列 这个是错误的！！！！！！！！！！！！！！！！！！！！
+ */
+// const _permute = string => {
+//     // 补全代码 16:37 |
+//     if (typeof string !== 'string') {
+//         throw new Error(`the ${string} is not a string`);
+//     }
+//     const len = string.length;
+//     const result = [];
+//     const arr = string.split('');
+//     const rec = (arr, l, res) => {
+//         if (res.length === len) {
+//             result.push(res);
+//             return;
+//         }
+//         for (let i = l; i < len; i++) {
+//             rec(arr, l + 1, (res += arr[i]));
+//         }
+//     };
+//     rec(arr, 0, '');
+//     return result;
+// };
