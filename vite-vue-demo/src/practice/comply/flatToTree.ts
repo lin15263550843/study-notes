@@ -1,5 +1,6 @@
 // @ts-nocheck
 /**
+ * 58 面试题
  * 扁平化数据转成树形结构
  */
 let areaArr = [
@@ -50,6 +51,33 @@ function createTree(arr) {
     // console.log(map)
 
     return result;
+}
+
+function fn(arr) {
+    if (!Array.isArray(arr)) {
+        throw new Error(`the ${arr} is not a array`);
+    }
+    const res = [];
+    const map = new Map();
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        const cur = arr[i];
+        const { id, parent } = cur;
+        const children = map.get(id);
+        if (children) {
+            cur.children = children;
+        } else {
+            cur.children = [];
+            map.set(id, cur.children);
+        }
+
+        if (parent === 'root') {
+            res.push(cur);
+        } else {
+            map.set(parent, [cur]);
+        }
+    }
+    return res;
 }
 
 // function createTree(arr) {
@@ -110,3 +138,51 @@ function createTree(arr) {
 // }
 console.log(createTree(areaArr));
 console.log('areaArr', areaArr);
+
+// 58 同城面试题
+let workflows = [
+    { id: 'a1', name: '初始人群', parent: 'root' },
+    { id: 'a2', name: '动作', parent: 'a1' },
+    { id: 'a3', name: '时间', parent: 'az' },
+    { id: 'a4', name: '人群分叉', parent: 'a3' },
+    { id: 'a5', name: '人群', parent: 'a4' },
+    { id: 'ax', name: '是', parent: 'a5' },
+    { id: 'ay', name: '否', parent: 'a5' },
+    { id: 'a6', name: '人群', parent: 'a4' },
+    { id: 'a7', name: '展示运营位', parent: 'a6' },
+    { id: 'a9', name: '引入计划', parent: 'a7' },
+    { id: 'a10', name: '触发分叉', parent: 'a9' },
+    { id: 'a11', name: '动作', parent: 'a10' },
+    { id: 'a12', name: '动作', parent: 'a10' },
+    { id: 'a13', name: '时间', parent: 'a10' },
+    { id: 'a14', name: '发券', parent: 'a11' },
+    { id: 'a15', name: '发券', parent: 'a12' },
+    { id: 'a16', name: '发消息', parent: 'a13' },
+    { id: 'az', name: '插入节点', parent: 'a2' },
+];
+function fn(arr) {
+    if (!Array.isArray(arr)) {
+        throw new Error(`the ${arr} is not a array`);
+    }
+    const res = [];
+    const map = new Map();
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        const cur = arr[i];
+        const { id, parent } = cur;
+        const children = map.get(id);
+        if (children) {
+            cur.children = children;
+        } else {
+            cur.children = [];
+            map.set(id, cur.children);
+        }
+
+        if (parent === 'root') {
+            res.push(cur);
+        } else {
+            map.set(parent, [cur]);
+        }
+    }
+    return res;
+}
