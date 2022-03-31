@@ -19,6 +19,7 @@ export function debounce(fn, delay) {
         }, delay);
     };
 }
+
 /**
  * 节流
  */
@@ -52,19 +53,18 @@ export function throttle2(fn, interval) {
  */
 export function currying(arg) {
     const args = [arg];
-    function add(arg) {
-        if (arg === undefined) return add;
-        args.push(arg);
-        return add;
-    }
-
-    add.toString = function () {
+    const _add = arg => {
+        if (arg !== undefined) {
+            args.push(arg);
+        }
+        return _add;
+    };
+    _add.toString = function () {
         return args.reduce((sum, cur) => {
             return sum + cur;
         });
     };
-
-    return add;
+    return _add;
 }
 // console.log('currying 结果：' + currying(1)(2)(3)(4)(5)()());
 /**
@@ -139,8 +139,7 @@ export function myNew(constr, ...args) {
     const obj = Object.create(constr.prototype);
     const res = constr.apply(obj, args);
     // 注意：function 也是函数对象
-    const flag = res !== null && (typeof res === 'object' || typeof res === 'function');
-    return flag ? res : obj;
+    return res instanceof Object ? res : obj;
 }
 function ConstrMyNew(arg) {
     this.x = arg;
