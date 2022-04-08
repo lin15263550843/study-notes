@@ -1,4 +1,9 @@
-import { name as exportTest2Name } from './exportTest2';
+import { name as exportTest2Name, x as exportTest2NameX } from './exportTest2';
+console.log('exportTest2NameX', exportTest2NameX);
+setTimeout(() => {
+    console.log('exportTest2NameX', exportTest2NameX);
+}, 2000);
+
 const name = 'exportTest2';
 // const x = '哈哈哈';
 // const x = { a: 1 };

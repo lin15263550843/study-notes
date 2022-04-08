@@ -22,6 +22,7 @@ export default app.mount('#app');
  */
 // import './views/javascript/commons';
 // import '@/test/test';
+// import '@/test/exportTest';
 // import '@/test/heepPriorityQueueTest'; // 基于二叉堆的优先队列
 // import '@/views/javascript/commons/functionExtension'; // 手写 apply、call、bind
 // import '@/views/javascript/commons/functionExtensionJS'; // 适用于 es5 版本的手写 apply、call、bind
@@ -71,3 +72,4 @@ export default app.mount('#app');
 // import '@/test/testSCope'; // 测试 作用域
 import '@/practice/comply/algorithm'; // 算法实现
 // import '@/practice/comply/logic'; // 逻辑实现
+// import '@/practice/comply/outputResult'; // 结果输出

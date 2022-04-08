@@ -7,7 +7,7 @@
         <!-- <button @click="vif = !vif">切换 v-if</button> -->
         <button @click="vshow = !vshow">切换 v-show</button>
         <div v-show="vshow" style="display: inline-block">v-show</div>
-        <span>v-show 会直接移除 style 的 display 属性，无论之前设置了啥</span>
+        <span> | 如果之前没有设置 display 的值，v-show 会直接移除 style 的 display 属性，如果之前设置了 display ，则恢复到之前的设置的值</span>
         <!-- <input v-if="vif" type="text" /> -->
         <!-- <HelloWorld v-show="vshow" msg="Hello Vue 3 + TypeScript + Vite" /> -->
         <div>{{ obj1.obj2.obj3.obj4.obj5.obj6.x }}</div>
@@ -59,7 +59,7 @@ export default defineComponent({
     },
     created() {
         // console.log('blank  vue---------------------------------->>>', vue);
-        // console.log('blank  this---------------------------------->>>', this);
+        console.log('blank  this---------------------------------->>>', this);
         // console.log('blank  this.r1 === this.r2---------------------------------->>>', this.r1 === this.r2);
         // this.msg1 = 1;
         // this.msg2 = 2;

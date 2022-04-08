@@ -1,4 +1,4 @@
-import { name as exportTestName } from './exportTest';
+// import { name as exportTestName } from './exportTest';
 const name = 'exportTest2';
 // const x = '哈哈哈';
 // const x = { a: 1 };
@@ -22,9 +22,10 @@ export const ecs = s;
 export const els = s;
 // export o
 
-export { name, exportTestName };
+export { name };
+// export { exportTestName };
 console.log('【exportTest2】name：', name);
-console.log('【exportTest2】exportTestName：', exportTestName);
+// console.log('【exportTest2】exportTestName：', exportTestName);
 
 // export default x;
 // export default f;
