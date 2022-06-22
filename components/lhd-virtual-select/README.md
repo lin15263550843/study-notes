@@ -1,3 +1,24 @@
+### 使用方法 
+
+- 1、安装组件
+```
+npm i lhd-virtual-select
+```
+
+- 2、引入组件，并挂载
+```
+import VirtualSelect from 'lhd-virtual-select';
+import 'lhd-virtual-select/dist/css/index.css';
+
+Vue.use(VirtualSelect);
+```
+
+
+#### 源码地址
+[源码地址(github)](https://github.com/linhongdong/study-notes.git/components/lhd-virtual-select/)
+
+
+
 ##### VirtualSelect 组件设计
 
 虚拟下拉滚动组件 支持 10 万 + 数据不卡顿

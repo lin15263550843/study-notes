@@ -1,6 +1,6 @@
 {
     "name": "lhd-virtual-select",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "虚拟下拉滚动组件",
     "main": "dist/virtualSelect.min.js",
     "scripts": {
