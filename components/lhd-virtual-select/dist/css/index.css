@@ -1,0 +1,196 @@
+@charset "UTF-8";
+.my-virtual-select[data-v-4236ed3e] {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  font-size: 13px;
+  color: #555;
+}
+.my-virtual-select[data-v-4236ed3e] ::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 6px;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    height: 6px;
+}
+.my-virtual-select[data-v-4236ed3e] ::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    box-shadow: inset 0 0 5px rgba(97, 184, 179, 0.1);
+    background: #dadada;
+    border-radius: 6px;
+}
+.my-virtual-select[data-v-4236ed3e] ::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    box-shadow: none;
+    border-radius: 6px;
+    background: transparent;
+}
+.my-virtual-select .select-input-box[data-v-4236ed3e] {
+    position: relative;
+    background-color: white;
+}
+.my-virtual-select .select-input-box .input[data-v-4236ed3e] {
+      flex: 1;
+      width: 100%;
+      padding: 0 32px 0 15px;
+      height: 32px;
+      line-height: 32px;
+      border-radius: 4px;
+      border: 1px solid #dcdfe6;
+      outline: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+}
+.my-virtual-select .select-input-box .input[data-v-4236ed3e]::placeholder {
+        color: #c0c4cc;
+}
+.my-virtual-select .select-input-box .input[data-v-4236ed3e]:focus {
+        border-color: #409eff;
+}
+.my-virtual-select .select-input-box .is-disabled[data-v-4236ed3e] {
+      background-color: #f5f7fa;
+      border-color: #e4e7ed;
+      color: #c0c4cc;
+      cursor: not-allowed;
+}
+.my-virtual-select .select-input-box .suffix-arrow[data-v-4236ed3e] {
+      flex: none;
+      width: 32px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+}
+.my-virtual-select .select-input-box .suffix-arrow[data-v-4236ed3e]::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        position: relative;
+        top: -2px;
+        border-right: 1px solid #c0c4cc;
+        border-bottom: 1px solid #c0c4cc;
+        background: white;
+        transform: rotate(45deg);
+        transition: all 300ms;
+}
+.my-virtual-select .select-input-box .suffix-arrow-focus[data-v-4236ed3e]::after {
+      top: 2px;
+      transform: rotate(-135deg);
+}
+.my-virtual-select .select-input-box .suffix-clear[data-v-4236ed3e] {
+      flex: none;
+      width: 32px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      display: none;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: center;
+}
+.my-virtual-select .select-input-box .suffix-clear .circle[data-v-4236ed3e] {
+        position: relative;
+        width: 13px;
+        height: 13px;
+        border: 1px solid #c0c4cc;
+        border-radius: 100%;
+        background: white;
+}
+.my-virtual-select .select-input-box .suffix-clear .circle[data-v-4236ed3e]::before {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 5px;
+          width: 1px;
+          height: 8px;
+          background-color: #c0c4cc;
+          transform: rotate(-45deg);
+}
+.my-virtual-select .select-input-box .suffix-clear .circle[data-v-4236ed3e]::after {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 5px;
+          width: 1px;
+          height: 8px;
+          background-color: #c0c4cc;
+          transform: rotate(45deg);
+}
+.my-virtual-select .select-input-box:hover .suffix-clear[data-v-4236ed3e] {
+      display: flex;
+}
+.my-virtual-select .select-dropdown-box[data-v-4236ed3e] {
+    z-index: 999999;
+    position: absolute;
+    top: auto;
+    left: 0;
+    min-width: 100%;
+    margin-top: 12px;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #e4e7ed;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    color: #333;
+}
+.my-virtual-select .select-dropdown-box .top-arrow[data-v-4236ed3e] {
+      position: absolute;
+      top: -12px;
+      left: 16px;
+      width: 0;
+      height: 0;
+      border: 6px solid transparent;
+      border-bottom-color: #e4e7ed;
+}
+.my-virtual-select .select-dropdown-box .top-arrow[data-v-4236ed3e]::after {
+        content: '';
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: -5px;
+        left: -6px;
+        border: 6px solid transparent;
+        border-bottom-color: white;
+}
+.my-virtual-select .select-dropdown-box .list-container[data-v-4236ed3e] {
+      padding: 6px 0;
+      overflow: auto;
+}
+.my-virtual-select .select-dropdown-box .list-container .real-height-box .list .item[data-v-4236ed3e] {
+        padding: 0 20px;
+        position: relative;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 800px;
+        cursor: pointer;
+}
+.my-virtual-select .select-dropdown-box .list-container .real-height-box .list .item[data-v-4236ed3e]:hover {
+          background-color: #f5f7fa;
+}
+.my-virtual-select .select-dropdown-box .list-container .real-height-box .list .is-selected[data-v-4236ed3e] {
+        font-weight: bold;
+        color: #409eff;
+}
+.my-virtual-select .select-dropdown-box .list-container .empty-text[data-v-4236ed3e] {
+        margin: 0;
+        padding: 4px 0;
+        text-align: center;
+        line-height: 16px;
+        color: #999;
+}
+
+
+/*# sourceMappingURL=index.css.map*/
