@@ -23,10 +23,8 @@ let areaArr = [
 // 算是最优解了
 function createTree(arr) {
     if (!arr || arr.length === 0) return [];
-
     const result = [];
     const map = new Map();
-
     arr.forEach(item => {
         const { id, pid } = item;
         const children = map.get(id);
@@ -36,7 +34,6 @@ function createTree(arr) {
             item.chidren = [];
             map.set(id, item.chidren);
         }
-
         if (pid) {
             const a = map.get(pid);
             if (a) {
@@ -48,8 +45,6 @@ function createTree(arr) {
             result.push(item);
         }
     });
-    // console.log(map)
-
     return result;
 }
 
@@ -186,3 +181,4 @@ function fn(arr) {
     }
     return res;
 }
+

@@ -17,3 +17,4 @@ export function isAvailablePhone(sEmail: string) {
     // if (typeof sEmail !== 'string') return false;
     return /^1[3-9][0-9]{9}/.test(sEmail);
 }
+

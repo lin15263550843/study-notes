@@ -124,3 +124,4 @@ async function asyncFun() {
 const asyncFunResult = asyncFun();
 console.log('asyncFun asyncFunResult----------- --->>>', asyncFunResult);
 console.log('***后继代码还会接着执行***');
+

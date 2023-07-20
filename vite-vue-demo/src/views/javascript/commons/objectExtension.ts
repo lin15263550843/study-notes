@@ -30,7 +30,8 @@ const _objectFreeze = object => {
         });
     });
 
-    Object.preventExtensions(object);
+    // Object.preventExtensions(object);
+    Object.seal(object);
 };
 
 function test() {
@@ -89,3 +90,20 @@ function test() {
     // return result;
 }
 console.log('测试结果：', test());
+
+
+Function.prototype._call = function(thisArg, ...args = []) {
+    if(typeof this !== 'function') {
+        throw Error('非函数不能调用')
+    }
+    if(thisArg === undefined || thisArg === null) {
+        thisArg = window
+    } else {
+        thisArg = Object(thisArg)
+    }
+    const fn = Symbol('fn')
+    const thisArg[fn]  = this
+    const result = thisArg[fn](...args)
+    delete thisArg[fn]
+    return result
+}

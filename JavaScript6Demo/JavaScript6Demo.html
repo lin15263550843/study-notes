@@ -1,99 +1,114 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>JavaScript</title>
+    <style>
+      html {
+        width: 100%;
+        height: 100%;
+        background: #333;
+        color: black;
+      }
 
-<head>
-	<meta charset="UTF-8">
-	<title>JavaScript</title>
-	<style>
-		html {
-			width: 100%;
-			height: 100%;
-			background: #333;
-			color: black;
-		}
+      h1 {
+        color: #444;
+      }
 
-		h1 {
-			color: #444;
-		}
+      #id-priority-level {
+        /* color: blue; */
+      }
 
-		#id-priority-level {
-			/* color: blue; */
-		}
-
-		/*和 span[attribute='attribute'] 、 span[attribute2~='attribute'] 同级 */
-		/* span[attribute] {
+      /*和 span[attribute='attribute'] 、 span[attribute2~='attribute'] 同级 */
+      /* span[attribute] {
 			color: seagreen;
 		} */
 
-		/* span[attribute='attribute'] {
+      /* span[attribute='attribute'] {
 			color: white;
 		} */
 
-		/* span[attribute2~='attribute'] {
+      /* span[attribute2~='attribute'] {
 			color: lightcoral;
 		} */
 
-		/* 不好使？？？ */
-		span[attribute|='attr'] {
-			color: yellow;
-		}
+      /* 不好使？？？ */
+      span[attribute|="attr"] {
+        color: yellow;
+      }
 
-		/* .calss-priority-level {
+      /* .calss-priority-level {
 			color: red;
 		} */
 
-		span {
-			color: black;
-		}
-	</style>
-</head>
+      span {
+        color: black;
+      }
+    </style>
+  </head>
 
-<body>
-	<script type="text/javascript" src="./JavaScript6Demo.js" charset="utf-8"></script>
-	<script type="text/javascript" charset="utf-8">
-		initTest()
-	</script>
-	<!-- <script type="module" charset="utf-8">
+  <body>
+    <script
+      type="text/javascript"
+      src="./JavaScript6Demo.js"
+      charset="utf-8"
+    ></script>
+    <script type="text/javascript" src="./test.js" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+      console.log("h1---", document.getElementById("h1")); // ...
+      initTest();
+    </script>
+    <!-- <script type="module" charset="utf-8">
 		import testModule from './testModule.js'
 		console.log('testModule.testModuleVal==========前', testModule.testModuleVal);
 		testModule.testModuleFun()
 		console.log('testModule.testModuleVal==========后', testModule.testModuleVal);
 
 	</script> -->
-	<!-- <script type="module" charset="utf-8">
+    <!-- <script type="module" charset="utf-8">
 		import { testModuleVal, testModuleFun } from './testModule.js'
 		console.log('testModuleVal==========前', testModuleVal);
 		testModuleFun()
 		console.log('testModule==========后', testModuleVal);
 
 	</script> -->
-	<div>
-		<h1>JavaScript 权威指南 第 6 版</h1>
-		<div>
-			<span attribute="attribute" attribute2="attribute attribute2" class="calss-priority-level"
-				  id="id-priority-level">css 选择器优先级</span>
-			<span id="id-priority-level">css 选择器优先级</span>
-		</div>
-		<div name="test_name" class="test1 test3 test2">
-			<a href="javascript:new Date().toLocaleTimeString();">what time is it?</a>
-			<a href="javascript:alert(new Date().toLocaleTimeString())">检查时间，而不必覆盖整个文档</a>
-			<a href="javascript:void window.open('about:blank');">what time is it?</a>
-		</div>
-		<form name="test_form_name"></form>
-	</div>
-	<script>
-		let name = decodeURIComponent(window.location.search.substring(1)) || ''
-		document.write('Hello ' + name)
+    <div>
+      <h1 id="h1">JavaScript 权威指南 第 6 版</h1>
+      <div>
+        <span
+          attribute="attribute"
+          attribute2="attribute attribute2"
+          class="calss-priority-level"
+          id="id-priority-level"
+          >css 选择器优先级</span
+        >
+        <span id="id-priority-level">css 选择器优先级</span>
+      </div>
+      <div name="test_name" class="test1 test3 test2">
+        <a href="javascript:new Date().toLocaleTimeString();"
+          >what time is it?</a
+        >
+        <a href="javascript:alert(new Date().toLocaleTimeString())"
+          >检查时间，而不必覆盖整个文档</a
+        >
+        <a href="javascript:void window.open('about:blank');"
+          >what time is it?</a
+        >
+      </div>
+      <form name="test_form_name"></form>
+    </div>
+    <script>
+      console.log("h1---", document.getElementById("h1"));
+      let name = decodeURIComponent(window.location.search.substring(1)) || "";
+      document.write("Hello " + name);
 
-		// console.log('document.getElementById(\'id-priority-level\')========================', document.getElementById('id-priority-level'))
-		// console.log('document.test_form_name', document.test_form_name);
-		// console.log('document.getElementsByClassName(\'test\')', document.getElementsByClassName('test1'));
-		// console.log('document.getElementsByClassName(\'TEST\')', document.getElementsByClassName('TEST1'));
-		// console.log('document.getElementsByClassName(\'test\')', document.getElementsByClassName('test1 test3 test2'));
-		// console.log('document.getElementsByClassName(\'test\')', document.getElementsByClassName('test1 test2 test3'));
-	</script>
-	<!-- file:///E:/projects/demo/JavaScript6Demo/JavaScript6Demo.html?%3Cscript%3Ealert(%27David%27)%3C/script%3E -->
-
-</body>
-
+      // console.log('document.getElementById(\'id-priority-level\')========================', document.getElementById('id-priority-level'))
+      // console.log('document.test_form_name', document.test_form_name);
+      // console.log('document.getElementsByClassName(\'test\')', document.getElementsByClassName('test1'));
+      // console.log('document.getElementsByClassName(\'TEST\')', document.getElementsByClassName('TEST1'));
+      // console.log('document.getElementsByClassName(\'test\')', document.getElementsByClassName('test1 test3 test2'));
+      // console.log('document.getElementsByClassName(\'test\')', document.getElementsByClassName('test1 test2 test3'));
+    </script>
+    <!-- file:///E:/projects/demo/JavaScript6Demo/JavaScript6Demo.html?%3Cscript%3Ealert(%27David%27)%3C/script%3E -->
+  </body>
 </html>

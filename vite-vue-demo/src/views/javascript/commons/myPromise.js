@@ -431,3 +431,35 @@ MyPromise.any([p3, p4])
 //     .finally(() => {
 //         console.log('test finally finally---------------------------------------------->>>finally');
 //     });
+
+// function runAsync(x) {
+//     const p = new Promise(r =>
+//         setTimeout(() => {
+//             r(x, console.log(x));
+//         }, 1000),
+//     );
+//     return p;
+// }
+// function runReject(x) {
+//     const p = new Promise((r, rej) =>
+//         setTimeout(() => {
+//             rej(`Error: ${x}`, console.log(x));
+//         }, 1000 * x),
+//     );
+//     return p;
+// }
+// Promise.all([runAsync(1), runReject(4), runAsync(3), runReject(2)])
+//     .then(res => console.log(res))
+//     .catch(err => console.log(err));
+
+// async function a1() {
+//     console.log(1);
+//     await a2();
+//     console.log(11);
+// }
+// async function a2() {
+//     console.log(2);
+// }
+// a1();
+// console.log(0);
+

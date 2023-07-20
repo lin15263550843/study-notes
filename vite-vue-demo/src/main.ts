@@ -70,6 +70,8 @@ export default app.mount('#app');
 // import '@/leetcode/tree';
 // import '@/test/testThis'; // 测试 this
 // import '@/test/testSCope'; // 测试 作用域
-import '@/practice/comply/algorithm'; // 算法实现
+// import '@/practice/comply/algorithm'; // 算法实现
 // import '@/practice/comply/logic'; // 逻辑实现
 // import '@/practice/comply/outputResult'; // 结果输出
+// import '@/leetcode/array';
+

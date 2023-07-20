@@ -12,10 +12,8 @@ interface DebounceConfig {
  * @returns 防抖函数
  */
 export function debounce(fn: Function, delay: number, config?: DebounceConfig) {
-    const { immediate, resultCallback } = config ?? {};
-
-    let isInvoke = false; // 阶段性立即执行标识
-
+    const { immediate, resultCallback } = config || {};
+    let isInvoke = false; // 阶段性立即执行标识，当前阶段只执行一次
     // 定义一个定时器，保存上一次的定时器
     let timer: any = null;
     // 真正执行的函数
@@ -26,7 +24,9 @@ export function debounce(fn: Function, delay: number, config?: DebounceConfig) {
             isInvoke = true;
         }
         // 取消上一次的定时器
-        if (timer !== null) clearTimeout(timer);
+        if (timer !== null) {
+            clearTimeout(timer);
+        }
         // 延迟执行
         timer = setTimeout(() => {
             // 真正需要执行的函数
@@ -36,14 +36,12 @@ export function debounce(fn: Function, delay: number, config?: DebounceConfig) {
             isInvoke = false;
         }, delay);
     }
-
     // 取消
     _debounce.cancel = () => {
         if (timer) clearTimeout(timer);
         timer = null;
         isInvoke = false;
     };
-
     return _debounce;
 }
 /**
@@ -63,3 +61,4 @@ export function debounce(fn: Function, delay: number, config?: DebounceConfig) {
 //         }, delay);
 //     };
 // }
+
