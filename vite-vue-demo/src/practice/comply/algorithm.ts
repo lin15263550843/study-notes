@@ -1137,7 +1137,7 @@ var findKthLargest2 = function (nums, k = 1) {
     const res = result[k];
     return res ? res.slice(0, 2) : [0, 0];
 };
-var findKthLargest3 = function (nums, k = 1) {
+var findKthLargest3 = function (nums) {
     if (!nums || !Array.isArray(nums)) return [0, 0];
     let max1 = [nums[0], 0];
     let max2 = [nums[0], 0];
@@ -1154,7 +1154,7 @@ var findKthLargest3 = function (nums, k = 1) {
     console.log(max1, max2);
     return max2;
 };
-findKthLargest3([9,11,8,9,3,2,1,5,9,6,4])
+findKthLargest3([9, 11, 8, 9, 3, 2, 1, 5, 9, 6, 4]);
 /**
  * 316. 去除重复字母
  * 给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
