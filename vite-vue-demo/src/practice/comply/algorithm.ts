@@ -1114,6 +1114,48 @@ var findKthLargest = function (nums, k) {
     return nums[k - 1];
 };
 /**
+ * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
+   输入: [3,2,1,5,6,4]     输出: [5, 3]
+ */
+var findKthLargest2 = function (nums, k = 1) {
+    if (!nums || !Array.isArray(nums)) return [0, 0];
+    const result = [];
+    nums.forEach((val, index) => {
+        const temp = result.findIndex(item => item[0] <= val);
+        console.log(temp);
+        if (temp > -1) {
+            if (result[temp][0] === val) {
+                result[temp].push(index);
+            } else {
+                result.splice(temp, 0, [val, index]);
+            }
+        } else {
+            result.push([val, index]);
+        }
+    });
+    console.log(result);
+    const res = result[k];
+    return res ? res.slice(0, 2) : [0, 0];
+};
+var findKthLargest3 = function (nums, k = 1) {
+    if (!nums || !Array.isArray(nums)) return [0, 0];
+    let max1 = [nums[0], 0];
+    let max2 = [nums[0], 0];
+    nums.forEach((val, index) => {
+        const _max2 = max2;
+        if (val > _max2[0]) {
+            max2 = [val, index];
+        }
+        if (val > max1[0]) {
+            max2 = max1;
+            max1 = [val, index];
+        }
+    });
+    console.log(max1, max2);
+    return max2;
+};
+findKthLargest3([9,11,8,9,3,2,1,5,9,6,4])
+/**
  * 316. 去除重复字母
  * 给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
  */
