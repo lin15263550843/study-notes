@@ -1354,3 +1354,45 @@ const combine = (n, k) => {
     return res;
 };
 
+/**
+ *  2624. 蜗牛排序
+ * 请你编写一段代码为所有数组实现  snail(rowsCount，colsCount) 方法，该方法将 1D 数组转换为以蜗牛排序的模式的 2D 数组。无效的输入值应该输出一个空数组。当 rowsCount * colsCount !==nums.length 时。这个输入被认为是无效的。
+ * 输入：
+        nums = [19, 10, 3, 7, 9, 8, 5, 2, 1, 17, 16, 14, 12, 18, 6, 13, 11, 20, 4, 15]
+        rowsCount = 5
+        colsCount = 4
+        输出：
+        [
+        [19,17,16,15],
+        [10,1,14,4],
+        [3,2,12,20],
+        [7,5,18,11],
+        [9,8,6,13]
+        ]
+ */
+Array.prototype.snail = function (rowsCount, colsCount) {
+    if (rowsCount * colsCount !== this.length) {
+        return [];
+    }
+    const result = new Array(rowsCount).fill(1).map(() => new Array(colsCount));
+    let row = 0;
+    let col = 0;
+    let flag = true;
+    for (let i = 0; i < this.length; i++) {
+        result[row][col] = this[i];
+        if ((flag && row === rowsCount - 1) || (!flag && row === 0)) {
+            flag = !flag;
+            col++;
+        } else {
+            if (flag) {
+                row++;
+            } else {
+                row--;
+            }
+        }
+    }
+    return result;
+};
+var arr = [19, 10, 3, 7, 9, 8, 5, 2, 1, 17, 16, 14, 12, 18, 6, 13, 11, 20, 4, 15];
+console.log(arr.snail(5, 4));
+
