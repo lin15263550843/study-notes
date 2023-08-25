@@ -7,11 +7,8 @@
  */
 export function debounce(fn, delay) {
     let timer = null;
-
     return function (...args) {
-        if (timer) {
-            clearTimeout(timer);
-        }
+        if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
             fn.apply(this, args);
             timer = null;
@@ -20,30 +17,22 @@ export function debounce(fn, delay) {
 }
 function debouncePro(fn, delay, config) {
     const { immediate, resultCallback } = config || {};
-    let isInvoke = false; // 阶段性立即执行标识，当前阶段只执行一次
-    // 定义一个定时器，保存上一次的定时器
     let timer = null;
-    // 真正执行的函数
+    let isInvoke = false; // 是否激活了立即执行标识，当前阶段只执行一次
     function _debounce(...args) {
         if (immediate && !isInvoke) {
             const result = fn.apply(this, args);
             if (resultCallback) resultCallback(result);
-            isInvoke = true;
+            isInvoke = true; // 已经立即执行, 阻止下次触发的立即执行
         }
-        // 取消上一次的定时器
-        if (timer !== null) {
-            clearTimeout(timer);
-        }
-        // 延迟执行
+        if (timer) clearTimeout(timer); // 取消上一次的定时器
         timer = setTimeout(() => {
-            // 真正需要执行的函数
             const result = fn.apply(this, args);
             if (resultCallback) resultCallback(result);
             timer = null;
-            isInvoke = false;
+            isInvoke = false; // 重置 isInvoke
         }, delay);
     }
-    // 取消
     _debounce.cancel = () => {
         if (timer) clearTimeout(timer);
         timer = null;
@@ -230,88 +219,277 @@ function ConstrMyNew(arg) {
 /**
  * 实现 Promise
  */
-const STATE = { PENDING: 'pending', RESOLVED: 'resolved', REJECTED: 'rejected' };
-export function MyPromise(exec) {
-    this.state = STATE.PENDING;
-    this.value = undefined;
-    this.resolvedCallbacks = [];
-    this.rejectedCallbacks = [];
+// const STATE = { PENDING: 'pending', RESOLVED: 'resolved', REJECTED: 'rejected' };
+// export function MyPromise(exec) {
+//     this.state = STATE.PENDING;
+//     this.value = undefined;
+//     this.resolvedCallbacks = [];
+//     this.rejectedCallbacks = [];
 
+//     const resolve = res => {
+//         if (this.state === STATE.PENDING) {
+//             this.state = STATE.RESOLVED;
+//             this.value = res;
+//             this.resolvedCallbacks.forEach(callback => {
+//                 callback(this.value);
+//             });
+//         }
+//     };
+//     const reject = res => {
+//         if (this.state === STATE.PENDING) {
+//             this.state = STATE.REJECTED;
+//             this.value = res;
+//             this.rejectedCallbacks.forEach(callback => {
+//                 callback(this.value);
+//             });
+//         }
+//     };
+
+//     try {
+//         exec(resolve, reject);
+//     } catch (e) {
+//         reject(e);
+//         console.log('这里可能会吞并一些内部错误：', e);
+//     }
+// }
+// MyPromise.prototype.then = function (onResolved, onRejected) {
+//     return new MyPromise((resolve, reject) => {
+//         if (typeof onResolved !== 'function') {
+//             onResolved = res => res;
+//         }
+//         if (typeof onRejected !== 'function') {
+//             onRejected = err => {
+//                 throw err;
+//             };
+//         }
+//         if (this.state === STATE.RESOLVED) {
+//             queueMicrotask(() => {
+//                 try {
+//                     const res = onResolved(this.value);
+//                     resolve(res);
+//                 } catch (e) {
+//                     reject(e);
+//                 }
+//             });
+//         } else if (this.state === STATE.REJECTED) {
+//             queueMicrotask(() => {
+//                 try {
+//                     const res = onRejected(this.value);
+//                     resolve(res);
+//                 } catch (e) {
+//                     reject(e);
+//                 }
+//             });
+//         } else {
+//             this.resolvedCallbacks.push(() => {
+//                 queueMicrotask(() => {
+//                     try {
+//                         const res = onResolved(this.value);
+//                         resolve(res);
+//                     } catch (e) {
+//                         reject(e);
+//                     }
+//                 });
+//             });
+//             this.rejectedCallbacks.push(() => {
+//                 queueMicrotask(() => {
+//                     try {
+//                         const res = onRejected(this.value);
+//                         resolve(res);
+//                     } catch (e) {
+//                         reject(e);
+//                     }
+//                 });
+//             });
+//         }
+//     });
+// };
+// MyPromise.prototype.catch = function (reject) {
+//     return this.then(undefined, reject);
+// };
+// MyPromise.prototype.finally = function (onFinally) {
+//     return this.then(
+//         res => {
+//             onFinally();
+//             return res;
+//         },
+//         err => {
+//             onFinally();
+//             throw err;
+//         },
+//     );
+// };
+// 再次优化版
+// const STATE = { PENDING: 'PENDING', REJECTED: 'REJECTED', RESOLVED: 'RESOLVED' };
+// function MyPromise(exec) {
+//     this.state = STATE.PENDING;
+//     this.value = '';
+//     this.resolveCallbackArr = [];
+//     this.rejectCallbackArr = [];
+//     const resolve = res => {
+//         if (this.state !== STATE.PENDING) return;
+//         this.state = STATE.RESOLVED;
+//         this.value = res;
+//         this.resolveCallbackArr.forEach(callback => {
+//             callback();
+//         });
+//     };
+//     const reject = res => {
+//         if (this.state !== STATE.PENDING) return;
+//         this.state = STATE.REJECTED;
+//         this.value = res;
+//         this.rejectCallbackArr.forEach(callback => {
+//             callback();
+//         });
+//     };
+//     try {
+//         exec(resolve, reject);
+//     } catch (error) {
+//         reject(error);
+//     }
+// }
+// // MyPromise.prototype.then = function (onResolved, onRejected) {
+//     return new MyPromise((resolve, reject) => {
+//         if (typeof onResolved !== 'function') onResolved = res => res;
+//         if (typeof onRejected !== 'function')
+//             onRejected = err => {
+//                 throw err;
+//             };
+//         if (this.state === STATE.RESOLVED) {
+//             queueMicrotask(() => {
+//                 try {
+//                     const res = onResolved(this.value);
+//                     if (res instanceof MyPromise) {
+//                         res.then(resolve);
+//                     } else {
+//                         resolve(res);
+//                     }
+//                 } catch (err) {
+//                     reject(err);
+//                 }
+//             });
+//         }
+//         if (this.state === STATE.REJECTED) {
+//             queueMicrotask(() => {
+//                 try {
+//                     const res = onRejected(this.value);
+//                     if (res instanceof MyPromise) {
+//                         res.then(resolve);
+//                     } else {
+//                         resolve(res);
+//                     }
+//                 } catch (err) {
+//                     reject(err);
+//                 }
+//             });
+//         }
+//         if (this.state === STATE.PENDING) {
+//             this.resolveCallbackArr.push(() => {
+//                 queueMicrotask(() => {
+//                     try {
+//                         const res = onResolved(this.value);
+//                         if (res instanceof MyPromise) {
+//                             res.then(resolve);
+//                         } else {
+//                             resolve(res);
+//                         }
+//                     } catch (err) {
+//                         reject(err);
+//                     }
+//                 });
+//             });
+//             this.rejectCallbackArr.push(() => {
+//                 queueMicrotask(() => {
+//                     try {
+//                         const res = onRejected(this.value);
+//                         if (res instanceof MyPromise) {
+//                             res.then(resolve);
+//                         } else {
+//                             resolve(res);
+//                         }
+//                     } catch (err) {
+//                         reject(err);
+//                     }
+//                 });
+//             });
+//         }
+//     });
+// };
+// MyPromise.prototype.catch = function (reject) {
+//     return this.then(undefined, reject);
+// };
+// MyPromise.prototype.finally = function (onFinally) {
+//     return this.then(
+//         res => {
+//             onFinally();
+//             return res;
+//         },
+//         err => {
+//             onFinally();
+//             throw err;
+//         },
+//     );
+// };
+// 三次优化版
+const createTask = (resolve, reject, instance, getRes) => {
+    // return getRes => {
+    return () => {
+        queueMicrotask(() => {
+            try {
+                const res = getRes(instance.value);
+                if (res instanceof MyPromise) {
+                    res.then(resolve);
+                } else {
+                    resolve(res);
+                }
+            } catch (err) {
+                reject(err);
+            }
+        });
+    };
+    // };
+};
+const STATE = { PENDING: 'PENDING', REJECTED: 'REJECTED', RESOLVED: 'RESOLVED' };
+function MyPromise(exec) {
+    this.state = STATE.PENDING;
+    this.value = '';
+    this.resolveCallbackArr = [];
+    this.rejectCallbackArr = [];
     const resolve = res => {
-        if (this.state === STATE.PENDING) {
-            this.state = STATE.RESOLVED;
-            this.value = res;
-            this.resolvedCallbacks.forEach(callback => {
-                callback(this.value);
-            });
-        }
+        if (this.state !== STATE.PENDING) return;
+        this.state = STATE.RESOLVED;
+        this.value = res;
+        this.resolveCallbackArr.forEach(callback => callback());
     };
     const reject = res => {
-        if (this.state === STATE.PENDING) {
-            this.state = STATE.REJECTED;
-            this.value = res;
-            this.rejectedCallbacks.forEach(callback => {
-                callback(this.value);
-            });
-        }
+        if (this.state !== STATE.PENDING) return;
+        this.state = STATE.REJECTED;
+        this.value = res;
+        this.rejectCallbackArr.forEach(callback => callback());
     };
-
     try {
         exec(resolve, reject);
-    } catch (e) {
-        reject(e);
-        console.log('这里可能会吞并一些内部错误：', e);
+    } catch (error) {
+        reject(error);
     }
 }
 MyPromise.prototype.then = function (onResolved, onRejected) {
     return new MyPromise((resolve, reject) => {
-        if (typeof onResolved !== 'function') {
-            onResolved = res => res;
-        }
-        if (typeof onRejected !== 'function') {
+        // const createTask = taskFactory(resolve, reject, this);
+        if (typeof onResolved !== 'function') onResolved = res => res;
+        if (typeof onRejected !== 'function')
             onRejected = err => {
                 throw err;
             };
-        }
         if (this.state === STATE.RESOLVED) {
-            queueMicrotask(() => {
-                try {
-                    const res = onResolved(this.value);
-                    resolve(res);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        } else if (this.state === STATE.REJECTED) {
-            queueMicrotask(() => {
-                try {
-                    const res = onRejected(this.value);
-                    resolve(res);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        } else {
-            this.resolvedCallbacks.push(() => {
-                queueMicrotask(() => {
-                    try {
-                        const res = onResolved(this.value);
-                        resolve(res);
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-            this.rejectedCallbacks.push(() => {
-                queueMicrotask(() => {
-                    try {
-                        const res = onRejected(this.value);
-                        resolve(res);
-                    } catch (e) {
-                        reject(e);
-                    }
-                });
-            });
+            createTask(resolve, reject, this, onResolved)();
+        }
+        if (this.state === STATE.REJECTED) {
+            createTask(resolve, reject, this, onRejected)();
+        }
+        if (this.state === STATE.PENDING) {
+            this.resolveCallbackArr.push(createTask(resolve, reject, this, onResolved));
+            this.rejectCallbackArr.push(createTask(resolve, reject, this, onRejected));
         }
     });
 };
@@ -330,91 +508,172 @@ MyPromise.prototype.finally = function (onFinally) {
         },
     );
 };
-MyPromise.all = function (promises) {
-    if (!Array.isArray(promises)) throw new Error(`the ${promises} is not a array`);
 
-    return new MyPromise((resolve, reject) => {
+Promise.myAll = function (values) {
+    if (!values[Symbol.iterator]) throw new TypeError(`values is not iterate`);
+    return new Promise((resolve, reject) => {
         const result = [];
-        const len = promises.length;
-        let i = 0;
-
-        promises.forEach((promise, index) => {
-            MyPromise.resolve(promise).then(
+        let count = 0;
+        if (values.length < 1) resolve(result);
+        for (let index = 0; index < values.length; index++) {
+            Promise.resolve(values[index]).then(res => {
+                result[index] = res;
+                if (++count === values.length) {
+                    resolve(result);
+                }
+            }, reject);
+        }
+    });
+};
+Promise.myAllSettled = function (values) {
+    if (!values[Symbol.iterator]) throw new TypeError(`values is not iterate`);
+    return new Promise((resolve, reject) => {
+        const result = [];
+        let count = 0;
+        if (values.length < 1) resolve(result);
+        for (let index = 0; index < values.length; index++) {
+            Promise.resolve(values[index]).then(
                 res => {
-                    result[index] = res;
-                    i++;
-                    if (len === i) {
+                    result[index] = { status: 'fulfilled', value: res };
+                    count++;
+                    if (count === values.length) {
                         resolve(result);
                     }
                 },
                 err => {
-                    reject(err);
-                },
-            );
-        });
-    });
-};
-MyPromise.allSettled = function (promises) {
-    return new MyPromise(resolve => {
-        const result = [];
-        const len = promises.length;
-        let i = 0;
-        promises.forEach((promise, index) => {
-            MyPromise.resolve(promise).then(
-                res => {
-                    result[index] = { status: 'resolved', value: res };
-                    i++;
-                    if (len === i) {
-                        resolve(result);
-                    }
-                },
-                err => {
-                    result[index] = { status: 'rejected', value: err };
-                    i++;
-                    if (len === i) {
+                    result[index] = { status: 'rejected', reason: err };
+                    count++;
+                    if (count === values.length) {
                         resolve(result);
                     }
                 },
             );
-        });
+        }
     });
 };
-MyPromise.race = function (promises) {
-    if (!Array.isArray(promises)) throw new Error(`the ${promises} is not a array`);
-    return new MyPromise((resolve, reject) => {
-        promises.forEach(promise => {
-            // MyPromise.resolve(promise).then(
-            //     res => resolve(res),
-            //     err => reject(err),
-            // );
-            MyPromise.resolve(promise).then(resolve, reject);
-        });
+Promise.myRace = function (values) {
+    if (!values[Symbol.iterator]) throw TypeError(`values is not iterate`);
+    return new Promise((resolve, reject) => {
+        for (const value of values) {
+            Promise.resolve(value).then(resolve, reject);
+        }
     });
 };
-MyPromise.any = function (promises) {
-    if (!Array.isArray(promises)) throw new Error(`the ${promises} is not a array`);
-    return new MyPromise((resolve, reject) => {
-        const errs = [];
-        const len = promises.length;
-        promises.forEach(promise => {
-            MyPromise.resolve(promise).then(resolve, err => {
-                errs.push(err);
-                if (len === errs.length) {
-                    reject(errs);
-                    // reject(new AggregateError(errs));
+Promise.myAny = function (values) {
+    if (!values[Symbol.iterator]) throw new TypeError(`values is not iterate`);
+    return new Promise((resolve, reject) => {
+        const errors = [];
+        let count = 0;
+        if (values.length < 1) reject(new AggregateError(errors, 'All promises were rejected'));
+        for (let index = 0; index < values.length; index++) {
+            Promise.resolve(values[index]).then(resolve, err => {
+                errors[index] = err;
+                if (++count === values.length) {
+                    reject(new AggregateError(errors, 'All promises were rejected'));
                 }
             });
-        });
+        }
     });
 };
-MyPromise.resolve = function (value) {
-    // 注意：如果传入的值是 MyPromise 对象则直接返回
-    if (value instanceof MyPromise) return value;
-    return new MyPromise(resolve => resolve(value));
+Promise.myResolve = function (value) {
+    if (value instanceof Promise) return value;
+    return new Promise(resolve => resolve(value));
 };
-MyPromise.reject = function (err) {
-    return new MyPromise((resolve, reject) => reject(err));
+Promise.myReject = function (value) {
+    return new Promise((resolve, reject) => reject(value));
 };
+// 串联执行
+Promise.serialAll = function (values) {
+    // if (!values[Symbol.iterator]) throw new TypeError(`values is not iterae`);
+    if (!Array.isArray(values)) return;
+    if (values.length < 1) return;
+    return values.reduce((result, cur) => Promise.resolve(result).then(res => cur));
+    // const exec = result => Promise.resolve(values.shift()).then(res => (values.length > 0 ? exec(res) : res));
+    // return exec();
+};
+// MyPromise.all = function (promises) {
+//     // if (!Array.isArray(promises)) throw new Error(`the ${promises} is not a array`);
+//     // return new MyPromise((resolve, reject) => {
+//     //     const result = [];
+//     //     const len = promises.length;
+//     //     let i = 0;
+//     //     promises.forEach((promise, index) => {
+//     //         MyPromise.resolve(promise).then(
+//     //             res => {
+//     //                 result[index] = res;
+//     //                 i++;
+//     //                 if (len === i) {
+//     //                     resolve(result);
+//     //                 }
+//     //             },
+//     //             err => {
+//     //                 reject(err);
+//     //             },
+//     //         );
+//     //     });
+//     // });
+// };
+// MyPromise.allSettled = function (promises) {
+//     return new MyPromise(resolve => {
+//         const result = [];
+//         const len = promises.length;
+//         let i = 0;
+//         promises.forEach((promise, index) => {
+//             MyPromise.resolve(promise).then(
+//                 res => {
+//                     result[index] = { status: 'resolved', value: res };
+//                     i++;
+//                     if (len === i) {
+//                         resolve(result);
+//                     }
+//                 },
+//                 err => {
+//                     result[index] = { status: 'rejected', value: err };
+//                     i++;
+//                     if (len === i) {
+//                         resolve(result);
+//                     }
+//                 },
+//             );
+//         });
+//     });
+// };
+// MyPromise.race = function (promises) {
+//     if (!Array.isArray(promises)) throw new Error(`the ${promises} is not a array`);
+//     return new MyPromise((resolve, reject) => {
+//         promises.forEach(promise => {
+//             // MyPromise.resolve(promise).then(
+//             //     res => resolve(res),
+//             //     err => reject(err),
+//             // );
+//             MyPromise.resolve(promise).then(resolve, reject);
+//         });
+//     });
+// };
+// MyPromise.any = function (promises) {
+//     if (!Array.isArray(promises)) throw new Error(`the ${promises} is not a array`);
+//     return new MyPromise((resolve, reject) => {
+//         const errs = [];
+//         const len = promises.length;
+//         promises.forEach(promise => {
+//             MyPromise.resolve(promise).then(resolve, err => {
+//                 errs.push(err);
+//                 if (len === errs.length) {
+//                     reject(errs);
+//                     // reject(new AggregateError(errs));
+//                 }
+//             });
+//         });
+//     });
+// };
+// MyPromise.resolve = function (value) {
+//     // 注意：如果传入的值是 MyPromise 对象则直接返回
+//     if (value instanceof MyPromise) return value;
+//     return new MyPromise(resolve => resolve(value));
+// };
+// MyPromise.reject = function (err) {
+//     return new MyPromise((resolve, reject) => reject(err));
+// };
 
 // const p3 = new MyPromise((resolve, reject) => {
 //     setTimeout(() => {
@@ -822,6 +1081,55 @@ Array.prototype.myFlat = function (depth = 1) {
     return _flat(this);
 };
 // console.log('myFlat 结果：', [1, [2, [3, 4, 5], [6, [7, [8], [9]]]]].myFlat(7));
+var flat = function (arr, n) {
+    if (!Array.isArray(arr)) return arr;
+    if (n === 0) return arr;
+    const _flat = (arr, dep = 0) => {
+        return arr.reduce((res, cur) => {
+            if (Array.isArray(cur) && dep < n) {
+                res.push(..._flat(cur, dep + 1));
+            } else {
+                res.push(cur);
+            }
+            return res;
+        }, []);
+    };
+    return _flat(arr);
+};
+// // 递归，递归几次就碾平几次，这个写法不太好理解
+// var flat = function (arr, n) {
+//     if (n === 0) return arr;
+//     const res = flat(arr, n - 1);
+//     return [].concat(...res);
+// };
+// // 非递归写法
+// var flat = function (arr, n) {
+//     while (arr.some(item => Array.isArray(item)) && n > 0) {
+//         arr = [].concat(...arr);
+//         n--;
+//     }
+//     return arr;
+// };
+// var flat = function (arr, n) {
+//     if (!Array.isArray(arr)) return arr;
+//     return arr.reduce((res, cur) => {
+//         return res.concat(Array.isArray(cur) && n > 0 ? flat(cur, n - 1) : cur);
+//     }, []);
+// };
+var flat = function (arr, n) {
+    if (!Array.isArray(arr)) return arr;
+    return arr.reduce((res, cur) => {
+        if (Array.isArray(cur) && n > 0) {
+            res.push(...flat(cur, n - 1));
+        } else {
+            res.push(cur);
+        }
+        return res;
+    }, []);
+};
+console.log('myFlat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 2));
+console.log('myFlat 结果：', flat([55, { a: 1 }, [44], [66, [33], [[11], [22]]], 1, 2, 3, [4, 5, 6], [7, 8, [9, 10, 11], 12], [13, 14, 15]], 2));
+
 /**
  * 数组的 push 方法
  * 注意：
@@ -911,20 +1219,35 @@ export function repeat(str, n) {
  * 对象扁平化
  */
 function flatten(obj) {
-    let result = {};
+    if (typeof obj !== 'object' || obj === null) return obj;
+    const res = Array.isArray(obj) ? [] : {};
     Object.keys(obj).forEach(key => {
-        const cur = obj[key];
-        if (typeof cur !== 'object') {
-            result[key] = cur;
+        const temp = flatten(obj[key]);
+        if (typeof temp !== 'object' || temp === null) {
+            res[key] = temp;
         } else {
-            const tempObj = flatten(cur);
-            Object.keys(tempObj).forEach(key2 => {
-                result[`${key}.${key2}`] = tempObj[key2];
+            Object.keys(temp).forEach(key2 => {
+                res[`${key}.${key2}`] = temp[key2];
             });
         }
     });
-    return result;
+    return res;
 }
+// function flatten(obj) {
+//     let result = {};
+//     Object.keys(obj).forEach(key => {
+//         const cur = obj[key];
+//         if (typeof cur !== 'object') {
+//             result[key] = cur;
+//         } else {
+//             const tempObj = flatten(cur);
+//             Object.keys(tempObj).forEach(key2 => {
+//                 result[`${key}.${key2}`] = tempObj[key2];
+//             });
+//         }
+//     });
+//     return result;
+// }
 // 示例
 // let obj = {
 //     name: 'Jack',
@@ -1059,6 +1382,43 @@ export function multiplyBigNumber(a, b) {
 }
 // console.log('multiplyBigNumber 结果：', multiplyBigNumber('01234', '2'));
 // console.log('multiplyBigNumber 结果：', multiplyBigNumber('012345678', '0123456'));
+/**
+ * 浮点数精确加法
+ */
+export function add(a, b) {
+    const aLen = (String(a).split('.')[1] || '').length;
+    const bLen = (String(b).split('.')[1] || '').length;
+    const len = Math.pow(10, Math.max(aLen, bLen));
+    console.log(len);
+    const res = a * len + b * len;
+    return res / len;
+}
+// console.log('结果：', add(123.123, 123.123), 123.123 + 123.123);
+// console.log('结果：', add(0.1, 0.2), 0.1 + 0.2);
+/**
+ * 浮点数精确乘法
+ */
+function mul(a, b) {
+    const aLen = Math.pow(10, (String(a).split('.')[1] || '').length);
+    const bLen = Math.pow(10, (String(b).split('.')[1] || '').length);
+    const len = aLen * bLen;
+    return (a * aLen * (b * bLen)) / len;
+}
+// console.log('结果：', mul(123.123, 123.123), 123.123 * 123.123);
+// console.log('结果：', mul(0.1, 0.2), 0.1 * 0.2);
+/**
+ * 浮点数精确除法
+ */
+function mul(a, b) {
+    const aLen = Math.pow(10, (String(a).split('.')[1] || '').length);
+    const bLen = Math.pow(10, (String(b).split('.')[1] || '').length);
+    const len = Math.max(aLen, bLen);
+    console.log(aLen, bLen, len);
+    console.log(a * len, b * len);
+    return (a * len) / (b * len);
+}
+// console.log('结果：', mul(123.1233, 123.123), 123.1233 / 123.123);
+// console.log('结果：', mul(0.1, 0.2), 0.1 / 0.2);
 /**
  * 将数组转换为树形结构
  */
@@ -1425,36 +1785,6 @@ export function findMostWord(str) {
 //         'Age has reached the end of the beginning of a word. May be guilty in his seems to passing a lot of different life became the appearance of the same day;',
 //     ),
 // );
-/**
- * 高频数据类型
- */
-const _findMostType = array => {
-    if (!Array.isArray(array)) {
-        return [];
-    }
-    const types = { string: 'string', number: 'number', boolean: 'boolean', undefined: 'undefined' };
-    const map = new Map();
-    let res = [];
-    let max = 0;
-    array.forEach(val => {
-        const key = val === null ? 'null' : types[typeof val] || 'object';
-        if (map.has(key)) {
-            map.set(key, map.get(key) + 1);
-        } else {
-            map.set(key, 1);
-        }
-        const v = map.get(key);
-        if (v === max) {
-            res.push(key);
-        }
-        if (v > max) {
-            res = [key];
-            max = v;
-        }
-    });
-    res.push(max);
-    return res;
-};
 /**
  * 封装异步的fetch，使用async await方式来使用
  */
@@ -1853,15 +2183,21 @@ function foo(data) {
  * 实现数组的 reduce 方法
  */
 Array.prototype.myReduce = function (callback, initialValue) {
-    const arr = this;
-    if (!Array.isArray(arr)) throw new Error(`the ${arr} not is a array`);
-    if (typeof callback !== 'function') throw new Error(`the ${arr} not is a function`);
-    let res = initialValue === undefined ? arr[0] : initialValue;
-    for (let i = 1; i < arr.length; i++) {
-        res = callback(res, arr[i], i, arr);
+    if (typeof callback !== 'function') throw new Error(`the ${callback} not is a function`);
+    if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
+    const flag = initialValue !== undefined && initialValue !== null;
+    let result = flag ? initialValue : this[0];
+    for (let i = flag ? 0 : 1; i < this.length; i++) {
+        result = callback(result, this[i]);
     }
-    return res;
+    return result;
 };
+// console.log(
+//     [1, 2, 3].myReduce((sum, cur) => {
+//         console.log('this cur index::: ', this, cur, sum);
+//         return cur + sum;
+//     }),
+// );
 /**
  * JS40 虚拟DOM
  */
@@ -1951,4 +2287,49 @@ function parseStrToObj(obj, str, val) {
 }
 var obj = { a: { b: { c1: 31 }, b1: 21 }, a1: 11, a2: 12 };
 parseStrToObj(obj, 'a.b.c.d', 4); // obj, 'a.b.c.d', 4 -> obj.a.b.c.d = 4
+
+/**
+ * 1.写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，然后写一个 myClear，停止上面的 mySetInterVal
+ */
+function mySetInterVal(fn, a, b) {
+    let timer = null;
+    let count = 0;
+    const start = interval => {
+        fn();
+        count++;
+        timer = setTimeout(() => {
+            start(a + count * b);
+        }, interval);
+    };
+    const myClear = () => {
+        clearTimeout(timer);
+    };
+    start(a);
+    return { myClear };
+}
+var a = new mySetInterVal(() => console.log('123'), 1000, 100);
+a.myClear();
+/**
+ * 实现 lodash 的_.get
+ */
+function get(source, path, defaultValue) {
+    if (!source) return defaultValue;
+    // a[3].b -> a.3.b -> [a,3,b]
+    // path 中也可能是数组的路径，全部转化成 . 运算符并组成数组
+    const paths = path.replace(/\[(\d+)\]/g, '.$1').split('.');
+    let result = source;
+    for (const p of paths) {
+        result = Object(result)[p]; // 注意 null 与 undefined 取属性会报错，所以使用 Object 包装一下。
+        if (result == undefined) {
+            return defaultValue;
+        }
+    }
+    return result;
+}
+// 测试用例
+console.log(get({ a: null }, 'a.b.c', 3)); // output: 3
+console.log(get({ a: undefined }, 'a', 3)); // output: 3
+console.log(get({ a: null }, 'a', 3)); // output: 3
+console.log(get({ a: [{ b: 1 }] }, 'a[0].b', 3)); // output: 1
+console.log(get({ a: [{ b: 1 }] }, '1')); // output: 1
 

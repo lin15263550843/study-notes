@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite App</title>
+    </head>
+
+    <body>
+        <script>
+            // const afterDom = document.getElementById('app')
+            // console.log('after dom --->>>', afterDom);
+        </script>
+        <div id="app"></div>
+        <script>
+            // const beforeMom = document.getElementById('app')
+            // console.log('before dom --->>>', beforeMom);
+        </script>
+        <script type="module" src="/src/main.ts"></script>
+        <script type="module" src="./src/_test.js"></script>
+    </body>
+    <script>
+        function throttle(fn, interval, config) {
+            let timer = null;
+
+            function _throttle(...args) {
+                if (timer) {
+                    return;
+                } else {
+                    fn.apply(this, args);
+                }
+                timer = setTimeout(() => {
+                    fn.apply(this, args);
+                    timer = null;
+                }, interval);
+            }
+
+            return _throttle;
+        }
+        // function throttle(fn, interval, config) {
+        //     let last = 0;
+        //     return function (...args) {
+        //         let now = new Date().getTime();
+        //         if (now - last >= interval) {
+        //             fn.apply(this, args);
+        //             last = now;
+        //         }
+        //     };
+        // }
+        const fn = throttle(
+            () => {
+                console.log('fn');
+                return 'fn';
+            },
+            1000,
+            {
+                immediate: false,
+                resultCallback(result) {
+                    // console.log('callback', result);
+                },
+            },
+        );
+        fn();
+        setTimeout(() => {
+            console.log(222);
+            fn();
+        }, 900);
+        setTimeout(() => {
+            console.log(333);
+            fn();
+            // fn.cancel();
+        }, 1800);
+        setTimeout(() => {
+            console.log(444);
+            fn();
+            // fn.cancel();
+        }, 3600);
+        setTimeout(() => {
+            console.log(555);
+            fn();
+            // fn.cancel();
+        }, 3700);
+        setTimeout(() => {
+            console.log(666);
+            fn();
+        }, 3800);
+
+        // /**
+        //  * 节流 定时器版
+        //  */
+        //   function throttle2(fn, interval) {
+        //     let timer;
+
+        //     return function (...args) {
+        //         if (timer) return;
+        //         timer = setTimeout(() => {
+        //             fn.apply(this, args);
+        //             timer = null;
+        //         }, interval);
+        //     };
+        // }
+    </script>
+</html>
+
