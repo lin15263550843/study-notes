@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>你不知道的 JavaScript</title>
+  </head>
+  <body></body>
+  <script>
+    // Task = {
+    //   setID: function (id) {
+    //     this.id = id;
+    //   },
+    //   outputID: function () {
+    //     console.log(this.id);
+    //   },
+    // };
+    // XYZ = Object.create(Task);
+    // XYZ.prepareTask = function (id, label) {
+    //   this.setID(id);
+    //   this.label = label;
+    // };
+    // XYZ.outputTaskDetails = function () {
+    //   this.outputID();
+    //   console.log(this.label);
+    // };
+
+    // // ABC = Object.create(Task);
+    // // ABC.prepareTask = function (id, label) {
+    // //   this.setID(id);
+    // //   this.label = label;
+    // // };
+    // // ABC.outputTaskDetails = function () {
+    // //   this.outputID();
+    // //   console.log(this.label);
+    // // };
+
+    // XYZ.prepareTask("123", "label");
+    // XYZ.outputTaskDetails();
+    // console.log(XYZ);
+
+    function Foo() {}
+    var a1 = new Foo();
+    Foo.prototype.constructor = function Gotcha() {};
+    console.log(a1);
+    console.log(a1.constructor.name);
+
+    var Foo = { foo: "foo" };
+    var a1 = Object.create(Foo);
+    console.log(a1);
+    console.log(a1.constructor.name);
+    Object.defineProperty(Foo, "constructor", {
+      enumerable: false,
+      value: function Gotcha() {},
+    });
+    console.log(a1);
+    console.log(a1.constructor.name);
+  </script>
+</html>

@@ -1,3 +1,3 @@
 // @ts-nocheck
 
-import './handwriting';
+import './handwriting_old';
