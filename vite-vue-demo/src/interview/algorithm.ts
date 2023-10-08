@@ -593,27 +593,52 @@ var longestPalindromeSubseq = function (s) {
  * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。
  */
 var maxSubArray = function (nums) {
-    let sum = nums[0];
-    let max = sum;
-    let start = 0;
-    let end = 0;
+    if (!Array.isArray(nums)) return;
+    let max = 0; // 用于记录最大子序和
+    let sum = nums[0]; // 用于记录当前子序和
     for (let i = 1; i < nums.length; i++) {
-        const num = nums[i];
-        // if (sum < 0) {
-        if (sum + num < num) {
-            sum = num;
-            start = i;
+        const cur = nums[i]; // 获取当前元素
+        if (cur + sum < cur) {
+            sum = cur; // 如果当前元素加上当前子序和小于当前元素，则舍掉之前的的子序和
         } else {
-            sum += num;
+            sum += cur; // 否则将当前元素加到当前子序和上
         }
         if (sum > max) {
-            max = sum;
+            max = sum; // 如果当前子序和大于最大子序和，更新最大值
+        }
+    }
+    return max; //返回最大子序和
+};
+console.log(maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+console.log(maxSubArray([5, 4, -1, 7, 8]));
+console.log(maxSubArray([1, 2, 3, -1, 1]));
+/**
+ * 返回最大子序
+ */
+var maxSubArray = function (nums) {
+    if (!Array.isArray(nums)) return;
+    let max = 0; // 用于记录最大子序和
+    let sum = nums[0]; // 用于记录当前子序和
+    let start = 0;
+    let end = 1;
+    for (let i = 1; i < nums.length; i++) {
+        const cur = nums[i]; // 获取当前元素
+        if (cur + sum < cur) {
+            sum = cur; // 如果当前元素加上当前子序和小于当前元素，则舍掉之前的的子序和
+            start = i;
+        } else {
+            sum += cur; // 否则将当前元素加到当前子序和上
+        }
+        if (sum > max) {
+            max = sum; // 如果当前子序和大于最大子序和，更新最大值
             end = i;
         }
     }
-    return nums.slice(start, end + 1);
-    // return max
+    return nums.slice(start, end + 1); //返回最大子序
 };
+console.log(maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+console.log(maxSubArray([5, 4, -1, 7, 8]));
+console.log(maxSubArray([1, 2, 3, -1, 1]));
 /**
  * 56. 合并区间
  * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
