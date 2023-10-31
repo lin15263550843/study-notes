@@ -1232,27 +1232,28 @@ var findKthLargest = function (nums, k) {
     if (nums.length < 2) return nums;
     const exch = (arr, a, b) => {
         const temp = arr[a];
-        arr[a] = arr[b];    const quickSort = (arr, left, right) => {
-        if (left >= right) return; // 左指针大于等于右指针，结束排序
-        let flag = arr[left]; // 切分位，取第一个元素，遍历数组进行交互，左边的元素都大于等于 flag，右边的元素都小于 flag
-        let start = left + 1; // 遍历起始指针，从第二个元素开始
-        let end = right; //  遍历的结束指针
-        while (start < end) {
-            while (start < end && arr[start] >= flag) {
-                start++; // 如果当前元素，大于等于切分位，起始指针向右移动，找到需要交换的元素停下，注意不能越界
+        arr[a] = arr[b];
+        const quickSort = (arr, left, right) => {
+            if (left >= right) return; // 左指针大于等于右指针，结束排序
+            let flag = arr[left]; // 切分位，取第一个元素，遍历数组进行交互，左边的元素都大于等于 flag，右边的元素都小于 flag
+            let start = left + 1; // 遍历起始指针，从第二个元素开始
+            let end = right; //  遍历的结束指针
+            while (start < end) {
+                while (start < end && arr[start] >= flag) {
+                    start++; // 如果当前元素，大于等于切分位，起始指针向右移动，找到需要交换的元素停下，注意不能越界
+                }
+                while (start < end && arr[end] < flag) {
+                    end--; // 如果当前元素小于切分位，右指针向左移动，找到需要交换的元素停下，注意不能越界
+                }
+                exch(arr, start, end); // 交互它们
             }
-            while (start < end && arr[end] < flag) {
-                end--; // 如果当前元素小于切分位，右指针向左移动，找到需要交换的元素停下，注意不能越界
+            if (arr[end] < flag) {
+                end--; // 交换完后，右指针值跟切分位进行比较，如果小于切分位，跟切分位前边的值进行交互，右指针左移，否则直接进行交互
             }
-            exch(arr, start, end); // 交互它们
-        }
-        if (arr[end] < flag) {
-            end--; // 交换完后，右指针值跟切分位进行比较，如果小于切分位，跟切分位前边的值进行交互，右指针左移，否则直接进行交互
-        }
-        exch(arr, left, end);
-        quickSort(arr, left, end - 1);
-        quickSort(arr, end + 1, right);
-    };
+            exch(arr, left, end);
+            quickSort(arr, left, end - 1);
+            quickSort(arr, end + 1, right);
+        };
         arr[b] = temp;
     };
 

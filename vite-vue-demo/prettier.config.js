@@ -1,6 +1,6 @@
 module.exports = {
     // packageManager: 'yarn',
-    printWidth: 160, // 超过最大值换行
+    printWidth: 1000, // 超过最大值换行
     tabWidth: 4, // 缩进字节数
     useTabs: false, // 缩进不使用tab，使用空格
     semi: true, // 句尾添加分号
@@ -25,3 +25,4 @@ module.exports = {
     // stylelintIntegration: false, // 不让prettier使用stylelint的代码格式进行校验
     // tslintIntegration: false, // 不让prettier使用tslint的代码格式进行校验
 };
+

@@ -16,35 +16,118 @@
     </body>
     <script>
         /**
-         * 56. 合并区间
-         * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
-         * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]    输出：[[1,6],[8,10],[15,18]]    解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+         * 224. 基本计算器
+         * 字符串表达式求值，输入一个字符串只包含加减号和括号
          */
-        var merge = function (intervals) {
-            if (!intervals.length) return;
-            const res = [];
-            intervals.sort((a, b) => a[0] - b[0]);
-            let arr = intervals[0];
-            for (let i = 0; i < intervals.length; i++) {
-                const cur = intervals[i];
-                if (arr[1] >= cur[0]) {
-                    arr[1] = Math.max(arr[1], cur[1]);
+        function calcExpression(str) {
+            if (typeof str !== 'string') return str;
+            str = str.replace(/\s/g, '');
+            console.log(str);
+            const calcMap = {
+                '+': (v1, v2) => Number(v1) + Number(v2),
+                '-': (v1, v2) => Number(v1) - Number(v2),
+            };
+            const calc = () => {
+                const ope = opeStack.pop();
+                console.log('calc ope ', ope);
+                if (!ope) return;
+                if (stack.length < 2) return;
+                const right = stack.pop();
+                const left = stack.pop();
+                const res = calcMap[ope](left, right);
+                stack.push(res);
+            };
+            const stack = [];
+            const opeStack = [];
+            let result = 0;
+            for (let i = 0; i < str.length; i++) {
+                const cur = str[i];
+                console.log('cur-------------------------', i, cur, opeStack, stack);
+                if (cur === '+' || cur === '-') {
+                    if (!/[0-9)]/.test(str[i - 1]) && /\d/.test(str[i + 1])) {
+                        stack.push(cur);
+                    } else {
+                        calc();
+                        opeStack.push(cur);
+                    }
+                } else if (cur === ')') {
+                    calc();
+                } else if (cur === '(') {
+                    opeStack.push('');
                 } else {
-                    res.push(arr);
-                    arr = cur;
+                    if (i > 0 && (/\d/.test(str[i - 1]) || !/\d/.test(stack[stack.length - 1]))) {
+                        const val = stack.pop() || '';
+                        stack.push(val + cur);
+                    } else {
+                        stack.push(cur);
+                    }
                 }
+                // console.log('cur', i, cur, opeStack, stack);
             }
-            res.push(arr);
-            return res;
-        };
-        console.log(
-            merge([
-                [1, 3],
-                [2, 6],
-                [8, 10],
-                [15, 18],
-            ]),
-        );
+            if (opeStack > 0 && stack.length < 2) {
+                stack.unshift(0);
+            }
+
+            console.log('opeStack', opeStack);
+            console.log('stack', stack);
+            calc();
+            return stack[0];
+        }
+        // var strn1 = '1+1+(4-(3+1))+6';
+        // console.log(calcExpression(strn1)); // 6
+        // console.log(calcExpression(strn1) === eval(strn1));
+
+        // var strn = '(105  -400 - ( 3 + ( 22 - (-1+ 22) -(10+1) )))';
+        // console.log(calcExpression(strn)); // -288
+        // console.log(eval(strn)); // -288
+        // console.log(calcExpression(strn) === eval(strn));
+
+        // console.log(calcExpression('-2+ 1')); // -1
+        console.log(calcExpression('- (3 + (4 + 5))')); // -1
+
+        // function calcExpression(str) {
+        //     if (typeof str !== 'string') return str;
+        //     str = str.replace(/\s/g, '');
+        //     const calcMap = {
+        //         '+': (v1, v2) => Number(v1) + Number(v2),
+        //         '-': (v1, v2) => Number(v1) - Number(v2),
+        //     };
+        //     const calc = () => {
+        //         console.log('stack', stack, opeStack);
+        //         const ope = opeStack.pop();
+        //         console.log('ope---- ', ope);
+        //         if (ope) {
+        //             const right = stack.pop();
+        //             const left = stack.pop();
+        //             const res = calcMap[ope](left, right);
+        //             stack.push(res);
+        //         }
+        //     };
+        //     const stack = [];
+        //     const opeStack = [];
+        //     let isCalc = true;
+        //     for (let i = 0; i < str.length; i++) {
+        //         const cur = str[i];
+        //         if (cur === '+' || cur === '-') {
+        //             opeStack.push(cur);
+        //         } else if (cur === '(') {
+        //             isCalc = false;
+        //         } else if (cur === ')') {
+        //             calc();
+        //         } else {
+        //             stack.push(cur);
+        //             if (isCalc) {
+        //                 calc();
+        //             }
+        //             isCalc = true;
+        //         }
+        //     }
+        //     console.log('opeStack', opeStack);
+        //     console.log('stack', stack);
+        // }
+        // var strn1 = '1+1+(4-(3+1))+6';
+        // console.log(calcExpression(strn1)); // 6
+        // console.log(calcExpression(strn1) === eval(strn1));
     </script>
 </html>
 <!-- 

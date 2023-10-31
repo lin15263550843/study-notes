@@ -645,38 +645,64 @@ console.log(maxSubArray([1, 2, 3, -1, 1]));
  * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]    输出：[[1,6],[8,10],[15,18]]    解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
  */
 var merge = function (intervals) {
-    if (!intervals.length) return;
-    const res = [];
+    if (!Array.isArray(intervals)) return;
     intervals.sort((a, b) => a[0] - b[0]);
-    let arr = intervals[0];
-    for (let i = 0; i < intervals.length; i++) {
+    const result = [];
+    let arr = intervals[0]; // 将第一个区间作为初始区间
+    for (let i = 1; i < intervals.length; i++) {
         const cur = intervals[i];
-        if (arr[1] >= cur[0]) {
-            arr[1] = Math.max(arr[1], cur[1]);
+        if (arr[1] < cur[0]) {
+            result.push(arr); // 如果当前区间的左端点大于上一个区间的右端点，将上一个区间加入结果
+            arr = cur; // 将当前区间作为新的初始区间
         } else {
-            res.push(arr);
-            arr = cur;
+            arr[1] = Math.max(arr[1], cur[1]); // 否则更新上一个区间的右端点
         }
     }
-    res.push(arr);
-    return res;
+    result.push(arr); // 将最后一个区间加入结果中
+    return result;
 };
+console.log(
+    'merge',
+    merge([
+        [1, 3],
+        [2, 6],
+        [8, 12],
+        [15, 18],
+    ]),
+);
+console.log(
+    merge([
+        [1, 4],
+        [2, 10],
+        [8, 12],
+        [15, 18],
+    ]),
+);
+console.log(
+    merge([
+        [1, 12],
+        [2, 6],
+        [8, 10],
+        [15, 18],
+    ]),
+);
 /**
  * 162. 寻找峰值
  * 峰值元素是指其值严格大于左右相邻值的元素。
     给你一个整数数组 nums，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回 任何一个峰值 所在位置即可。
  */
 var findPeakElement = function (nums) {
-    let max = 0;
+    if (!Array.isArray(nums)) return;
+    let maxIndex = 0;
     for (let i = 0; i < nums.length; i++) {
-        const cur = nums[i];
-        if (cur > nums[max]) {
-            max = i;
+        if (nums[i] > [maxIndex]) {
+            maxIndex = i;
         }
     }
-    // max 是峰值的索引地址
-    return max;
+    return maxIndex;
 };
+console.log(findPeakElement([1, 2, 3, 1]));
+console.log(findPeakElement([1, 2, 1, 3, 5, 6, 4]));
 // 字符串表达式求值
 // function calcExpression(str) {
 //     const tempArr = str.split(' ');
@@ -767,7 +793,12 @@ console.log(calcExpression(strn) === eval(strn));
  */
 function calcExpression2(str) {
     str = str.replace(/\s/g, '');
-    const opt = { '+': 1, '-': 1, '*': 2, '/': 2 };
+    const opt = {
+        '+': 1,
+        '-': 1,
+        '*': 2,
+        '/': 2,
+    };
     const stask = [];
     const opeStask = [];
     const calc = () => {
