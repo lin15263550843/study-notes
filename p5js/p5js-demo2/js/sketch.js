@@ -202,7 +202,6 @@ function changeRotationSpeed() {
         let level = amplitude.getLevel();
         let targetSpeed = map(level, 0, 1, 0.01, 15);
         rotationSpeed = lerp(rotationSpeed, targetSpeed, 0.5);
-        console.log('level', level, rotationSpeed);
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 for (let k = 0; k < concentricCircles; k++) {
