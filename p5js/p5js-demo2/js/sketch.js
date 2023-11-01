@@ -9,9 +9,11 @@ let smallEllipseDistance = 20; // 小椭圆距离大圆的距离
 let concentricCircles = 4; // 同心圆的数量
 let concentricCircleColors = []; // 同心圆的颜色
 let dottedCircles = 3; // 每层同心圆虚线环的数量
-
 /**
- * 生成随机色值，三维数组
+ * 可 加 微 信 152 6355 0843
+ */
+/**
+ * 生成随机色值，三维数组，可手动修改
  */
 function genRundomColors() {
     // 生成随机的同心圆颜色值
@@ -119,7 +121,7 @@ function drawSmallEllipses() {
     }
 }
 /**
- * 绘制渐变半弧线
+ * 绘制渐变半弧线，会旋转
  */
 function drawGradientArc(i, j) {
     if (!(i % 2 === 0 && j % 2 !== 0) && !(i % 2 !== 0 && j % 2 === 0)) {
@@ -134,6 +136,30 @@ function drawGradientArc(i, j) {
             strokeWeight(5); // 设置描边宽度
             noFill(); // 不填充
             arc(sideLength / 4, 0, sideLength / 2, sideLength, i, i + 1); // 绘制一个小段的弧线
+        }
+    }
+}
+/**
+ * 绘制连接两个大圆圆心的渐变半弧线
+ */
+function drawGradientArc2() {
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            push();
+            translate((j + 0.5 * (i % 2)) * (sideLength + gap * 4), i * (sideLength + gap) + sideLength / 2); // 将原点移动到每个大圆的中心
+            if (!(i % 2 === 0 && j % 2 !== 0) && !(i % 2 !== 0 && j % 2 === 0)) {
+                let arcStartAngle = 180; // 弧线的开始角度
+                let arcEndAngle = 360; // 弧线的结束角度
+                for (let i = arcStartAngle; i <= arcEndAngle; i++) {
+                    let t = map(i, arcStartAngle, arcEndAngle, 0, 1); // 将角度映射到0和1之间
+                    let gradientColor = lerpColor(color(0, 255, 0), color(255, 0, 0), t); // 获取插值颜色
+                    stroke(gradientColor); // 设置描边颜色为插值颜色
+                    strokeWeight(5); // 设置描边宽度
+                    noFill(); // 不填充
+                    arc(sideLength - gap * 8, 0, sideLength + gap * 4, sideLength * 1, i, i + 1); // 绘制一个小段的弧线
+                }
+            }
+            pop();
         }
     }
 }
@@ -159,10 +185,12 @@ function drawConcentricCircles() {
                 }
             }
             drawSmallEllipses();
-            drawGradientArc(i, j);
+            // 放开此处后，半弧线会随着旋转而旋转，不会连接两个大圆的圆心
+            // drawGradientArc(i, j);
             pop();
         }
     }
+    drawGradientArc2();
 }
 
 function setup() {
