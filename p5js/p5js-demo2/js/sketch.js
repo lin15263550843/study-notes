@@ -5,7 +5,7 @@ let sideLength = 200; // 大圆的直径
 let gap = 10; // 大圆之间的间隔
 let rows = 5; // 行数
 let cols = 5; // 列数
-let rotationSpeed = 0.1; // 自旋速度
+let rotationSpeed = 0.01; // 自旋速度
 let smallEllipseDiameter = 14; // 小椭圆的直径
 let smallEllipseCount = 12; // 每个大圆的小椭圆数量
 let smallEllipseDistance = 20; // 小椭圆距离大圆的距离
@@ -48,7 +48,7 @@ function getContrastColor(hexColor) {
  */
 function drawWaveCircle(i, j, k, radius) {
     push();
-    rotate((frameCount * rotationSpeed) / (50.0 / (k + 50)));
+    rotate((frameCount * rotationSpeed) / (50.0 / (k + 30)));
     // 绘制波浪形状的圆
     beginShape();
     noFill();
@@ -200,8 +200,9 @@ function drawConcentricCircles() {
 function changeRotationSpeed() {
     if (frameCount % 20 === 0) {
         let level = amplitude.getLevel();
-        let targetSpeed = map(level, 0, 1, 0.1, 10);
-        rotationSpeed = lerp(rotationSpeed, targetSpeed, 0.1);
+        let targetSpeed = map(level, 0, 1, 0.01, 15);
+        rotationSpeed = lerp(rotationSpeed, targetSpeed, 0.5);
+        console.log('level', level, rotationSpeed);
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 for (let k = 0; k < concentricCircles; k++) {
