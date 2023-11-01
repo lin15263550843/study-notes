@@ -1,18 +1,21 @@
+/**
+ * 可 加 微 信 咨询问题，微信号 152 6355 0843
+ */
 let sideLength = 200; // 大圆的直径
 let gap = 10; // 大圆之间的间隔
 let rows = 5; // 行数
 let cols = 5; // 列数
-let rotationSpeed = 0.01; // 自旋速度
+let rotationSpeed = 0.1; // 自旋速度
 let smallEllipseDiameter = 14; // 小椭圆的直径
 let smallEllipseCount = 12; // 每个大圆的小椭圆数量
 let smallEllipseDistance = 20; // 小椭圆距离大圆的距离
 let concentricCircles = 4; // 同心圆的数量
 let concentricCircleColors = []; // 同心圆的颜色
 let dottedCircles = 3; // 每层同心圆虚线环的数量
+let song;
+let amplitude;
 /**
  * 可 加 微 信 152 6355 0843
- */
-/**
  * 生成随机色值，三维数组，可手动修改
  */
 function genRundomColors() {
@@ -45,7 +48,7 @@ function getContrastColor(hexColor) {
  */
 function drawWaveCircle(i, j, k, radius) {
     push();
-    rotate(frameCount / (50.0 / (j + 50))); // 根据圆的索引改变旋转速度
+    rotate((frameCount * rotationSpeed) / (50.0 / (k + 50)));
     // 绘制波浪形状的圆
     beginShape();
     noFill();
@@ -75,7 +78,7 @@ function drawWaveCircle(i, j, k, radius) {
 function drawDottedCircle(i, j, k, radius) {
     for (let n = 0; n < dottedCircles && k < concentricCircles - 1; n++) {
         push();
-        rotate(frameCount / (50.0 / (k + 50))); // 根据圆的索引改变旋转速度
+        rotate((frameCount * rotationSpeed) / (50.0 / (k + 50)));
         stroke(getContrastColor(concentricCircleColors[i][j][k])); // 设置描边颜色
         strokeWeight(8 - k); // 设置描边宽度
         noFill(); // 不填充
@@ -171,7 +174,6 @@ function drawConcentricCircles() {
         for (let j = 0; j < cols; j++) {
             push();
             translate((j + 0.5 * (i % 2)) * (sideLength + gap * 4), i * (sideLength + gap) + sideLength / 2); // 将原点移动到每个大圆的中心
-            rotate(frameCount * rotationSpeed); // 使每个大圆自旋
             // 绘制同心圆
             for (let k = 0; k < concentricCircles; k++) {
                 let radius = sideLength / 2 - k * (sideLength / (1.6 * concentricCircles));
@@ -192,8 +194,31 @@ function drawConcentricCircles() {
     }
     drawGradientArc2();
 }
+/**
+ * 根据音频的音量级别改变旋转速度
+ */
+function changeRotationSpeed() {
+    if (frameCount % 20 === 0) {
+        let level = amplitude.getLevel();
+        let targetSpeed = map(level, 0, 1, 0.1, 10);
+        rotationSpeed = lerp(rotationSpeed, targetSpeed, 0.1);
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                for (let k = 0; k < concentricCircles; k++) {
+                    concentricCircleColors[i][j][k] = color(random(255), random(255), random(255)); // 获取插值颜色
+                }
+            }
+        }
+    }
+}
+
+function preload() {
+    song = loadSound('assets/lion_king_audio.mp3'); // 加载音频文件
+}
 
 function setup() {
+    amplitude = new p5.Amplitude();
+    song.play(); // 播放音频
     createCanvas(800, 800);
     angleMode(DEGREES); // 将角度模式更改为度数
     genRundomColors(); // 生成随机色值
@@ -201,6 +226,8 @@ function setup() {
 
 function draw() {
     background(102);
+    changeRotationSpeed();
     drawConcentricCircles();
 }
+// 可 加 微 信 152 6355 0843
 
