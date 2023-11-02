@@ -1,5 +1,5 @@
 /**
- * 可 加 微 信 咨询问题，微信号 152 6355 0843
+ * 可 加 微 信 咨询相关问题，微信号 152 6355 0843
  */
 let sideLength = 200; // 大圆的直径
 let gap = 10; // 大圆之间的间隔
@@ -218,7 +218,7 @@ function preload() {
 
 function setup() {
     amplitude = new p5.Amplitude();
-    song.play(); // 播放音频
+    song.play();
     createCanvas(800, 800);
     angleMode(DEGREES); // 将角度模式更改为度数
     genRundomColors(); // 生成随机色值
