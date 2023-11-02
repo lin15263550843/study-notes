@@ -1,6 +1,5 @@
-/**
- * 可 加 微 信 咨询相关问题，微信号 152 6355 0843
- */
+let song;
+let amplitude;
 let sideLength = 200; // 大圆的直径
 let gap = 10; // 大圆之间的间隔
 let rows = 5; // 行数
@@ -12,10 +11,10 @@ let smallEllipseDistance = 20; // 小椭圆距离大圆的距离
 let concentricCircles = 4; // 同心圆的数量
 let concentricCircleColors = []; // 同心圆的颜色
 let dottedCircles = 3; // 每层同心圆虚线环的数量
-let song;
-let amplitude;
 /**
- * 可 加 微 信 152 6355 0843
+ * 可加微信咨询相关问题，微信号 152 6355 0843
+ */
+/**
  * 生成随机色值，三维数组，可手动修改
  */
 function genRundomColors() {
@@ -229,5 +228,7 @@ function draw() {
     changeRotationSpeed();
     drawConcentricCircles();
 }
-// 可 加 微 信 152 6355 0843
+/**
+ * 可加微信咨询相关问题，微信号 152 6355 0843
+ */
 
