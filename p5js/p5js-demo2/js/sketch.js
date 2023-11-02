@@ -12,7 +12,7 @@ let concentricCircles = 4; // 同心圆的数量
 let concentricCircleColors = []; // 同心圆的颜色
 let dottedCircles = 3; // 每层同心圆虚线环的数量
 /**
- * 可加微信咨询相关问题，微信号 152 6355 0843
+ * 可加微信咨询相关问题，微信号 15263550843
  */
 /**
  * 生成随机色值，三维数组，可手动修改
@@ -229,6 +229,6 @@ function draw() {
     drawConcentricCircles();
 }
 /**
- * 可加微信咨询相关问题，微信号 152 6355 0843
+ * 可加微信咨询相关问题，微信号 15263550843
  */
 
