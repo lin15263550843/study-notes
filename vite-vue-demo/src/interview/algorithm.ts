@@ -1388,25 +1388,25 @@ console.log(lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]));
  * 输入：nums = [1,3,5,4,7]     输出：3     解释：最长连续递增序列是 [1,3,5], 长度为3。
  */
 var findLengthOfLCIS = function (nums) {
-    // 1.检测边界条件
-    if (nums.length < 2) return nums.length;
-    // 2.滑动窗口，找到最长连续字串
-    let left = 0,
-        current = 0,
-        right = 1,
-        len = 1;
+    if (nums.length < 2) return nums;
+    let left = 0;
+    let right = 1;
+    let max = 0;
+    // let result = []; // 滑动窗口，找到最长连续字串
     while (right < nums.length) {
-        // 不是递增，移动 left 指向
-        if (nums[right] <= nums[current]) {
-            left = right;
+        if (nums[right] <= nums[right - 1]) {
+            left = right; // 不是递增更新 left
         }
-        // 计算当前的最大字串长度
-        len = Math.max(len, right - left + 1);
-        current++;
-        right++;
+        if (right - left + 1 > max) {
+            max = right - left + 1; // 如果从 left 到 right + 1 的长度大于 max，更新，因为 right 是索引所以需要加 1
+            // result = nums.slice(left, right + 1);
+        }
+        // max = Math.max(max, right - left + 1);
+        right++; // 将 right 向后移动一位，检查下一个元素
     }
-    return len;
+    return max;
 };
+console.log(findLengthOfLCIS([1, 3, 5, 4, 7]));
 /**
  * 215. 数组中的第K个最大元素
  * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素。
@@ -1420,68 +1420,84 @@ var findLengthOfLCIS = function (nums) {
  */
 var findKthLargest = function (nums, k) {
     if (!nums || !Array.isArray(nums)) return -1;
-    // 方法一
-    // nums.sort((a, b) => b - a)
-    // return nums[k - 1]
-
-    // 方法二
-    const exch = (a, x, y) => {
-        const v = a[x];
-        a[x] = a[y];
-        a[y] = v;
+    const exch = (arr, x, y) => {
+        [arr[y], arr[x]] = [arr[x], arr[y]];
     };
-    const quickSort = (a, lo, hi, target) => {
-        if (hi <= lo) return;
-        let l = lo,
-            r = hi,
-            i = lo + 1,
-            v = a[lo];
+    const sort = (arr, start, end, target) => {
+        if (start >= end) return;
+        let l = start; // 定义左右指针 l 和 r，以及一个中间指针 i
+        let r = end;
+        let i = l + 1;
+        let val = arr[start]; // 切分位值，循环完成后排定的就是该值位置
         while (i <= r) {
-            if (a[i] > v) {
-                exch(a, l++, i++);
-            } else if (a[i] < v) {
-                exch(a, r--, i);
+            if (arr[i] > val) {
+                exch(arr, i++, l++); // 将比 val 大的元素移到数组的左边，并将 l 和 i 都向右移动一位
+            } else if (arr[i] < val) {
+                exch(arr, i, r--); // 比 val 小的元素移到数组的右边，并将 r 和 i 都向左移动一位
             } else {
-                i++;
+                i++; // 如果当前元素等于 val，那么直接将 i 向右移动一位
             }
         }
-        // quickSort(a, 0, l - 1);
-        // quickSort(a, r + 1, hi);
-        // 只排序 k 所在的区间，提升速度
-        if (target > r) {
-            quickSort(a, r + 1, hi, target);
-        } else if (target < l) {
-            quickSort(a, 0, l - 1, target);
+        // 只排 k 所在的区间，提升排序速度
+        if (l > target) {
+            sort(arr, start, l - 1, target);
+        } else if (r < target) {
+            sort(arr, r + 1, end, target);
         }
     };
-    // quickSort(nums, 0, nums.length - 1);
-    quickSort(nums, 0, nums.length - 1, k - 1);
+    sort(nums, 0, nums.length - 1, k - 1);
     return nums[k - 1];
 };
+console.log(findKthLargest([3, 2, 1, 5, 6, 4], 2)); // 5
+console.log(findKthLargest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4)); // 4
+console.log(findKthLargest([7, 6, 5, 4, 3, 2, 1], 5)); // 3
 /**
  * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
    输入: [3,2,1,5,6,4]     输出: [5, 3]
  */
-var findKthLargest2 = function (nums, k = 1) {
-    if (!nums || !Array.isArray(nums)) return [0, 0];
+var findKthLargest2 = function (nums, k = 2) {
+    if (!Array.isArray(nums) || nums.length < 2) return [];
     const result = [];
-    nums.forEach((val, index) => {
-        const temp = result.findIndex(item => item[0] <= val);
-        console.log(temp);
-        if (temp > -1) {
-            if (result[temp][0] === val) {
-                result[temp].push(index);
+    nums.forEach((cur, index) => {
+        const idx = result.findIndex(item => item[0] <= cur);
+        if (idx > -1) {
+            if (result[idx][0] === cur) {
+                result[idx].push(index);
             } else {
-                result.splice(temp, 0, [val, index]);
+                result.splice(idx, 0, [cur, index]);
             }
         } else {
-            result.push([val, index]);
+            result.push([cur, index]);
         }
     });
-    console.log(result);
-    const res = result[k];
-    return res ? res.slice(0, 2) : [0, 0];
+    return result[k - 1] || [];
 };
+console.log(findKthLargest2([3, 2, 1, 5, 6, 4])); // [5, 3]
+console.log(findKthLargest2([3, 2, 3, 1, 2, 4, 5, 5, 6])); // [5, 6, 7]
+// /**
+//  * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
+//    输入: [3,2,1,5,6,4]     输出: [5, 3]
+//  */
+// var findKthLargest2 = function (nums, k = 1) {
+//     if (!nums || !Array.isArray(nums)) return [0, 0];
+//     const result = [];
+//     nums.forEach((val, index) => {
+//         const temp = result.findIndex(item => item[0] <= val);
+//         console.log(temp);
+//         if (temp > -1) {
+//             if (result[temp][0] === val) {
+//                 result[temp].push(index);
+//             } else {
+//                 result.splice(temp, 0, [val, index]);
+//             }
+//         } else {
+//             result.push([val, index]);
+//         }
+//     });
+//     console.log(result);
+//     const res = result[k];
+//     return res ? res.slice(0, 2) : [0, 0];
+// };
 var findKthLargest3 = function (nums) {
     if (!nums || !Array.isArray(nums)) return [0, 0];
     let max1 = [nums[0], 0];
@@ -1561,30 +1577,29 @@ var findKthLargest = function (nums, k) {
     const exch = (arr, a, b) => {
         const temp = arr[a];
         arr[a] = arr[b];
-        const quickSort = (arr, left, right) => {
-            if (left >= right) return; // 左指针大于等于右指针，结束排序
-            let flag = arr[left]; // 切分位，取第一个元素，遍历数组进行交互，左边的元素都大于等于 flag，右边的元素都小于 flag
-            let start = left + 1; // 遍历起始指针，从第二个元素开始
-            let end = right; //  遍历的结束指针
-            while (start < end) {
-                while (start < end && arr[start] >= flag) {
-                    start++; // 如果当前元素，大于等于切分位，起始指针向右移动，找到需要交换的元素停下，注意不能越界
-                }
-                while (start < end && arr[end] < flag) {
-                    end--; // 如果当前元素小于切分位，右指针向左移动，找到需要交换的元素停下，注意不能越界
-                }
-                exch(arr, start, end); // 交互它们
-            }
-            if (arr[end] < flag) {
-                end--; // 交换完后，右指针值跟切分位进行比较，如果小于切分位，跟切分位前边的值进行交互，右指针左移，否则直接进行交互
-            }
-            exch(arr, left, end);
-            quickSort(arr, left, end - 1);
-            quickSort(arr, end + 1, right);
-        };
         arr[b] = temp;
     };
-
+    const quickSort = (arr, left, right) => {
+        if (left >= right) return; // 左指针大于等于右指针，结束排序
+        let flag = arr[left]; // 切分位，取第一个元素，遍历数组进行交互，左边的元素都大于等于 flag，右边的元素都小于 flag
+        let start = left + 1; // 遍历起始指针，从第二个元素开始
+        let end = right; //  遍历的结束指针
+        while (start < end) {
+            while (start < end && arr[start] >= flag) {
+                start++; // 如果当前元素，大于等于切分位，起始指针向右移动，找到需要交换的元素停下，注意不能越界
+            }
+            while (start < end && arr[end] < flag) {
+                end--; // 如果当前元素小于切分位，右指针向左移动，找到需要交换的元素停下，注意不能越界
+            }
+            exch(arr, start, end); // 交互它们
+        }
+        if (arr[end] < flag) {
+            end--; // 交换完后，右指针值跟切分位进行比较，如果小于切分位，跟切分位前边的值进行交互，右指针左移，否则直接进行交互
+        }
+        exch(arr, left, end);
+        quickSort(arr, left, end - 1);
+        quickSort(arr, end + 1, right);
+    };
     quickSort(nums, 0, nums.length - 1);
     return nums[k - 1];
 };
@@ -1616,44 +1631,48 @@ var removeDuplicateLetters = function (s) {
  * 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。
  */
 var twoSum = function (nums, target) {
-    const cache = {};
-    for (let i = 0; i < nums.length; i++) {
-        const cur = nums[i];
-        const index = cache[cur];
-        if (index >= 0) {
-            return [index, i];
+    const cache = new Map();
+    for (let index = 0; index < nums.length; index++) {
+        const cur = nums[index];
+        const val = target - cur;
+        if (cache.has(cur)) {
+            return [cache.get(cur), index];
         } else {
-            cache[target - cur] = i;
+            cache.set(val, index);
         }
     }
-    return [];
 };
+console.log(twoSum([2, 7, 11, 15], 9));
+console.log(twoSum([3, 2, 4], 6));
 /**
  * 合并数组并排序去重
  * 有两个数组，把他们两个合并。然后并去重，去重的逻辑是哪儿边的重复次数更多，我就留下哪儿边的
  * 数组一： [1, 100, 0, 5, 1, 5]    数组二： [2, 5, 5, 5, 1, 3]     最终的结果： [0, 1, 1, 2, 3, 5, 5, 5, 100]
  */
 function mergeAndSort(nums1, nums2) {
+    if (!Array.isArray(nums1) || !Array.isArray(nums2)) return;
     const map = new Map();
-    nums1.forEach(val => {
+    for (let val of nums1) {
         if (!map.has(val)) map.set(val, [0, 0]);
-        const arr = map.get(val);
-        arr[0] = arr[0] + 1;
-    });
-    nums2.forEach(val => {
+        const conuts = map.get(val);
+        conuts[0]++; // 遍历 nums1 累计重复元素出现的次数
+    }
+    for (let val of nums2) {
         if (!map.has(val)) map.set(val, [0, 0]);
-        const arr = map.get(val);
-        arr[1] = arr[1] + 1;
-    });
-    const res = [];
+        const conuts = map.get(val);
+        conuts[1]++; // 遍历 nums2 累计重复元素出现的次数
+    }
+    const result = [];
     map.forEach((val, key) => {
-        const sum = Math.max(val[0], val[1]);
-        for (let i = 0; i < sum; i++) {
-            res.push(key);
+        let n = Math.max(...val); // 取出最多的重复次数
+        while (n > 0) {
+            result.push(key); // 按重复次数添加值
+            n--;
         }
     });
-    return res.sort((a, b) => a - b);
+    return result.sort((a, b) => a - b); // 最后别忘了排序
 }
+console.log(mergeAndSort([1, 100, 0, 5, 1, 5], [2, 5, 5, 5, 1, 3]));
 // function mergeAndSort(nums1, nums2) {
 //     const cache = {}; // 用来存放两个数组 值 和 值出现的次数 key -> [n1, n2]
 //     nums1.forEach(n => {
@@ -1722,12 +1741,12 @@ mergeAndSort(ns1, ns2);
  * 意思就是 [5, [[4, 3], 2, 1]] 变成 (5 - ((4 - 3) - 2 - 1)) 并执行
  */
 function calc(arr) {
-    // 通过 reduce 进行一个递归调用。
-    // 如果左边不是数组就可以减去右边的，但如果右边是数组的话，就要把右边的数组先进行减法运算。也是就减法括号运算的的优先级.
-    return arr.reduce((pre, cur) => {
-        let first = Array.isArray(pre) ? calc(pre) : pre;
-        let last = Array.isArray(cur) ? calc(cur) : cur;
-        return first - last;
+    if (!Array.isArray(arr)) return;
+    console.log(arr);
+    return arr.reduce((sum, cur) => {
+        const left = Array.isArray(sum) ? calc(sum) : sum;
+        const right = Array.isArray(cur) ? calc(cur) : cur; // 如果 sum 或 cur 是数组，递归调用 calc 函数。
+        return left - right; // 计算结果，left 和 right 肯定都是非数组
     });
 }
 calc([5, [[4, 3], 2, 1]]);
@@ -1776,13 +1795,19 @@ function findUnique(a, b) {
 var a = [1, 2, 4],
     b = [1, 3, 8, 4];
 findNum(a, b);
-// 方法三
-function findUnique(nums1, nums2) {
-    let set1 = new Set(nums1);
-    let set2 = new Set(nums2);
-    // 先转成 set 再查找仅在 a 中出现一次的 b 中的数据，查找仅在 b 中出现一次的 a 中的数据，取并集
-    return [...nums1.filter(x => !set2.has(x)), ...nums2.filter(x => !set1.has(x))];
+/**
+ * 找到仅在两个数组中出现过一次的数据    两个数组中完全独立的数据
+ * var a = [1, 2, 4], b = [1, 3, 8, 4]  输出
+ */
+function findUnique(a, b) {
+    if (!Array.isArray(a) || !Array.isArray(b)) return;
+    const set1 = new Set(a);
+    const set2 = new Set(b);
+    return [...a.filter(val => !set2.has(val)), ...b.filter(val => !set1.has(val))];
 }
+var a = [1, 2, 4],
+    b = [1, 3, 8, 4];
+console.log(findUnique(a, b));
 // 方法四
 function findUnique(a, b) {
     const map = new Map();
@@ -1804,68 +1829,67 @@ var a = [1, 2, 4],
     b = [1, 3, 8, 4];
 // [2,3,8]
 findUnique(a, b);
-
 /**
  * 77. 组合
  * 给定两个整数 n 和 k，返回范围 [1, n] 中所有可能的 k 个数的组合。
  */
 const combine = (n, k) => {
-    const res = [];
-    const rec = (start, path) => {
-        // start是枚举选择的起点 path是当前构建的路径（组合）
-        if (path.length == k) {
-            res.push(path.slice()); // 拷贝一份path，推入res
-            return; // 结束当前递归
+    if (isNaN(k) || isNaN(n)) return;
+    const result = [];
+    const rec = (arr, start) => {
+        if (arr.length === k) {
+            result.push([...arr]);
+            return; // 递归终止条件，把符合条件的放入到 result 中
         }
-        for (let i = start; i <= n; i++) {
-            // 枚举出所有选择
-            path.push(i); // 选择
-            rec(i + 1, path); // 向下继续选择
-            path.pop(); // 撤销选择
+        // start是枚举选择的起点，i = start 剪掉重复的元素，后边的条件也是为了剪枝，避免多余循环
+        for (let i = start; i <= n && n - i + 1 >= k - arr.length; i++) {
+            arr.push(i);
+            rec(arr, i + 1); // 枚举出所有选择，递归选择下一个，直到 length 为 k 终止
+            arr.pop();
         }
     };
-    rec(1, []); // 递归的入口，从数字1开始选
-    return res;
+    rec([], 1);
+    return result;
 };
-
+console.log(combine(4, 2));
+console.log(combine(4, 3));
 /**
- *  2624. 蜗牛排序
- * 请你编写一段代码为所有数组实现  snail(rowsCount，colsCount) 方法，该方法将 1D 数组转换为以蜗牛排序的模式的 2D 数组。无效的输入值应该输出一个空数组。当 rowsCount * colsCount !==nums.length 时。这个输入被认为是无效的。
- * 输入：
-        nums = [19, 10, 3, 7, 9, 8, 5, 2, 1, 17, 16, 14, 12, 18, 6, 13, 11, 20, 4, 15]
-        rowsCount = 5
-        colsCount = 4
-        输出：
-        [
-        [19,17,16,15],
-        [10,1,14,4],
-        [3,2,12,20],
-        [7,5,18,11],
-        [9,8,6,13]
-        ]
- */
+        *  2624. 蜗牛排序
+        * 请你编写一段代码为所有数组实现  snail(rowsCount，colsCount) 方法，该方法将 1D 数组转换为以蜗牛排序的模式的 2D 数组。
+        * 无效的输入值应该输出一个空数组。当 rowsCount * colsCount !==nums.length 时。这个输入被认为是无效的。
+        * 输入：
+               nums = [19, 10, 3, 7, 9, 8, 5, 2, 1, 17, 16, 14, 12, 18, 6, 13, 11, 20, 4, 15]
+               rowsCount = 5
+               colsCount = 4
+               输出：
+               [
+               [19,17,16,15],
+               [10,1,14,4],
+               [3,2,12,20],
+               [7,5,18,11],
+               [9,8,6,13]
+               ]
+        */
 Array.prototype.snail = function (rowsCount, colsCount) {
-    if (rowsCount * colsCount !== this.length) {
-        return [];
-    }
-    const result = new Array(rowsCount).fill(1).map(() => new Array(colsCount));
-    let row = 0;
-    let col = 0;
-    let flag = true;
-    for (let i = 0; i < this.length; i++) {
-        result[row][col] = this[i];
-        if ((flag && row === rowsCount - 1) || (!flag && row === 0)) {
-            flag = !flag;
-            col++;
+    if (rowsCount * colsCount !== this.length) return [];
+    let row = 0; // 初始化行索引
+    let col = 0; // 初始化列索引
+    let direction = true; // 标识方向，true 为向下，false 为向上。
+    const nums = this;
+    const result = new Array(rowsCount).fill(0).map(() => new Array(colsCount));
+    for (let i = 0; i < nums.length; i++) {
+        result[row][col] = nums[i]; // 将原数组中的元素放到新数组的对应位置上
+        if ((direction && row === rowsCount - 1) || (!direction && row === 0)) {
+            col++; // 如果当前方向向下且行索引达到最大值，或者当前方向向上且行索引为0。则改变，并且行向右移动 +1。
+            direction = !direction;
         } else {
-            if (flag) {
-                row++;
+            if (direction) {
+                row++; // 方向向下时，行索引加 1
             } else {
-                row--;
+                row--; //  方向向上时，行索引减 1
             }
         }
     }
-    return result;
 };
 var arr = [19, 10, 3, 7, 9, 8, 5, 2, 1, 17, 16, 14, 12, 18, 6, 13, 11, 20, 4, 15];
 console.log(arr.snail(5, 4));
@@ -1873,22 +1897,22 @@ console.log(arr.snail(5, 4));
  * 给定一个由n个正整数组成数组，并指定一个结果m，求出将n个正整数通过相加或者相减的方式，得到结果m的组合方式有多少种?分别是什么？
  */
 function fn(arr, m) {
-    if (!Array.isArray(arr) || arr.length < 1) return [];
     const result = [];
     const rec = (i, sum, res) => {
         const cur = arr[i];
         if (i === arr.length) {
             if (sum === m) {
-                result.push(res);
+                result.push(res); // 递归 n 次，如果结果等于 m 则添加到结果中
             }
             return;
         }
-        rec(i + 1, sum + cur, `${res}${res ? '+' : ''}${cur}`);
-        rec(i + 1, sum - cur, `${res}-${cur}`);
+        rec(i + 1, sum + cur, i === 0 ? '' + cur : `${res}+${cur}`); // 将当前的结果按加法累加，并递归
+        rec(i + 1, sum - cur, `${res}-${cur}`); // 将当前的结果按加法累加，并递归
     };
-    rec(0, 0, ''); // 当前递归索引 curIndex,当前合 count,结果字符串 res
+    rec(0, 0, ''); // 当前递归索引，计算结果，计算字符串
     return result;
 }
+console.log(fn([1, 1, 1, 1], 2));
 console.log(fn([1, 1, 1, 1], 2));
 console.log(fn([1, 1, 1, 1, 1], 3));
 console.log(fn([1], 1));
