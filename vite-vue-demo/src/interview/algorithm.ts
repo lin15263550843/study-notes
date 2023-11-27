@@ -208,37 +208,6 @@ console.log('全排列结果：', permutation('suvyls'));
 // };
 
 /**
- * JS38 高频数据类型
-请补全JavaScript代码，要求找到参数数组中出现频次最高的数据类型，并且计算出出现的次数，要求以数组的形式返回。
-1. 基本数据类型之外的任何引用数据类型皆为"object"
-2. 当多种数据类型出现频次相同时将结果拼接在返回数组中，出现次数必须在数组的最后
-输入：__findMostType([0,0,'',''])   输出：['number','string',2]或['string','number',2]
- */
-const _findMostType = array => {
-    if (!Array.isArray(array)) return [];
-    const map = new Map();
-    let max = 0;
-    let result = [];
-    array.forEach(cur => {
-        let type = typeof cur;
-        if (cur === null) type = 'null';
-        if (type === 'function') type = 'object';
-        const count = (map.get(type) || 0) + 1;
-        map.set(type, count);
-        if (count > max) {
-            max = count;
-            result = [type];
-        } else if (count === max) {
-            result.push(type);
-        }
-    });
-    result.push(max);
-    return result;
-};
-console.log(_findMostType([0, 0, '', '']));
-console.log(_findMostType([123, 'abc', {}, {}, true, false, true]));
-console.log(_findMostType([null, {}, null, {}, () => {}]));
-/**
  * leetcode 49. 字母异位词分组
  * 给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。    字母异位词 是由重新排列源单词的所有字母得到的一个新单词。
     输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]    输出: [["bat"],["nat","tan"],["ate","eat","tea"]]

@@ -5,7 +5,7 @@
 /**
  * 防抖
  */
-export function debounce(fn, delay) {
+function debounce(fn, delay) {
     let timer = null;
     return function (...args) {
         if (timer) clearTimeout(timer);
@@ -43,7 +43,7 @@ function debouncePro(fn, delay, config) {
 /**
  * 节流
  */
-export function throttle(fn, interval) {
+function throttle(fn, interval) {
     let last = 0;
     return function (...args) {
         let now = new Date().getTime();
@@ -160,7 +160,7 @@ function currying(...args1) {
     _fn.toString = () => args.reduce((count, cur) => count + cur);
     return _fn;
 }
-console.log('currying2 结果：' + currying2(1, 10000)(2, 20000)(3, 30000, 40000, 50000)(4)(5)()());
+console.log('currying2 结果：' + currying(1, 10000)(2, 20000)(3, 30000, 40000, 50000)(4)(5)()());
 /**
  * 普通函数转成柯里化函数
  */
@@ -196,12 +196,11 @@ console.log('objectCreate 结果：', objectCreate(obj));
 /**
  * 实现 instanceof
  */
-export function myInstanceof(obj, constr) {
-    if (obj === null || obj === undefined) return false;
+function myInstanceof(obj, constr) {
+    if (obj == null || constr == null) return false;
     let proto = Object.getPrototypeOf(obj);
-    const constrProto = constr?.prototype;
-    while (proto !== null) {
-        if (proto === constrProto) return true;
+    while (proto) {
+        if (proto === constr.prototype) return true;
         proto = Object.getPrototypeOf(proto);
     }
     return false;
@@ -212,9 +211,9 @@ console.log('myInstanceof 结果：', myInstanceof([], Object));
  */
 function myNew(fn, ...args) {
     if (typeof fn !== 'function') throw new TypeError(`fn is not a function`);
-    const result = Object.create(fn.prototype);
-    const res = fn.apply(result, args);
-    return res instanceof Object ? res : result; // 注意：function 也是函数对象
+    const newObj = Object.create(fn.prototype);
+    const result = fn.apply(newObj, args);
+    return result instanceof Object ? result : newObj; // 注意：function 也是函数对象
 }
 function ConstrMyNew(arg) {
     this.x = arg;
@@ -231,11 +230,11 @@ const createTask = (resolve, reject, instance, getRes) => {
     return () => {
         queueMicrotask(() => {
             try {
-                const res = getRes(instance.value);
+                const res = getRes(instance.value); // 把当前结果传递给 then 方法的回调函数
                 if (res instanceof MyPromise) {
-                    res.then(resolve);
+                    res.then(resolve); // 如果结果是 promise 则执行 then 方法展开结果
                 } else {
-                    resolve(res);
+                    resolve(res); // 将上次一 then 里面的结果传递进下一个新的 Promise 中
                 }
             } catch (err) {
                 reject(err);
@@ -244,22 +243,22 @@ const createTask = (resolve, reject, instance, getRes) => {
     };
     // };
 };
-const STATE = { PENDING: 'PENDING', REJECTED: 'REJECTED', RESOLVED: 'RESOLVED' };
+const STATES = { PENDING: 'PENDING', REJECTED: 'REJECTED', RESOLVED: 'RESOLVED' };
 function MyPromise(exec) {
-    this.state = STATE.PENDING;
+    this.state = STATES.PENDING;
     this.value = '';
-    this.resolveCallbackArr = [];
-    this.rejectCallbackArr = [];
+    this.resolveCallbackArr = []; // 用于存储 resolve 回调函数
+    this.rejectCallbackArr = []; // 用于存储 reject 回调函数
     const resolve = res => {
-        if (this.state !== STATE.PENDING) return;
-        this.state = STATE.RESOLVED;
-        this.value = res;
+        if (this.state !== STATES.PENDING) return;
+        this.state = STATES.RESOLVED;
+        this.value = res; // 更新结果，更新状态，以及执行回调函数（此时回执行 then 方法的回调函数）
         this.resolveCallbackArr.forEach(callback => callback());
     };
     const reject = res => {
-        if (this.state !== STATE.PENDING) return;
-        this.state = STATE.REJECTED;
-        this.value = res;
+        if (this.state !== STATES.PENDING) return;
+        this.state = STATES.REJECTED;
+        this.value = res; // 更新结果，更新状态，以及执行回调函数（此时回执行 then 方法的回调函数）
         this.rejectCallbackArr.forEach(callback => callback());
     };
     try {
@@ -271,18 +270,18 @@ function MyPromise(exec) {
 MyPromise.prototype.then = function (onResolved, onRejected) {
     return new MyPromise((resolve, reject) => {
         // const createTask = taskFactory(resolve, reject, this);
-        if (typeof onResolved !== 'function') onResolved = res => res;
+        if (typeof onResolved !== 'function') onResolved = res => res; // 为了把值传递下去
         if (typeof onRejected !== 'function')
             onRejected = err => {
-                throw err;
+                throw err; // 注意需要使用 throw 抛出，才能走下一个 reject 回调
             };
-        if (this.state === STATE.RESOLVED) {
-            createTask(resolve, reject, this, onResolved)();
+        if (this.state === STATES.RESOLVED) {
+            createTask(resolve, reject, this, onResolved)(); // 非 panding 状态，立即执行
         }
-        if (this.state === STATE.REJECTED) {
-            createTask(resolve, reject, this, onRejected)();
+        if (this.state === STATES.REJECTED) {
+            createTask(resolve, reject, this, onRejected)(); // 非 panding 状态，立即执行
         }
-        if (this.state === STATE.PENDING) {
+        if (this.state === STATES.PENDING) {
             this.resolveCallbackArr.push(createTask(resolve, reject, this, onResolved));
             this.rejectCallbackArr.push(createTask(resolve, reject, this, onRejected));
         }
@@ -309,9 +308,9 @@ Promise.myAll = function (values) {
         const result = [];
         let count = 0;
         if (values.length < 1) resolve(result);
-        for (let index = 0; index < values.length; index++) {
-            Promise.resolve(values[index]).then(res => {
-                result[index] = res;
+        for (let i = 0; i < values.length; i++) {
+            Promise.resolve(values[i]).then(res => {
+                result[i] = res;
                 if (++count === values.length) {
                     resolve(result);
                 }
@@ -325,19 +324,17 @@ Promise.myAllSettled = function (values) {
         const result = [];
         let count = 0;
         if (values.length < 1) resolve(result);
-        for (let index = 0; index < values.length; index++) {
-            Promise.resolve(values[index]).then(
+        for (let i = 0; i < values.length; i++) {
+            Promise.resolve(values[i]).then(
                 res => {
-                    result[index] = { status: 'fulfilled', value: res };
-                    count++;
-                    if (count === values.length) {
+                    result[i] = { status: 'fulfilled', value: res };
+                    if (++count === values.length) {
                         resolve(result);
                     }
                 },
                 err => {
-                    result[index] = { status: 'rejected', reason: err };
-                    count++;
-                    if (count === values.length) {
+                    result[i] = { status: 'rejected', reason: err };
+                    if (++count === values.length) {
                         resolve(result);
                     }
                 },
@@ -359,9 +356,9 @@ Promise.myAny = function (values) {
         const errors = [];
         let count = 0;
         if (values.length < 1) reject(new AggregateError(errors, 'All promises were rejected'));
-        for (let index = 0; index < values.length; index++) {
-            Promise.resolve(values[index]).then(resolve, err => {
-                errors[index] = err;
+        for (let i = 0; i < values.length; i++) {
+            Promise.resolve(values[i]).then(resolve, err => {
+                errors[i] = err;
                 if (++count === values.length) {
                     reject(new AggregateError(errors, 'All promises were rejected'));
                 }
@@ -422,7 +419,7 @@ Promise.serialAll([p1, p2, p3, p4])
  */
 function getType(val) {
     if (val === null) return 'null';
-    // if (typeof val === 'object') return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
+    if (val === undefined) return 'undefined';
     if (typeof val === 'object')
         return Object.prototype.toString
             .call(val)
@@ -447,7 +444,7 @@ console.log('getType(array)：', getType(new ArrayBuffer()));
  */
 Function.prototype.myCall = function (thisArg, ...args) {
     if (typeof this !== 'function') throw new TypeError(`the ${this} is not a function`);
-    if (thisArg === null || thisArg === undefined) {
+    if (thisArg == null) {
         thisArg = window;
     } else {
         thisArg = Object(thisArg);
@@ -477,7 +474,7 @@ console.log('myCall 结果：', testMyCall.call(999, 1, 2, 3) + 1);
  */
 Function.prototype.myApply = function (thisArg, args = []) {
     if (typeof this !== 'function') throw new TypeError(`the ${this} is not a function`);
-    if (thisArg === null || thisArg === undefined) {
+    if (thisArg == null) {
         thisArg = window;
     } else {
         thisArg = Object(thisArg);
@@ -535,7 +532,7 @@ console.log('bindTestMyCall 结果：', new bindTestMyCall2(4, 5, 6));
  * ajax 请求
  */
 // import data from '../assets/data.json';
-export function sendAjax() {
+function sendAjax() {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         console.log('onreadystatechange readyState：', xhr.readyState);
@@ -563,7 +560,7 @@ export function sendAjax() {
 /**
  * 使用 Promise 封装 ajax
  */
-export function promiseAjax(config) {
+function promiseAjax(config) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
@@ -598,12 +595,13 @@ export function promiseAjax(config) {
 const types = [RegExp, Date, Map, Set, WeakMap, WeakSet];
 function deepClone(target, cache = new WeakMap()) {
     if (target === null) return null;
+    if (target === undefined) return null;
     if (typeof target === 'function') return target;
     if (typeof target === 'symbol') return Symbol(target.description);
-    if (typeof target !== 'object') return target;
     if (target instanceof Error) return target;
+    if (typeof target !== 'object') return target;
     if (cache.has(target)) return cache.get(target);
-    const Type = types.find(constr => target instanceof constr);
+    const Type = types.find(Constr => target instanceof Constr);
     if (Type) {
         const Constr = target.constructor;
         if (typeof Constr === 'function') return new Constr(target);
@@ -740,6 +738,45 @@ function testDeepClone() {
 }
 testDeepClone();
 /**
+ * JS76 判断是否符合 USD 格式
+ */
+function isUSD(str) {
+    return /^\$\d{1,3}(,\d{3})*(\.\d{2})?$/.test(str);
+}
+console.log(isUSD('$123.45'));
+console.log(isUSD('$123,000.45'));
+console.log(isUSD('￥123.45'));
+console.log(isUSD('$123.123'));
+console.log(isUSD('$12345678'));
+/**
+ * 字符串转成对象
+ */
+function parseStrToObj(obj, str, val) {
+    if (typeof obj !== 'object' || obj == null) return {};
+    str = String(str);
+    const keys = str.replace(/\[(.+)\]/g, '.$1').split('.');
+    console.log(keys);
+    // const keys = path.replace(/\[(\d)\]/g, '.$1').split('.');
+    let curObj = obj;
+    while (keys.length > 0) {
+        const key = keys.shift();
+        if (keys.length === 0) {
+            curObj[key] = val;
+            return obj; // 最后一层，直接赋值，并返回 原始的 obj
+        }
+        if (typeof curObj[key] !== 'object' || curObj[key] == null) {
+            curObj[key] = {}; // 如果值非对象（不存在），直接覆盖
+        }
+        curObj = curObj[key]; // 循环处理下一层对象
+    }
+    return obj;
+}
+var obj = { a: { b: { c1: 31, c2: [], c3: null }, b1: 21 }, a1: 11, a2: 12 };
+console.log(parseStrToObj(obj, 'a.b.c.d', 4)); // obj, 'a.b.c.d', 4 -> obj.a.b.c.d = 4
+console.log(parseStrToObj(obj, 'a.b.c2[0].e2', 'c20e2')); // obj, 'a.b.c.d', 4 -> obj.a.b.c.d = 4
+console.log(parseStrToObj(obj, 'a.b.c3[d3].e3', 'c30e3')); // obj, 'a.b.c.d', 4 -> obj.a.b.c.d = 4
+console.log(obj.a.b.c.d); // obj, 'a.b.c.d', 4 -> obj.a.b.c.d = 4
+/**
  * sleep 函数
  */
 function sleep(delay) {
@@ -806,15 +843,13 @@ console.log('exch 结果:', exch(2, 6));
  */
 function randomArr(arr) {
     if (!Array.isArray(arr)) return arr;
-    // arr.sort((a, b) => Math.random() - 0.5); // 该方法并不完全随机，因为引擎的排序算法不会两两比较，排序的过程中会跳过一些元素
-    for (let i = arr.length - 1; i > 0; i--) {
-        const randomIndex = arr[Math.round(Math.random() * i)];
-        cur = arr[i];
-        arr[i] = arr[randomIndex];
-        arr[randomIndex] = cur;
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const randomIndex = Math.round(Math.random() * i);
+        console.log(i, randomIndex);
+        [arr[randomIndex], arr[i]] = [arr[i], arr[randomIndex]];
     }
     return arr;
-} // // 随机取出一个元素，然后将该元素与最后一个元素交换位置，然后再从剩下的元素中随机取出一个元素，与倒数第二个元素交换位置，以此类推
+} // 随机取出一个元素，然后将该元素与最后一个元素交换位置，然后再从剩下的元素中随机取出一个元素，与倒数第二个元素交换位置，以此类推
 console.log('randomArr --->>>', randomArr([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
 /**
  * 数组求和
@@ -837,33 +872,37 @@ console.log('add2 结果：', add2([1, 2, 3, [[4, 5], 6], 7, 8, 9]));
  * 数组扁平化
  */
 function flat(arr, depth) {
-    if (!Array.isArray(arr)) return arr;
-    if (depth === 0) return arr; // 因为 concat 会直接解构一层所以 depth 要 > 1
-    return arr.reduce((res, cur) => res.concat(Array.isArray(cur) && depth > 1 ? flat(cur, depth - 1) : cur), []);
-    // return arr.toString().split(',').map(val=> Number(val)); // 只适用于值为数字或字符串类型的场景
-    // 递归
-    // const _flat = (arr, dep) => {
-    //     dep++;
-    //     return arr.reduce((res, cur) => res.concat(Array.isArray(cur) && dep < depth ? _flat(cur, dep) : cur), []);
-    // };
-    // return _flat(this, 0);
-    // // 非递归
-    // let dep = 0;
-    // while (dep < depth) {
-    //     arr = [].concat(...arr);
-    //     dep++;
-    // }
-    // return arr;
+    if (!Array.isArray(arr)) return;
+    if (depth === 0) return arr;
+    // return arr.reduce((result, cur) => result.concat(Array.isArray(cur) ? flat(cur, depth - 1) : cur), []);
+    while (depth > 0) {
+        arr = [].concat(...arr); // 非递归，利用 concat 一层层展开数组
+        depth--;
+    }
+    return arr;
 }
+console.log('flat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 0));
+console.log('flat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 1));
+console.log('flat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 2));
 console.log('flat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 3));
 console.log('flat 结果：', [1, [2, [3, 4, 5], [6, [7, [8], [9]]]]].flat(3));
 /**
  * 数组的 flat 方法
  */
+// Array.prototype.myFlat = function (depth = 1) {
+//     if (!Array.isArray(this)) throw new TypeError(`then ${this} is not a array`);
+//     if (depth === 0) return this;
+//     return this.reduce((res, cur) => res.concat(Array.isArray(cur) && depth > 1 ? cur.myFlat(depth - 1) : cur), []);
+// };
 Array.prototype.myFlat = function (depth = 1) {
     if (!Array.isArray(this)) throw new TypeError(`then ${this} is not a array`);
     if (depth === 0) return this;
-    return this.reduce((res, cur) => res.concat(Array.isArray(cur) && depth > 1 ? cur.myFlat(depth - 1) : cur), []);
+    let result = [...this];
+    while (depth > 0) {
+        result = [].concat(...result);
+        depth--;
+    }
+    return result;
 };
 console.log('myFlat 结果：', [1, [2, [3, 4, 5], [6, [7, [8], [9]]]]].myFlat(3));
 // var flat = function (arr, n) {
@@ -917,10 +956,10 @@ console.log('myFlat 结果：', [1, [2, [3, 4, 5], [6, [7, [8], [9]]]]].myFlat(3
 /**
  * 数组去重
  */
-export function unique(arr) {
+function unique(arr) {
     if (!Array.isArray(arr)) return arr;
     // 方法一
-    // return Array.from(new Set(arr));
+    return Array.from(new Set(arr));
     // return [...new Set(arr)];
     // 方法二：
     // const set = new Set();
@@ -954,13 +993,37 @@ console.log(unique([1, 1, 'true', 'true', true, true, 15, 15, false, false, unde
  *      如果为 null 或者 undefined 则报错
  */
 Array.prototype.myPush = function (...items) {
+    if (!Array.isArray(this)) {
+        let length = this.length || 0;
+        while (items.length > 0) {
+            this[length] = items.shift();
+            console.log(length, this[length]);
+            length++;
+        }
+        this.length = length;
+        return this.length;
+    }
     if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
-
-    for (const item of items) {
-        this[this.length] = item;
+    while (items.length > 0) {
+        this[this.length] = items.shift();
     }
     return this.length;
 };
+const arr = [];
+arr.myPush(1, 2, 3);
+console.log(arr);
+const obj = { 1: 1, length: 1 };
+Array.prototype.myPush.call(obj, 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
+// Array.prototype.push.call(obj, 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
+console.log(obj);
+// Array.prototype.myPush = function (...items) {
+//     if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
+
+//     for (const item of items) {
+//         this[this.length] = item;
+//     }
+//     return this.length;
+// };
 /**
  * 数组的 filter 方法
  */
@@ -1031,13 +1094,60 @@ console.log(
     }),
 );
 /**
+ * 实现数组的 reduce 方法
+ */
+Array.prototype.myReduce = function (callback, ...rest) {
+    console.log('arguments', rest, rest.length);
+    if (typeof callback !== 'function') throw new TypeError(`callback is not a function`);
+    const isInitialValue = rest.length !== 0; // 使用 rest 是为了判断有没有传递 initialValue 参数
+    if (this.length === 0 && !isInitialValue) throw new TypeError(`when there is no initial value, the array cannot be empty.`);
+    let result = isInitialValue ? rest[0] : this[0];
+    const len = this.length;
+    for (let i = isInitialValue ? 0 : 1; i < len; i++) {
+        if (i in this) result = callback(result, this[i], i, this);
+    }
+    return result;
+};
+console.log(
+    [1, , 2, 3].myReduce((sum, cur, index, arr) => {
+        console.log('sum, cur, index', sum, cur, index, arr);
+        return cur + sum;
+    }, 0),
+);
+console.log(
+    [].myReduce((sum, cur, index, arr) => {
+        console.log('sum, cur, index', sum, cur, index, arr);
+        return cur + sum;
+    }, null),
+);
+// 如果数组为空且未提供 initialValue，则会抛出异常
+// console.log(
+//     [].myReduce((sum, cur, index, arr) => {
+//         console.log('sum, cur, index', sum, cur, index, arr);
+//         return cur + sum;
+//     }),
+// );
+console.log(
+    [1, , 2, 3].reduce((sum, cur, index, arr) => {
+        console.log('sum, cur, index', sum, cur, index, arr);
+        return cur + sum;
+    }, 0),
+);
+// console.log(
+//     [].reduce((sum, cur, index, arr) => {
+//         console.log('sum, cur, index', sum, cur, index, arr);
+//         return cur + sum;
+//     }),
+// );
+/**
  * 实现 字符串的 repeat 方法
  */
 function repeat(str, n) {
     if (typeof str !== 'string') return str;
     if (n < 0) throw new RangeError(`Invalid count value: ${n}`);
     if (n === 0) return '';
-    return new Array(n).fill(str).join('');
+    return new Array(n + 1).join(str);
+    // return new Array(n).fill(str).join('');
     // let result = '';
     // while (n > 0) {
     //     result += str;
@@ -1086,7 +1196,8 @@ console.log(flatten(obj));
  *      要考虑不足三位的情况
  */
 function comma(num) {
-    const flag = num < 0;
+    if (isNaN(num)) return '';
+    const sign = num < 0;
     const [integer, decimal] = String(Math.abs(num)).split('.');
     if (integer.length <= 3) return String(num);
     const arr = integer.split('');
@@ -1095,22 +1206,22 @@ function comma(num) {
         arr.splice(index, 0, ',');
         index -= 3;
     }
-    return `${flag ? '-' : ''}${arr.join('')}${decimal ? '.' + decimal : ''}`;
+    return `${sign ? '-' : ''}${arr.join('')}${decimal ? '.' + decimal : ''}`;
     // 正则
-    // const flag = num < 0;
+    // const sign = num < 0;
     // const [integer, decimal] = String(Math.abs(num)).split('.');
     // if (integer.length <= 3) return String(num);
     // const index = integer.length % 3;
     // const arr = integer.slice(index).match(/\d{3}/g);
     // const res = `${index > 0 ? integer.slice(0, index) + ',' : ''}${arr.join(',')}`;
-    // return `${flag ? '-' : ''}${res}${decimal ? '.' + decimal : ''}`;
+    // return `${sign ? '-' : ''}${res}${decimal ? '.' + decimal : ''}`;
     // 递归
     // if (!Number(num)) return num;
-    // const flag = num < 0;
+    // const sign = num < 0;
     // const decimal = String(num).split('.')[1];
     // const rec = (num, str = '') => {
     //     if (num < 1000) {
-    //         return `${flag ? '-' : ''}${num}${str}${decimal ? '.' + decimal : ''}`;
+    //         return `${sign ? '-' : ''}${num}${str}${decimal ? '.' + decimal : ''}`;
     //     } else {
     //         return rec(parseInt(num / 1000), `,${num % 1000}${str}`);
     //     }
@@ -1135,8 +1246,8 @@ console.log(comma(-1234567.12345678));
  */
 function sumBigNumber(a, b) {
     if (isNaN(a) || isNaN(b)) return '';
-    let temp = 0; // temp 为需要进位的值，只可能是 0 或 1
     let result = '';
+    let temp = 0; // temp 为需要进位的值，只可能是 0 或 1
     const arr1 = String(a).split('');
     const arr2 = String(b).split('');
     while (arr1.length > 0 || arr2.length > 0) {
@@ -1154,14 +1265,12 @@ console.log('sumBigNumber 结果：', sumBigNumber('92345678', '98768456')); // 
  */
 function accurateAdd(a, b) {
     if (isNaN(a) || isNaN(b)) return '';
-    if (typeof a !== 'string') a = String(a);
-    if (typeof b !== 'string') b = String(b);
-    const [a1, a2 = ''] = a.split('.');
-    const [b1, b2 = ''] = b.split('.');
+    const [a1, a2 = ''] = String(a).split('.');
+    const [b1, b2 = ''] = String(b).split('.');
     const max = Math.max(a2.length, b2.length);
     const str1 = (a1 + a2).padEnd(a1.length + max, '0');
     const str2 = (b1 + b2).padEnd(b1.length + max, '0');
-    const arr1 = str1.split('');
+    const arr1 = str1.split(''); // 把小数点去除，然后后边补 0，当作大整出处理
     const arr2 = str2.split('');
     let result = '';
     let temp = 0;
@@ -1188,16 +1297,15 @@ function multiplyBigNumber(a, b) {
     if (typeof a !== 'string') a = String(a);
     if (typeof b !== 'string') b = String(b);
     // if (/^0+$/.test(a) || /^0+$/.test(b)) return '0'; // 如果 a 或 b 为 0 返回 0
-    const resArr = [];
+    const arr = [];
     for (let i = a.length - 1; i >= 0; i--) {
         for (let j = b.length - 1; j >= 0; j--) {
-            const res = Number(a[i]) * Number(b[j]) + (resArr[i + j + 1] || 0);
-            resArr[i + j + 1] = res % 10;
-            resArr[i + j] = Math.floor(res / 10) + (resArr[i + j] || 0);
-            console.log(resArr);
+            const res = Number(a[i]) * Number(b[j]) + (arr[i + j + 1] || 0); // 加上上次的值
+            arr[i + j + 1] = res % 10;
+            arr[i + j] = Math.floor(res / 10) + (arr[i + j] || 0); // 加上上次进位的值
         }
     }
-    return resArr.join('').replace(/^0+/g, '') || '0'; // 如果为空字符串说明计算结果全是 0 返回 0
+    return arr.join('').replace(/^0+/g, '') || '0'; // 如果为空字符串说明计算结果全是 0 返回 0
 }
 console.log('multiplyBigNumber 结果：', multiplyBigNumber('1234', '2')); // 2468
 console.log('multiplyBigNumber 结果：', multiplyBigNumber('01234', '2')); // 2468
@@ -1313,14 +1421,14 @@ export function funArgSum2() {
     }
 */
 function parseParams(url) {
-    if (typeof url !== 'string') return;
+    if (typeof url !== 'string') return {};
     const search = url.split('?')[1];
     if (!search) return {};
     const arr = search.split('&');
     const result = {};
-    arr.forEach(param => {
-        const [key, val = ''] = param.split('=');
-        const value = window.decodeURI(val || ''); // 值不存在时，默认为空字符串
+    arr.forEach(cur => {
+        const [key, val = ''] = cur.split('=');
+        const value = window.decodeURI(val); // 值不存在时，默认为空字符串
         if (result[key]) {
             result[key] = [].concat(result[key], value); // result[key] 可能是 值，也可能是数组
         } else {
@@ -1335,12 +1443,12 @@ console.log('结果：', parseParams('http://www.domain.com/?user=anonymous&id=1
  *  二维数组斜向打印
  */
 function printMatrix(arr) {
-    if (!Array.isArray(arr)) return;
-    const len1 = arr.length;
-    const len2 = arr[0].length;
+    if (!Array.isArray(arr) || !Array.isArray(arr[0])) return [];
+    let len1 = arr.length; // 行数，对应 x 范围
+    let len2 = arr[0].length; // 列数，对应 y 范围
     const result = [];
     // 斜向遍历二维数组，左上部分的规律是，初始索引（1, 2, 3 的索引）行都为 0， 列的索引递增，所以可以对列进行循环
-    // 左上部分，索引的规律是：每次初始可以按照列进行循环，列索引每次从当前循环最大值递减到 0，同时行的索引从 0 开始，递增到最大值
+    // 左上部分，索引的规律是：行的索引从 0 开始，递增到最大值，列索引每次从当前循环最大值 j 递减到 0
     for (let j = 0; j < len2; j++) {
         let x = 0;
         let y = j;
@@ -1351,7 +1459,7 @@ function printMatrix(arr) {
         }
     }
     // 斜向遍历二维数组，右下部分的规律是，初始索引（6, 9, 12 的索引）列都为列索引的最大值， 行的索引递增，所以可以对行进行循环
-    // 右下部分，索引的规律是：从行 1 开始，每次初始可以按照行循环，行索引递增到最大值，同时列的索引递减到 0
+    // 右下部分，索引的规律是：行的索引从 1 开始，行索引递从当前循环的最小值 i 增到最大值，同时列的索引从最大值递减到 0
     for (let i = 1; i < len1; i++) {
         let x = i;
         let y = len2 - 1;
@@ -1400,7 +1508,7 @@ console.log(
 /**
  * 找出 Element 元素的全部 Input 子元素
  */
-export function findAllInputElement(element) {
+function findAllInputElement(element) {
     if (!(element instanceof Element)) return [];
     const res = [];
     const recursion = element => {
@@ -1435,7 +1543,7 @@ console.log('hidePhoneNumber 结果：', hidePhoneNumber('13612361236'));
  * 下面来看一道比较典型的问题，通过这个问题来对比几种异步编程方法：
  * 红灯 3s 亮一次，绿灯 1s 亮一次，黄灯 2s 亮一次；如何让三个灯不断交替重复亮灯？
  */
-export function loopPrint() {
+function loopPrint() {
     function red() {
         console.log('red');
     }
@@ -1481,7 +1589,7 @@ export function loopPrint() {
 /**
  * 实现每隔一秒打印 1,2,3,4
  */
-export function printNumber(n) {
+function printNumber(n) {
     for (let i = 1; i <= n; i++) {
         setTimeout(() => {
             console.log('i: ', i);
@@ -1491,6 +1599,7 @@ export function printNumber(n) {
 // console.log('loopPrint 结果：', printNumber(4));
 /**
  * 小孩报数问题
+ * 有30个小孩儿，编号从1-30，围成一圈依此报数，1、2、3 数到 3 的小孩儿退出这个圈， 然后下一个小孩 重新报数 1、2、3，问最后剩下的那个小孩儿的编号是多少?
  */
 function childNum(num, count) {
     // 方法一
@@ -1555,7 +1664,7 @@ childNum(30, 3);
 /**
  * 用 Promise 实现图片的异步加载
  */
-export function asyncLoadImage(url) {
+function asyncLoadImage(url) {
     return new Promise((resolve, reject) => {
         if (!url || !String(url).match(/^https?:\/\//)) {
             reject('图片地址错误！');
@@ -1571,9 +1680,7 @@ export function asyncLoadImage(url) {
         };
     });
 }
-asyncLoadImage(
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F4k%2Fs%2F02%2F2109242332225H9-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648885122&t=02370f63aa93f0f3526f0750589a2b3a',
-)
+asyncLoadImage('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F4k%2Fs%2F02%2F2109242332225H9-0-lp.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648885122&t=02370f63aa93f0f3526f0750589a2b3a')
     .then(img => {
         console.log('加载成功：', img);
     })
@@ -1584,39 +1691,60 @@ asyncLoadImage(
  * 查找文章中出现频率最高的单词
  */
 function findMostWord(str) {
-    if (typeof str !== 'string') return '';
+    if (typeof str !== 'string') return [];
     // str = str.trim().toLowerCase();
+    const map = new Map();
+    const arr = str.match(/[a-zA-Z0-9'-]+/g);
     let max = 0;
     let result = [];
-    const map = new Map();
-    const arr = str.match(/[a-zA-Z0-9']+/g);
-    arr.forEach(val => {
-        if (map.has(val)) {
-            map.set(val, map.get(val) + 1);
-        } else {
-            map.set(val, 1);
-        }
-        const count = map.get(val);
+    arr.forEach(cur => {
+        const count = (map.get(cur) || 0) + 1;
+        map.set(cur, count);
         if (count > max) {
             max = count;
-            result = [val];
-        } else if (count === max) {
-            result.push(val);
-        }
+            result = [cur];
+        } else if (count === max) result.push(cur);
     });
     result.push(max);
     return result;
 }
-console.log(
-    findMostWord(
-        "  666 Tom's a little boy. Age has reached the end of the beginning of a word. May be guilty in his seems to passing a lot of different life became the appearance of the same day;",
-    ),
-);
+console.log(findMostWord("  666 Tom's a little boy. Age has reached the end of the beginning of a word. May be guilty in his seems to passing a lot of different life became the appearance of the same day;"));
 console.log(findMostWord('hello word'));
+/**
+ * JS38 高频数据类型
+请补全JavaScript代码，要求找到参数数组中出现频次最高的数据类型，并且计算出出现的次数，要求以数组的形式返回。
+1. 基本数据类型之外的任何引用数据类型皆为"object"
+2. 当多种数据类型出现频次相同时将结果拼接在返回数组中，出现次数必须在数组的最后
+输入：__findMostType([0,0,'',''])   输出：['number','string',2]或['string','number',2]
+ */
+const _findMostType = array => {
+    if (!Array.isArray(array)) return [];
+    const map = new Map();
+    let max = 0;
+    let result = [];
+    array.forEach(cur => {
+        let type = typeof cur;
+        if (cur === null) type = 'null';
+        if (type === 'function') type = 'object';
+        const count = (map.get(type) || 0) + 1;
+        map.set(type, count);
+        if (count > max) {
+            max = count;
+            result = [type];
+        } else if (count === max) {
+            result.push(type);
+        }
+    });
+    result.push(max);
+    return result;
+};
+console.log(_findMostType([0, 0, '', '']));
+console.log(_findMostType([123, 'abc', {}, {}, true, false, true]));
+console.log(_findMostType([null, {}, null, {}, () => {}]));
 /**
  * 封装异步的fetch，使用async await方式来使用
  */
-export class FetchHttpRequest {
+class FetchHttpRequest {
     /**
      * get 请求
      */
@@ -1731,27 +1859,35 @@ function twoWayDataBinding(params: type) {
 /**
  * 实现简单路由 hash 模式
  */
-export class Router {
+class Router {
     constructor() {
         this.routes = {};
         this.currentHash = '';
         this.freshRoute = this.freshRoute.bind(this);
-        window.addEventListener('load', this.freshRoute, false);
-        window.addEventListener('hashchange', this.freshRoute, false);
-    }
-    // 存储路由
-    storeRoute(path, callback) {
-        this.routes[path] = callback || function () {};
+        window.addEventListener('load', this.freshRoute);
+        window.addEventListener('hashchange', this.freshRoute);
     }
     // 更新路由
     freshRoute() {
-        this.currentHash = location.hash.slice(1) || '/';
-        this.routes[this.currentHash]();
+        this.currentHash = window.location.hash.slice(1);
+        const callback = this.routes[this.currentHash];
+        if (callback) callback();
+    }
+    // 存储路由
+    setRoute(path, callback) {
+        this.routes[path] = callback;
+    }
+    // 路由跳转
+    push(path) {
+        window.location.hash = `#${path}`;
     }
 }
-// const router = new Router();
-// router.storeRoute('/', () => console.log('//////'));
-// router.storeRoute('test', () => console.log('哈哈哈'));
+const router = new Router();
+router.setRoute('/', () => console.log('//////'));
+router.setRoute('/test', () => console.log('哈哈哈'));
+setTimeout(() => {
+    router.push('/test');
+}, 1000);
 /**
  * 实现简单路由 history 模式
  */
@@ -1759,33 +1895,44 @@ class Router {
     constructor() {
         this.routes = {};
         this.listerPopState();
+        console.log(this);
     }
-
-    init(path) {
-        history.replaceState({ path: path }, null, path);
-        this.routes[path] && this.routes[path]();
-    }
-
-    route(path, callback) {
-        this.routes[path] = callback;
-    }
-
-    push(path) {
-        history.pushState({ path: path }, null, path);
-        this.routes[path] && this.routes[path]();
-    }
-
     listerPopState() {
         window.addEventListener('popstate', e => {
+            console.log(history);
             const path = e.state && e.state.path;
+            console.log(path, e);
             this.routers[path] && this.routers[path]();
         });
     }
+    replace(path) {
+        history.replaceState({ path: path }, null, path);
+        this.routes[path] && this.routes[path]();
+    }
+    setRoute(path, callback) {
+        this.routes[path] = callback;
+    }
+    push(path) {
+        console.log(history.length);
+        history.pushState({ path: path }, null, path);
+        console.log(history.length);
+        // 注意：调用 history.pushState() 或者 history.replaceState() 不会触发 popstate 事件。所以需要手动触发
+        this.routes[path] && this.routes[path]();
+    }
 }
+const router = new Router();
+router.setRoute('/', () => console.log('//////'));
+router.setRoute('/vite-vue-demo/test_index.html', () => console.log('哈哈哈'));
+setTimeout(() => {
+    router.push('/');
+    setTimeout(() => {
+        router.push('/vite-vue-demo/test_index.html');
+    }, 1000);
+}, 1000);
 /**
  * 使用 setTimeout 实现 setInterval
  */
-export function mySetInterval(callback, delay) {
+function mySetInterval(callback, delay) {
     // let obj = { timer: null };
     // const fn = () => {
     //     obj.timer = setTimeout(() => {
@@ -1812,26 +1959,32 @@ export function mySetInterval(callback, delay) {
 /**
  * 判断对象是否存在循环引用
  */
-function isCycleObject(obj, parentObjArr) {
-    // 方法一
-    // if (typeof obj !== 'object' || obj === null) return false;
-    // try {
-    //     JSON.stringify(obj);
-    //     return false;
-    // } catch (error) {
-    //     return true;
-    // }
-    // 方法二
-    if (typeof obj !== 'object' || obj === null) return false;
-    if (!parentObjArr) parentObjArr = [obj]; // 首次为空时，添加根对象 obj
-    let result = false; // 用来存储是否存在循环引用的结果
-    for (let key of Object.keys(obj)) {
-        const cur = obj[key];
-        if (typeof cur !== 'object' || cur === null) continue; // 非对象，则跳过当前循环
-        if (parentObjArr.includes(cur)) return true; // 检查当前对象是否在父级对象列表中
-        result = isCycleObject(cur, [...parentObjArr, cur]); // 将 cur 添加到 parentObjArr 中。然后进行递归调用，检查是否存在更深层次的循环引用
+// function isCycleObject(obj, parentObjArr) {
+//     // if (typeof obj !== 'object' || obj == null) return false;
+//     // try {
+//     //     JSON.stringify(obj);
+//     //     return false;
+//     // } catch (error) {
+//     //     return true;
+//     // }
+//     if (typeof obj !== 'object' || obj === null) return false;
+//     if (!parentObjArr) parentObjArr = [obj]; // 首次为空时，添加根对象 obj
+//     let result = false; // 用来存储是否存在循环引用的结果
+//     for (let key of Object.keys(obj)) {
+//         const cur = obj[key];
+//         if (typeof cur !== 'object' || cur === null) continue; // 非对象，则跳过当前循环
+//         if (parentObjArr.includes(cur)) return true; // 检查当前对象是否在父级对象列表中
+//         result = isCycleObject(cur, [...parentObjArr, cur]); // 将 cur 添加到 parentObjArr 中。然后进行递归调用，检查是否存在更深层次的循环引用
+//     }
+//     return result;
+// }
+function isCycleObject(obj, parentArr = []) {
+    if (obj == null || typeof obj !== 'object') return false;
+    if (parentArr.includes(obj)) return true; // 检查当前对象是否在父级对象列表中
+    for (const key of Object.keys(obj)) {
+        if (isCycleObject(obj[key], [...parentArr, obj])) return true; // 将当前 obj 添加到 parentObjArr 中。然后进行递归调用，检查是否存在更深层次的循环引用
     }
-    return result;
+    return false;
 }
 const o1 = { x: 1, y: { z: 3 } };
 console.log('判断对象是否存在循环引用：', isCycleObject(o1));
@@ -1857,8 +2010,12 @@ console.log('判断对象是否存在循环引用：', isCycleObject(a));
 var x = {};
 x.y = x;
 console.log('判断对象是否存在循环引用：', isCycleObject(x));
-// console.log('判断对象是否存在循环引用：', isCycleObject(123));
-// console.log('判断对象是否存在循环引用：', isCycleObject(undefined));
+var w1 = { name: 'w1' };
+var w2 = { name: 'w2', w1 };
+var w3 = { w1, w2 }; // 这种情况下，如果使用 map 会判断成 true 实际是 false
+console.log('判断对象是否存在循环引用：', isCycleObject(w3), false);
+console.log('判断对象是否存在循环引用：', isCycleObject(123));
+console.log('判断对象是否存在循环引用：', isCycleObject(undefined));
 /**
  * FED54 计时器 实现一个打点计时器，要求
  * 1、从 start 到 end（包含 start 和 end），每隔 100 毫秒 console.log 一个数字，每次数字增幅为 1
@@ -1882,10 +2039,10 @@ function count(start, end) {
     let timer = null;
     let cancel = () => clearTimeout(timer);
     let fun = num => {
+        console.log(num++);
         timer = setTimeout(() => {
-            console.log(num++);
             if (num <= end) fun(num);
-        }, 100);
+        }, 1000);
     };
     fun(start);
     return { cancel };
@@ -2032,31 +2189,6 @@ function foo(data) {
     head.appendChild(js); // 这一步会发送请求
 })();
 /**
- * 实现数组的 reduce 方法
- */
-Array.prototype.myReduce = function (callback, initialValue) {
-    if (typeof callback !== 'function') throw new Error(`callback is not a function`);
-    if (!Array.isArray(this)) throw new TypeError(`${this} is not a function`);
-    let result = initialValue !== undefined ? initialValue : this[0]; // 如果没有传递初始值，则默认为数组的第一个值
-    const len = this.length;
-    for (let index = initialValue !== undefined ? 0 : 1; index < len; index++) {
-        result = callback(result, this[index], index, this);
-    }
-    return result;
-};
-console.log(
-    [1, 2, 3].myReduce((sum, cur, index, arr) => {
-        console.log('sum, cur, index', sum, cur, index, arr);
-        return cur + sum;
-    }, 0),
-);
-console.log(
-    [1, 2, 3].reduce((sum, cur, index, arr) => {
-        console.log('sum, cur, index', sum, cur, index, arr);
-        return cur + sum;
-    }, 0),
-);
-/**
  * JS40 虚拟DOM
  */
 var vnode = {
@@ -2115,58 +2247,20 @@ const _createElm = vnode => {
 };
 _createElm(vnode);
 /**
- * JS76 判断是否符合 USD 格式
- */
-function isUSD(str) {
-    return /^\$\d{1,3}(,\d{3})*(\.\d{2})?$/.test(str);
-}
-console.log(isUSD('$123.45'));
-console.log(isUSD('$123,000.45'));
-console.log(isUSD('￥123.45'));
-console.log(isUSD('$123.123'));
-console.log(isUSD('$12345678'));
-/**
- * 字符串转成对象
- */
-function parseStrToObj(obj, str, val) {
-    if (typeof obj !== 'object' || obj === null) {
-        obj = {};
-    }
-    let temp = obj;
-    const keys = str.split('.');
-    while (keys.length > 0) {
-        const curKey = keys.shift();
-        const curObj = temp[curKey];
-        if (keys.length === 0) {
-            temp[curKey] = val;
-            return obj;
-        }
-        if (typeof curObj !== 'object') {
-            temp[curKey] = {};
-        }
-        temp = temp[curKey];
-    }
-    return obj;
-}
-var obj = { a: { b: { c1: 31 }, b1: 21 }, a1: 11, a2: 12 };
-parseStrToObj(obj, 'a.b.c.d', 4); // obj, 'a.b.c.d', 4 -> obj.a.b.c.d = 4
-
-/**
  * 1.写一个 mySetInterVal(fn, a, b),每次间隔 a,a+b,a+2b 的时间，然后写一个 myClear，停止上面的 mySetInterVal
  */
 function mySetInterVal(fn, a, b) {
     if (typeof fn !== 'function') throw new TypeError(`fn is not a function`);
     let timer = null;
-    let count = 0;
+    let count = 1;
     const myClear = () => clearTimeout(timer);
-    const start = delay => {
+    const interval = delay => {
         fn();
         timer = setTimeout(() => {
-            start(a + b * count++);
+            interval(a + b * count++);
         }, delay);
     };
-    start(a);
-    return { myClear };
+    interval(a);
 }
 var a = new mySetInterVal(() => console.log('123'), 1000, 1000);
 // a.myClear();
@@ -2174,8 +2268,9 @@ var a = new mySetInterVal(() => console.log('123'), 1000, 1000);
  * 实现 lodash 的_.get
  */
 function get(source, path, defaultValue) {
-    if (source === null || source === undefined) return defaultValue === undefined ? source : defaultValue;
-    const keys = path.replace(/\[(\d)\]/g, '.$1').split('.');
+    if (source == null) return arguments.length === 3 ? defaultValue : source;
+    const keys = path.replace(/\[(.+)\]/g, '.$1').split('.');
+    console.log(keys);
     let result = source;
     while (keys.length > 0) {
         result = Object(result)[keys.shift()];
@@ -2188,5 +2283,7 @@ console.log(get({ a: null }, 'a.b.c', 3)); // output: 3
 console.log(get({ a: undefined }, 'a', 3)); // output: 3
 console.log(get({ a: null }, 'a', 3)); // output: 3
 console.log(get({ a: [{ b: 1 }] }, 'a[0].b', 3)); // output: 1
-console.log(get({ a: [{ b: 1 }] }, '1')); // output: 1
+console.log(get({ a: [{ b: 1 }] }, '1')); // output: undefined
+console.log(get(null, '', undefined)); // output: undefined
+console.log(get('abc', 'length')); // output: 3
 
