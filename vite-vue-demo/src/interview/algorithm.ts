@@ -1,24 +1,5 @@
 // @ts-nocheck
 /**
- * 返回数组中每一项出现的次数
- * arr = [1,2,3,4,5,6,7,7,8,9,3,3,5,6,78,82]
- * [[1,1],[2,2]]
- */
-function getFrequency(arr) {
-    if (!Array.isArray(arr)) return;
-    const map = new Map();
-    arr.forEach(val => {
-        map.set(val, (map.get(val) || 0) + 1);
-    });
-    return [...map];
-    // const result = [];
-    // map.forEach((val, key) => {
-    //     result.push([key, val]);
-    // });
-    // return result;
-}
-console.log(getFrequency([1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 3, 3, 5, 6, 78, 82]));
-/**
  * 3. 无重复字符的最长子串，返回最长子串
  */
 function lengthOfLongestSubstring(str) {

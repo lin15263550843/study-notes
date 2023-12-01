@@ -985,6 +985,25 @@ function unique(arr) {
 console.log('unique 结果：', unique([1, 1, 2, 3, 4, 5, 4, 3, 2, 1, 4, 5, 3, 2, 1, 2, 3, 4, 5, 2, 1, 3, 6, 3]));
 console.log(unique([1, 1, 'true', 'true', true, true, 15, 15, false, false, undefined, undefined, null, null, NaN, NaN, 'NaN', 0, 0, 'a', 'a', {}, {}]));
 /**
+ * 返回数组中每一项出现的次数
+ * arr = [1,2,3,4,5,6,7,7,8,9,3,3,5,6,78,82]
+ * [[1,1],[2,2]]
+ */
+function getFrequency(arr) {
+    if (!Array.isArray(arr)) return;
+    const map = new Map();
+    arr.forEach(val => {
+        map.set(val, (map.get(val) || 0) + 1);
+    });
+    return [...map];
+    // const result = [];
+    // map.forEach((val, key) => {
+    //     result.push([key, val]);
+    // });
+    // return result;
+}
+console.log(getFrequency([1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 3, 3, 5, 6, 78, 82]));
+/**
  * 数组的 push 方法
  * 注意：
  *      push 方法返回数组的长度
