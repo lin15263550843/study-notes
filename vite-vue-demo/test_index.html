@@ -16,27 +16,40 @@
     </body>
     <script>
         /**
-         * 实现 lodash 的_.get
+         * 第 2 题：合并二维有序数组成一维有序数组，归并排序的思路
          */
-        function get(source, path, defaultValue) {
-            if (source == null) return arguments.length === 3 ? defaultValue : source;
-            const keys = path.replace(/\[(.+)\]/g, '.$1').split('.');
-            console.log(keys);
-            let result = source;
-            while (keys.length > 0) {
-                result = Object(result)[keys.shift()];
-                if (result === undefined || result === null) return defaultValue;
-            }
-            return result;
+        function mergeSort(arr) {
+            if (!Array.isArray(arr)) return [];
+            const merge = (arr1, arr2) => {
+                if (arr1[arr1.length - 1] < arr2[0]) return [...arr1, ...arr2];
+                const result = [];
+                while (arr1.length > 0 && arr2.length > 0) {
+                    if (arr1[0] < arr2[0]) {
+                        result.push(arr1.shift()); // 把 arr1 和 arr2 中较小的元素放到前边
+                    } else {
+                        result.push(arr2.shift());
+                    }
+                }
+                return result.concat(arr1, arr2);
+            };
+            return arr.reduce(merge);
         }
-        // 测试用例
-        console.log(get({ a: null }, 'a.b.c', 3)); // output: 3
-        console.log(get({ a: undefined }, 'a', 3)); // output: 3
-        console.log(get({ a: null }, 'a', 3)); // output: 3
-        console.log(get({ a: [{ b: 1 }] }, 'a[0].b', 3)); // output: 1
-        console.log(get({ a: [{ b: 1 }] }, '1')); // output: undefined
-        console.log(get(null, '', undefined)); // output: undefined
-        console.log(get('abc', 'length')); // output: 3
+        let arr1 = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [1, 2, 3],
+            [4, 5, 6],
+        ];
+        let arr2 = [
+            [1, 4, 6],
+            [7, 8, 10],
+            [2, 6, 9],
+            [3, 7, 13],
+            [1, 5, 12],
+        ];
+        console.log(mergeSort(arr1));
+        console.log(mergeSort(arr2));
     </script>
 </html>
 <!-- 

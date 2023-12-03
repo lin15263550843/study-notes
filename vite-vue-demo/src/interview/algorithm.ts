@@ -3,26 +3,48 @@
  * 3. 无重复字符的最长子串，返回最长子串
  */
 function lengthOfLongestSubstring(str) {
-    if (typeof str !== 'string') return 0;
+    if (typeof str !== 'string') return;
     const map = new Map();
-    let result = 0;
-    let max = 0;
-    let l = -1;
-    let r = 0;
+    let result = ''; // 无重复字符
+    let max = 0; // 无重复字符长度
+    let l = -1; // 左边界指针，需要从 -1 开始，初始时或当 l 没有变化时，可以使 r - l 返回正确的值
+    let r = 0; // 右指针，右边界
     while (r < str.length) {
         const cur = str[r];
         if (map.has(cur)) {
-            l = Math.max(l, map.get(cur));
+            l = Math.max(l, map.get(cur)); // 存在重复值，更新左边界，更新 l 为当前字符上一次出现的位置的索引，更新的位置必须大于当前左边界索引
         }
         if (r - l > max) {
-            max = r - l;
-            result = str.slice(l + 1, l + 1 + max);
+            max = r - l; // // 如果 r - l 大于最大值则更新最大值
+            result = str.slice(l + 1, l + 1 + max); // 因为 l 是上一个重复索引位置，所以要 +1， l 的下一个才是起始边界值
         }
         map.set(cur, r);
         r++;
     }
     return result;
 }
+// function lengthOfLongestSubstring(str) {
+//     if (typeof str !== 'string') return;
+//     const map = new Map();
+//     let result = ''; // 结果
+//     let max = 0; // 最大长度
+//     let l = 0; // 左指针，非重复起始左边界
+//     let r = 0; // 右指针，右边界
+//     while (r < str.length) {
+//         const cur = str[r];
+//         if (map.has(cur)) {
+//             l = Math.max(l, map.get(cur) + 1); // 如果字符重复，则更新 l 为当前字符上一次出现的位置的索引
+//         }
+//         if (r - l + 1 > max) {
+//             max = r - l + 1; // 因为 l 是代表上一个非重复起始位，r 是索引，所以还要 +1，如果当前无重复字符子字符串的长度大于 max，则更新
+//             result = str.slice(l, l + max);
+//         }
+//         map.set(cur, r); // 缓存当前字符，以及对应索引位置
+//         r++;
+//     }
+//     console.log('-----', max);
+//     return result;
+// }
 console.log(lengthOfLongestSubstring(' '));
 console.log(lengthOfLongestSubstring('ab'));
 console.log('最长不含重复字符的子字符串:', lengthOfLongestSubstring('abcabcbb'));
@@ -76,11 +98,13 @@ console.log('最长不含重复字符的子字符串:', lengthOfLongestSubstring
 console.log('最长不含重复字符的子字符串:', lengthOfLongestSubstring('aabcdefbgkd'));
 console.log('最长不含重复字符的子字符串:', lengthOfLongestSubstring('dfdftwerjoeiwurhgnfdggjgdfjglflkg'));
 /**
- * 全排列 I 不重复数组
+ * 46. 全排列 I 不重复数组
  * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案。
  */
 var permute = function (nums) {
     if (!Array.isArray(nums)) return;
+    if (nums.length === 0) return [];
+    if (nums.length < 2) return [nums];
     const result = []; // 结果数组，用于存储所有的全排列结果
     const flags = new Array(nums.length).fill(false); // 用于标记哪些数字已经被选择过，初始值都为 false
     const rec = (nums, arr) => {
@@ -118,7 +142,7 @@ var permuteUnique = function (nums) {
         }
         for (let i = 0; i < nums.length; i++) {
             if (flags[i]) continue; // 当前元素已经被使用过了，调过该轮循环
-            if (i - 1 > 0 && flags[i - 1] && nums[i] === nums[i - 1]) continue; // 去重，如果前一个元素已经被选中，并且与当前元素相同，跳过本次循环
+            if (i - 1 >= 0 && flags[i - 1] && nums[i] === nums[i - 1]) continue; // 去重，如果前一个元素已经被选中，并且与当前元素相同，跳过本次循环
             arr.push(nums[i]); // 将当前数字加入到 arr 中
             flags[i] = true; // 将当前元素标记为已使用
             rec(nums, arr); // 递归遍历 nums 添加下一个元素
@@ -130,36 +154,60 @@ var permuteUnique = function (nums) {
     rec(nums, []);
     return result;
 };
+console.log(permuteUnique([1, 1, 2]));
 console.log(permuteUnique([1, 2, 2, 3]));
 console.log(permuteUnique([22, 22, 33]));
 /**
  * 剑指 Offer 38. 字符串的排列
  * 输入一个字符串，打印出该字符串中字符的所有排列。
  */
+// const permutation = function (s) {
+//     if (typeof s !== 'string') return [];
+//     const sArr = s.split('');
+//     const result = []; // 用于存放全排列结果
+//     const flags = new Array(sArr.length).fill(false); // 辅助数组，用于标记当前位置是否被使用过
+//     const rec = (sArr, arr) => {
+//         if (arr.length === sArr.length) {
+//             result.push(arr.join(',')); // 长度和 nums 相等说明已经完成了全排列，添加结果
+//             return; // 递归终止条件
+//         }
+//         for (let i = 0; i < sArr.length; i++) {
+//             if (flags[i]) continue; // 当前元素已经被使用过了，调过该轮循环
+//             if (flags[i - 1] && sArr[i] === sArr[i - 1]) continue; // 去重，如果前一个元素已经被选中，并且与当前元素相同，跳过本次循环
+//             arr.push(sArr[i]); // 将当前数字加入到 arr 中
+//             flags[i] = true; // 将当前元素标记为已使用
+//             rec(sArr, arr); // 递归遍历 nums 添加下一个元素
+//             arr.pop(); // 回溯，将当前元素从 arr 中移除
+//             flags[i] = false; // 将当前元素恢复为未使用
+//         }
+//     };
+//     sArr.sort((a, b) => a - b); // 排序，为了方便去重
+//     rec(sArr, []);
+//     return result;
+// };
 const permutation = function (s) {
     if (typeof s !== 'string') return [];
-    const sArr = s.split('');
-    const result = []; // 用于存放全排列结果
-    const flags = new Array(sArr.length).fill(false); // 辅助数组，用于标记当前位置是否被使用过
-    const rec = (sArr, arr) => {
-        if (arr.length === sArr.length) {
-            result.push(arr.join(',')); // 长度和 nums 相等说明已经完成了全排列，添加结果
+    const flags = new Array(s.length).fill(false); // 辅助数组，用于标记当前位置是否被使用过
+    const result = [];
+    const rec = (s, res) => {
+        if (res.length === s.length) {
+            result.push(res); // 长度和 nums 相等说明已经完成了全排列，添加结果
             return; // 递归终止条件
         }
-        for (let i = 0; i < sArr.length; i++) {
+        for (let i = 0; i < s.length; i++) {
             if (flags[i]) continue; // 当前元素已经被使用过了，调过该轮循环
-            if (flags[i - 1] && sArr[i] === sArr[i - 1]) continue; // 去重，如果前一个元素已经被选中，并且与当前元素相同，跳过本次循环
-            arr.push(sArr[i]); // 将当前数字加入到 arr 中
+            if (i - 1 >= 0 && s[i] === s[i - 1] && flags[i - 1]) continue; // 去重，如果前一个元素已经被选中，并且与当前元素相同，跳过本次循环
             flags[i] = true; // 将当前元素标记为已使用
-            rec(sArr, arr); // 递归遍历 nums 添加下一个元素
-            arr.pop(); // 回溯，将当前元素从 arr 中移除
-            flags[i] = false; // 将当前元素恢复为未使用
+            rec(s, res + s[i]); // 递归遍历 nums 添加下一个元素
+            flags[i] = false; // 回溯，将当前元素恢复为未使用
         }
     };
-    sArr.sort((a, b) => a - b); // 排序，为了方便去重
-    rec(sArr, []);
+    rec(s, '');
     return result;
 };
+console.log('全排列结果：', permutation('abc')); // 6 个
+console.log('全排列结果：', permutation('aab')); // 3 个
+console.log('全排列结果：', permutation('suvyls')); // 720 个
 console.log('全排列结果：', permutation('abc'));
 console.log('全排列结果：', permutation('aab'));
 console.log('全排列结果：', permutation('suvyls'));
@@ -197,7 +245,8 @@ var groupAnagrams = function (strs) {
     if (!Array.isArray(strs)) return [];
     const map = new Map(); // 用来存放已经遍历过的字符串，key 为排序后的字符串，value 值为符合条件的字符串
     strs.forEach(cur => {
-        const key = cur.split('').sort().join(''); // 将当前字符串进行排序（按照字符的 ASCII 码值进行排序）作为一组字母异位词的标识 key 值，sort 中可添加 (a, b) => (a > b ? 1 : -1)
+        // 将当前字符串进行排序（按照字符的 ASCII 码值进行排序）作为一组字母异位词的标识 key 值，sort 中可添加 (a, b) => (a > b ? 1 : -1)
+        const key = cur.split('').sort().join('');
         const value = map.get(key) || []; // // 获取对应的 value（即已经遍历过的字符串集合），如果没有则初始化为一个空数组
         value.push(cur); // 将当前字符串添加到对应的 value 集合中
         map.set(key, value); // 更新 Map
@@ -212,8 +261,7 @@ console.log(groupAnagrams(['abc', 'acb', 'aacb', 'aabc', 'abca']));
    输入：strs = ["flower","flow","flight"]    输出："fl"
  */
 var longestCommonPrefix = function (strs) {
-    if (!Array.isArray(strs)) return '';
-    if (typeof strs[0] !== 'string') return '';
+    if (!Array.isArray(strs) || typeof strs[0] !== 'string') return '';
     let prefix = '';
     const first = strs[0];
     for (let i = 0; i < first.length; i++) {
@@ -232,19 +280,18 @@ console.log(longestCommonPrefix(['abcabc', 'abcabc', 'abcabc']));
  */
 var isValid = function (s) {
     if (typeof s !== 'string') return false;
-    const stack = [];
     const opt = {
         ')': '(',
         ']': '[',
         '}': '{',
     }; // 用于映射每一个右括号对应的左括号，减少匹配判断
+    const stack = [];
     for (let i = 0; i < s.length; i++) {
         const cur = s[i];
-        const left = opt[cur];
-        if (!left) {
-            stack.push(cur); // 如果 left 为空说明 cur 是左括号（(、[、{ ），直接 push 到栈中
+        if (!opt[cur]) {
+            stack.push(cur); // 如果 opt[cur] 为空说明 cur 是左括号（(、[、{ ），直接 push 到栈中
         } else {
-            if (left !== stack.pop()) return false; // 如果栈顶的元素和 left 不同说明不匹配，返回 false
+            if (stack.pop() !== opt[cur]) return false; // 如果栈顶的元素和 left 不同说明不匹配，返回 false
         }
     }
     return stack.length === 0; // 如果栈为空说明正好匹配完，否则说明有剩余左括号，不匹配
@@ -360,6 +407,8 @@ console.log(checkValidString('(()))'));
  */
 var reverseWords = function (s) {
     if (typeof s !== 'string') return;
+    if (typeof s !== 'string' || !s) return s;
+    // return s.match(/(\S)+/g).reverse().join(' ');
     const arr = s.split(' '); // 使用 split 空格进行分割，就算有多个空格，join 的时候也能和之前保持一致
     let left = 0; //交换左右位置进行反转
     let right = arr.length - 1;
@@ -381,31 +430,54 @@ var reverseWords = function (s) {
     if (typeof s !== 'string') return s;
     return s
         .split(' ') // 使用 split 空格进行分割，就算有多个空格，join 的时候也能和之前保持一致
-        .map(cur => {
-            const strs = cur.split('');
-            let start = 0;
-            let end = strs.length - 1;
-            while (start < end) {
-                const temp = strs[start];
-                strs[start] = strs[end];
-                strs[end] = temp;
-                start++;
-                end--;
-            }
-            return strs.join('');
-        })
+        .map(cur => cur.split('').reverse().join(''))
         .join(' ');
 };
+// var reverseWords = function (s) {
+//     if (typeof s !== 'string') return s;
+//     return s
+//         .split(' ') // 使用 split 空格进行分割，就算有多个空格，join 的时候也能和之前保持一致
+//         .map(cur => {
+//             const strs = cur.split('');
+//             let start = 0;
+//             let end = strs.length - 1;
+//             while (start < end) {
+//                 const temp = strs[start];
+//                 strs[start] = strs[end];
+//                 strs[end] = temp;
+//                 start++;
+//                 end--;
+//             }
+//             return strs.join('');
+//         })
+//         .join(' ');
+// };
+// var reverseWords = function (s) {
+//     let arr = s.split('');
+//     let l = 0,
+//         r = l; // 双指针
+//     while (l < arr.length) {
+//         while (arr[r] && arr[r] !== ' ') {
+//             r++; // 找到结尾的空格
+//         }
+//         for (let i = l, j = r - 1; i < j; i++, j--) {
+//             [arr[i], arr[j]] = [arr[j], arr[i]]; //反转单词
+//         }
+//         l = r + 1; // 跳到下一个单词
+//         r = l;
+//     }
+//     return arr.join('');
+// };
 console.log(reverseWords("Let's take LeetCode    contest"));
 /**
  * 字符串反转 翻转
  */
-export function reverse(str) {
+function reverse(str) {
     if (typeof str !== 'string') return str;
     return str.split('').reverse().join('');
 }
 // 方法二：交换位置
-export function reverse2(str) {
+function reverse2(str) {
     if (typeof str !== 'string') return str;
     const strs = str.split('');
     let start = 0;
@@ -419,28 +491,13 @@ export function reverse2(str) {
     }
     return strs.join('');
 }
-// var reverseWords = function (s) {
-//     // 双指针
-//     let arr = s.split("");
-//     let l = 0, r = l;
-//     while (l < arr.length) {
-//         //找到结尾的空格
-//         while (arr[r] && arr[r] !== " ") {
-//             r++;
-//         }
-//         //反转单词
-//         for (let i = l, j = r - 1; i < j; i++, j--) {
-//             [arr[i], arr[j]] = [arr[j], arr[i]];
-//         }
-//         //跳到下一个单词
-//         l = r + 1;
-//         r = l;
-//     }
-//     return arr.join("");
-// };
 /**
  * 647. 回文子串
  * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
+ * 回文字符串 是正着读和倒过来读一样的字符串。
+ * 子字符串 是字符串中的由连续字符组成的一个序列。
+ * 具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。
+ *
  * 扩展：返回最长的回文子串
  */
 var countSubstrings = function (s) {
@@ -453,28 +510,37 @@ var countSubstrings = function (s) {
         for (let j = i; j < s.length; j++) {
             s1 += s[j]; // 将当前位置的字符追加加到 s1 中，构成一个向右的子串
             s2 = s[j] + s2; // 将当前位置的字符添加到 s2 的开头，构成一个反向的子串
-            // s2 = s1.split('').reverse().join(''); // 反转 s1
+            // const str = s.slice(i, j + 1); // 获取所有子串，从 i 到 j
+            // if (str === str.split('').reverse().join('')) count++;
             if (s1 === s2) count++; // 如果 s1 和 s2 相等，说明找到了一个回文子串
         }
     }
     return count;
 };
+// var countSubstrings = function (s) {
+//     if (typeof s !== 'string') return -1;
+//     let count = 0;
+//     for (let i = 0; i < s.length; i++) {
+//         for (let j = i; j < s.length; j++) {
+//             const str = s.slice(i, j + 1); // 获取所有子串，从 i 到 j
+//             if (str === str.split('').reverse().join('')) count++;
+//         }
+//     }
+//     return count;
+// };
 console.log(countSubstrings('abc'));
 console.log(countSubstrings('aaa'));
 console.log(countSubstrings('aaabc'));
 console.log(countSubstrings('abacbc'));
 console.log(countSubstrings('aabaa'));
 /**
-
- */
-/**
- * 最长回文子串
+ * 5. 最长回文子串
  * 给你一个字符串 s，找到 s 中最长的回文子串。
  * 如果字符串的反序与原始字符串相同，则该字符串称为回文字符串。
  * 给你一个字符串 s ，请你统计并返回这个字符串中 回文子串 的数目。
  * 扩展：返回最长的回文子串
  */
-var countSubstrings = function (s) {
+var longestPalindrome = function (s) {
     // 先使用双指针 i 和 j 枚举所有子串的起点和终点，同时分别按顺序和逆序累加所有遍历过的字符得到字符串 s1 和 s2，判断是否回文只需对 s1 和 s2 判等即可
     if (typeof s !== 'string') return;
     let max = ''; // 最大回文子串
@@ -484,17 +550,16 @@ var countSubstrings = function (s) {
         for (let j = i; j < s.length; j++) {
             s1 += s[j]; // 将当前位置的字符追加加到 s1 中，构成一个向右的子串
             s2 = s[j] + s2; // 将当前位置的字符添加到 s2 的开头，构成一个反向的子串
-            // s2 = s1.split('').reverse().join(''); // 反转 s1
             if (s1 === s2 && s1.length > max.length) max = s1; // 如果 s1 和 s2 相等，说明找到了一个回文子串
         }
     }
     return max;
 };
-console.log(countSubstrings('abc'));
-console.log(countSubstrings('aaa'));
-console.log(countSubstrings('aaabc'));
-console.log(countSubstrings('abacbc'));
-console.log(countSubstrings('aabaa'));
+console.log(longestPalindrome('abc'));
+console.log(longestPalindrome('aaa'));
+console.log(longestPalindrome('aaabc'));
+console.log(longestPalindrome('abacbc'));
+console.log(longestPalindrome('aabaa'));
 
 /**
  * 516. 最长回文子序列
@@ -502,20 +567,20 @@ console.log(countSubstrings('aabaa'));
  */
 var longestPalindromeSubseq = function (s) {
     const n = s.length;
-    const dp = new Array(n).fill(0).map(() => new Array(n).fill(0));
+    const dp = new Array(n).fill(0).map(() => new Array(n).fill(0)); // 这个数组用于存储最长回文子序列的长度
     for (let i = n - 1; i >= 0; i--) {
-        dp[i][i] = 1;
+        dp[i][i] = 1; // 对于单个字符的子串，其长度就是 1，因此将 dp[i][i] 设置为 1
         const c1 = s[i];
         for (let j = i + 1; j < n; j++) {
-            const c2 = s[j];
+            const c2 = s[j]; // 对于一个子序列而言，如果它是回文子序列，并且长度大于 2，那么将它首尾的两个字符去除之后，它仍然是个回文子序列。因此可以用动态规划的方法计算给定字符串的最长回文子序列。
             if (c1 === c2) {
-                dp[i][j] = dp[i + 1][j - 1] + 2;
+                dp[i][j] = dp[i + 1][j - 1] + 2; // 如果 s[i]=s[j]s[i] = s[j]s[i]=s[j]，则首先得到 sss 的下标范围 [i+1,j−1][i+1, j-1][i+1,j−1] 内的最长回文子序列，然后在该子序列的首尾分别添加 s[i]s[i]s[i] 和 s[j]s[j]s[j]，即可得到 sss 的下标范围 [i,j][i, j][i,j] 内的最长回文子序列，因此 dp[i][j]=dp[i+1][j−1]+2\textit{dp}[i][j] = \textit{dp}[i+1][j-1] + 2dp[i][j]=dp[i+1][j−1]+2；
             } else {
-                dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]); // 如果 s[i]≠s[j]s[i] \ne s[j]s[i]=s[j]，则 s[i]s[i]s[i] 和 s[j]s[j]s[j] 不可能同时作为同一个回文子序列的首尾，因此 dp[i][j]=max⁡(dp[i+1][j],dp[i][j−1])\textit{dp}[i][j] = \max(\textit{dp}[i+1][j], \textit{dp}[i][j-1])dp[i][j]=max(dp[i+1][j],dp[i][j−1])。
             }
         }
     }
-    return dp[0][n - 1];
+    return dp[0][n - 1]; // 由于状态转移方程都是从长度较短的子序列向长度较长的子序列转移，因此需要注意动态规划的循环顺序。
 };
 // var longestPalindrome = function (s) {
 //     let max = '';
@@ -544,8 +609,8 @@ var longestPalindromeSubseq = function (s) {
  */
 var maxSubArray = function (nums) {
     if (!Array.isArray(nums)) return;
-    let max = 0; // 用于记录最大子序和
     let sum = nums[0]; // 用于记录当前子序和
+    let max = sum; // 用于记录最大子序和
     for (let i = 1; i < nums.length; i++) {
         const cur = nums[i]; // 获取当前元素
         if (cur + sum < cur) {
@@ -557,7 +622,7 @@ var maxSubArray = function (nums) {
             max = sum; // 如果当前子序和大于最大子序和，更新最大值
         }
     }
-    return max; //返回最大子序和
+    return max; //返回最大子序和F
 };
 console.log(maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
 console.log(maxSubArray([5, 4, -1, 7, 8]));
@@ -567,21 +632,21 @@ console.log(maxSubArray([1, 2, 3, -1, 1]));
  */
 var maxSubArray = function (nums) {
     if (!Array.isArray(nums)) return;
-    let max = 0; // 用于记录最大子序和
     let sum = nums[0]; // 用于记录当前子序和
+    let max = sum; // 用于记录最大子序和
     let start = 0;
     let end = 1;
     for (let i = 1; i < nums.length; i++) {
         const cur = nums[i]; // 获取当前元素
         if (cur + sum < cur) {
             sum = cur; // 如果当前元素加上当前子序和小于当前元素，则舍掉之前的的子序和
-            start = i;
+            start = i; // 更新起始索引
         } else {
             sum += cur; // 否则将当前元素加到当前子序和上
         }
         if (sum > max) {
             max = sum; // 如果当前子序和大于最大子序和，更新最大值
-            end = i;
+            end = i; // 更新结束索引
         }
     }
     return nums.slice(start, end + 1); //返回最大子序
@@ -595,20 +660,17 @@ console.log(maxSubArray([1, 2, 3, -1, 1]));
  * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]    输出：[[1,6],[8,10],[15,18]]    解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
  */
 var merge = function (intervals) {
-    if (!Array.isArray(intervals)) return;
+    if (!Array.isArray(intervals)) return [];
     intervals.sort((a, b) => a[0] - b[0]);
-    const result = [];
-    let arr = intervals[0]; // 将第一个区间作为初始区间
-    for (let i = 1; i < intervals.length; i++) {
-        const cur = intervals[i];
-        if (arr[1] < cur[0]) {
-            result.push(arr); // 如果当前区间的左端点大于上一个区间的右端点，将上一个区间加入结果
-            arr = cur; // 将当前区间作为新的初始区间
+    const result = [intervals[0]]; // 将第一个区间作为初始区间
+    intervals.forEach(cur => {
+        const last = result[result.length - 1];
+        if (cur[0] > last[1]) {
+            result.push(cur); // 如果当前区间的左端点大于上一个区间的右端点，则新加当前区间
         } else {
-            arr[1] = Math.max(arr[1], cur[1]); // 否则更新上一个区间的右端点
+            last[1] = Math.max(last[1], cur[1]); // 否则更新上一个区间的右端点，注意要使用最大的值
         }
-    }
-    result.push(arr); // 将最后一个区间加入结果中
+    });
     return result;
 };
 console.log(
@@ -645,9 +707,7 @@ var findPeakElement = function (nums) {
     if (!Array.isArray(nums)) return;
     let maxIndex = 0;
     for (let i = 0; i < nums.length; i++) {
-        if (nums[i] > [maxIndex]) {
-            maxIndex = i;
-        }
+        if (nums[i] > nums[maxIndex]) maxIndex = i;
     }
     return maxIndex;
 };
@@ -737,32 +797,25 @@ console.log(findPeakElement([1, 2, 1, 3, 5, 6, 4]));
  * 224. 基本计算器
  * 字符串表达式求值，输入一个字符串只包含加减号和括号
  */
-function calcExpression(str) {
+var calculate = function (str) {
     if (typeof str !== 'string') return str;
     str = str.replace(/\s/g, '');
     let stack = [];
-
     const calc = arr => {
+        console.log(arr);
         let res = 0;
-        let flag = 1;
-        let curVal = arr.shift();
+        let curVal = arr.shift(); // 第一位无论是运算符还是数字，都无所谓，因为会把运算符当成符号位添加到数字前边
         while (arr.length > 0) {
-            if (isNaN(arr[0])) {
-                res += Number(curVal);
-                curVal = arr.shift();
+            const first = arr.shift();
+            if (isNaN(first)) {
+                res += Number(curVal); // 遇到下一个运算符，计算结果
+                curVal = first; // 重置下一个数组的符号位
             } else {
-                const val = arr.shift(); // 如果 val 带符号，则需要进行判断，得到最终的符号
-                // const first = String(val)[0];
-                // if (isNaN(first)) {
-                //     if (curVal === '-' && first === '-') {
-                //         curVal = String(-val);
-                //     } else {
-                //         curVal = val; // curVal 为 + 时，可以省略
-                //     }
-                // } else {
-                //     curVal += val;
-                // }
-                curVal += val;
+                if (first < 0) {
+                    curVal = curVal === '-' ? Math.abs(first) : first; // 如果当前值为负数，前一位肯定是运算符，修复当前值的运算符，负负得正
+                } else {
+                    curVal += first; // 拼接成完整的数字（直接和运算符进行拼接）
+                }
             }
         }
         return (res += Number(curVal));
@@ -771,27 +824,139 @@ function calcExpression(str) {
         const cur = str[i];
         if (cur === ')') {
             const firstIndex = stack.lastIndexOf('('); // 获取最后一个左括号的索引
-            const res = calc(stack.slice(firstIndex + 1)); // 计算括号内的结果
-            stack = stack.slice(0, firstIndex); // 将括号内的结果替换掉括号
-            if (isNaN(String(res[0]))) {
-                const last = stack.pop();
-                let resStr = String(res);
-                if (last === '-') {
-                    resStr = String(-res);
-                }
-                if (isNaN(resStr[0])) {
-                    stack.push(resStr[0], resStr.slice(1));
-                } else {
-                    stack.push('+', resStr);
-                }
-            }
-            // stack = stack.slice(0, firstIndex).concat(res); // 将括号内的结果替换掉括号
+            let res = calc(stack.slice(firstIndex + 1)); // 计算括号内的结果
+            stack = stack.slice(0, firstIndex).concat(String(res)); // 将括号内的结果替换掉括号
         } else {
             stack.push(cur); // 如果不是右括号，直接进栈，遇到左括号会进行计算，展开，去除括号
         }
     }
     return calc(stack);
-}
+};
+// function calcExpression(str) {
+//     if (typeof str !== 'string') return str;
+//     str = str.replace(/\s/g, '');
+//     let stack = [];
+//     const calc = arr => {
+//         let res = 0;
+//         let curVal = arr.shift(); // 第一位无论是运算符还是数字，都无所谓，因为会把运算符当成符号位添加到数字前边
+//         while (arr.length > 0) {
+//             const first = arr.shift();
+//             if (isNaN(first)) {
+//                 res += Number(curVal);
+//                 curVal = first;
+//             } else {
+//                 if (first < 0) {
+//                     curVal = curVal === '-' ? Math.abs(first) : first; // 如果当前值为负数，前一位肯定是运算符，修复当前值的运算符，负负得正
+//                 } else {
+//                     curVal += first; // 拼接成完成的数字（直接和运算符进行拼接）
+//                 }
+//             }
+//         }
+//         return (res += Number(curVal));
+//     };
+//     for (let i = 0; i < str.length; i++) {
+//         const cur = str[i];
+//         if (cur === ')') {
+//             const firstIndex = stack.lastIndexOf('('); // 获取最后一个左括号的索引
+//             let res = calc(stack.slice(firstIndex + 1)); // 计算括号内的结果
+//             stack = stack.slice(0, firstIndex).concat(String(res)); // 将括号内的结果替换掉括号
+//         } else {
+//             stack.push(cur); // 如果不是右括号，直接进栈，遇到左括号会进行计算，展开，去除括号
+//         }
+//     }
+//     return calc(stack);
+// }
+// function calcExpression(str) {
+//     if (typeof str !== 'string') return str;
+//     str = str.replace(/\s/g, '');
+//     let stack = [];
+//     const calc = arr => {
+//         let res = 0;
+//         let curVal = arr.shift();
+//         while (arr.length > 0) {
+//             if (isNaN(arr[0])) {
+//                 res += Number(curVal);
+//                 curVal = arr.shift();
+//             } else {
+//                 const val = arr.shift(); // 如果 val 带符号，则需要进行判断，得到最终的符号
+//                 curVal += val;
+//             }
+//         }
+//         return (res += Number(curVal));
+//     };
+//     for (let i = 0; i < str.length; i++) {
+//         const cur = str[i];
+//         if (cur === ')') {
+//             const firstIndex = stack.lastIndexOf('('); // 获取最后一个左括号的索引
+//             let res = calc(stack.slice(firstIndex + 1)); // 计算括号内的结果
+//             stack = stack.slice(0, firstIndex); // 将括号内的结果替换掉括号
+//             if (res < 0) {
+//                 let lastSign = stack.pop() === '-' ? '+' : '-'; // 如果 res 是负数，则需要修正 stack 中最后的运算符，负负得正
+//                 stack.push(lastSign, String(Math.abs(res))); // 去除 res 的符号，把修正后的 运算符 和 res 添加进去
+//             } else {
+//                 stack.push(String(res)); // 如果 res 无符号，直接添加进去
+//             }
+//         } else {
+//             stack.push(cur); // 如果不是右括号，直接进栈，遇到左括号会进行计算，展开，去除括号
+//         }
+//     }
+//     return calc(stack);
+// }
+// function calcExpression(str) {
+//     if (typeof str !== 'string') return str;
+//     str = str.replace(/\s/g, '');
+//     let stack = [];
+
+//     const calc = arr => {
+//         let res = 0;
+//         let flag = 1;
+//         let curVal = arr.shift();
+//         while (arr.length > 0) {
+//             if (isNaN(arr[0])) {
+//                 res += Number(curVal);
+//                 curVal = arr.shift();
+//             } else {
+//                 const val = arr.shift(); // 如果 val 带符号，则需要进行判断，得到最终的符号
+//                 // const first = String(val)[0];
+//                 // if (isNaN(first)) {
+//                 //     if (curVal === '-' && first === '-') {
+//                 //         curVal = String(-val);
+//                 //     } else {
+//                 //         curVal = val; // curVal 为 + 时，可以省略
+//                 //     }
+//                 // } else {
+//                 //     curVal += val;
+//                 // }
+//                 curVal += val;
+//             }
+//         }
+//         return (res += Number(curVal));
+//     };
+//     for (let i = 0; i < str.length; i++) {
+//         const cur = str[i];
+//         if (cur === ')') {
+//             const firstIndex = stack.lastIndexOf('('); // 获取最后一个左括号的索引
+//             const res = calc(stack.slice(firstIndex + 1)); // 计算括号内的结果
+//             stack = stack.slice(0, firstIndex); // 将括号内的结果替换掉括号
+//             if (isNaN(String(res[0]))) {
+//                 const last = stack.pop();
+//                 let resStr = String(res);
+//                 if (last === '-') {
+//                     resStr = String(-res);
+//                 }
+//                 if (isNaN(resStr[0])) {
+//                     stack.push(resStr[0], resStr.slice(1));
+//                 } else {
+//                     stack.push('+', resStr);
+//                 }
+//             }
+//             // stack = stack.slice(0, firstIndex).concat(res); // 将括号内的结果替换掉括号
+//         } else {
+//             stack.push(cur); // 如果不是右括号，直接进栈，遇到左括号会进行计算，展开，去除括号
+//         }
+//     }
+//     return calc(stack);
+// }
 var strn1 = '1+1+(4-(3+1))+ 6';
 console.log(calcExpression(strn1)); // 8
 console.log(calcExpression(strn1) === eval(strn1));
@@ -919,7 +1084,7 @@ console.log(calcExpression(strn1) === eval(strn1));
  * 227. 基本计算器 II
  * 表达式求，输入一个字符串，只包含加减乘除，先不考虑括号，然后输出就是这个表达式的结果
  */
-function calcExpression2(str) {
+var calculate = function (str) {
     if (typeof str !== 'string') return str;
     str = str.replace(/\s/g, '');
     const stack = [];
@@ -937,30 +1102,31 @@ function calcExpression2(str) {
             const left = stack.pop();
             let right = str[++i];
             while (!isNaN(str[i + 1])) {
-                right += str[++i];
+                right += str[++i]; // 如果下一个字符是数字，循环累加，获取完整的操作数
             }
-            stack.push(left / right);
+            stack.push(left / right); // 计算除法结果
         } else {
             while (!isNaN(cur) && !isNaN(str[i + 1])) {
                 cur += str[++i]; // 如果当前值是数字，并且下一个字符也是数字，则循环累加
             }
             stack.push(cur); // 把当前值加入到栈中，包含 +、-、和计算后的值
         }
-        i++; // 增加i的值，指向下一个字符
+        i++; // 增加 i 的值，指向下一个字符
     }
     let result = 0; // 计算结果
-    let curVal = stack.shift(); // 下一个值，先默认取第一个值
+    let curVal = stack.shift(); // 下一个值，第一位无论是运算符还是数字，都无所谓，因为会把运算符当成符号位添加到数字前边
     while (stack.length > 0) {
-        if (isNaN(stack[0])) {
+        const first = stack.shift();
+        if (isNaN(first)) {
             result += Number(curVal); // 如果当前值的下一个值是符号，则进行计算，累加到结果中
-            curVal = stack.shift(); // 重置下一个数组的符号位
+            curVal = first; // 重置下一个数组的符号位
         } else {
-            curVal += stack.shift(); // 多位数，累加之后的数字，获取完整的多位数，包含符号
+            curVal += first; // 多位数时，累加之后的数字，获取完整的多位数，包运算符
         }
     }
     result += Number(curVal); // 注意：要把最后的值加上
     return result;
-}
+};
 // var str2 = '15-2*3+4/2'; // 1
 // var str2 = ' 3/2 '; // 1.5
 // var str2 = ' 42 '; // 1.5
@@ -972,7 +1138,7 @@ console.log(calcExpression2(str2) === eval(str2));
  * 227. 基本计算器 II
  * 表达式求，输入一个字符串，只包含加减乘除，先不考虑括号，然后输出就是这个表达式的结果
  */
-function calcExpression2(str) {
+var calculate = function (str) {
     str = str.replace(/\s/g, '');
     const opt = {
         '+': 1,
@@ -1025,7 +1191,7 @@ function calcExpression2(str) {
         calc();
     }
     return stask[0];
-}
+};
 var str2 = '5-2*3+4/2';
 console.log(calcExpression2(str2));
 console.log(calcExpression2(str2) === eval(str2));
@@ -1116,17 +1282,32 @@ var evalRPN = function (tokens) {
  * 10、找到所有出现两次的元素。你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？(限时5分钟)
  */
 const appearTwice = function (nums) {
+    if (!Array.isArray(nums)) return [];
+    const result = [];
     const map = new Map();
     nums.forEach(cur => {
         map.set(cur, (map.get(cur) || 0) + 1);
     });
-    const result = [];
     map.forEach((val, key) => {
-        if (val == 2) {
-            result.push(key);
-        }
+        if (val === 2) result.push(key);
     });
     return result;
+};
+// [4,3,2,7,8,2,3,1]
+// 当i = 1时，此时n=3，把nums[3-1] *= -1 变成负数，结果 [4,3,-2,7,8,2,3,1]
+// 当i = 6时，此时n=3，发现nums[3-1]这个位置已经为负数说明之前已经被改过，也就是n=3这个数字出现过，就把3数字添加到arr里
+// 这里i=1改的是nums[2], i=6改的也是nums[2]，这里nums[2]只是用来记录状态
+var findDuplicates = function (nums) {
+    let arr = [];
+    for (let i = 0; i < nums.length; i++) {
+        let n = Math.abs(nums[i]);
+        if (nums[n - 1] < 0) {
+            arr.push(n);
+        } else {
+            nums[n - 1] *= -1;
+        }
+    }
+    return arr;
 };
 const nums = [4, 3, 2, 7, 8, 2, 3, 1, 1, 1];
 console.log(appearTwice(nums));
@@ -1170,67 +1351,38 @@ console.log(appearTwice(nums));
  * 459. 重复的子字符串
  * 给定一个非空的字符串 s ，检查是否可以通过由它的一个子串重复多次构成。
  */
-/**
- * 459. 重复的子字符串
- * 给定一个非空的字符串 s ，检查是否可以通过由它的一个子串重复多次构成。
- */
 var repeatedSubstringPattern = function (s) {
-    if (typeof s !== 'string') return;
     let cur = '';
     const len = Math.floor(s.length / 2);
     for (let i = 0; i < len; i++) {
-        console.log(i);
-        cur += s[i];
-        if (s.length % cur.length === 0 && !s.split(cur).join('')) return true; // 子串必须是倍数关系，如果使用子串分割出来的数组为空，说明满足条件
+        cur += s[i]; // 子串必须是倍数关系，如果使用子串分割出来的数组为空，说明满足条件
+        // if (s.length % cur.length === 0 && !s.split(cur).join('')) return true;
+        if (cur.repeat(Math.floor(s.length / cur.length)) == s) return true;
     }
     return false;
 };
 // console.log(repeatedSubstringPattern('aba'));
 // console.log(repeatedSubstringPattern('abcabcabcabc'));
 console.log(repeatedSubstringPattern('abfcagfbcabcfgjabc'));
-// /**
-//  * 459. 重复的子字符串
-//  * 给定一个非空的字符串 s ，检查是否可以通过由它的一个子串重复多次构成。
-//  */
-// var repeatedSubstringPattern = function (s) {
-//     let str = '';
-//     const len = Math.floor(s.length / 2);
-//     for (let i = 0; i < len; i++) {
-//         str += s[i];
-//         const arr = s.split(str);
-//         // 分割出来的 arr 如果全部为空字符串，说明满足条件
-//         if (arr.every(val => !val)) {
-//             return true;
-//         }
-//         // const temp = str.repeat(Math.floor(s.length / str.length))
-//         // if (temp === s) {
-//         //     return true
-//         // }
-//     }
-//     return false;
-
-// let s1 = (s + s).slice(1, -1);
-// return s1.indexOf(s) != -1;
-// };
 /**
  * 22. 括号生成 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
  * 输入：n = 3      输出：["((()))","(()())","(())()","()(())","()()()"]
  */
 var generateParenthesis = function (n) {
     const result = [];
-    const gen = (vals, l, r) => {
-        if (vals.length === 2 * n) {
-            result.push(vals); // 将满足条件的字符串加入结果
+    const gen = (l, r, res) => {
+        if (res.length === 2 * n) {
+            result.push(res); // 将满足条件的字符串加入结果
             return; // 结束当前递归（结束当前搜索分支，剪枝）
         }
         if (l < n) {
-            gen(vals + '(', l + 1, r); // 已添加左括号的数量，小于 n 时，添加左括号
+            gen(l + 1, r, res + '('); // 已添加左括号的数量，小于 n 时，添加左括号，r 增加 1 进入下一轮递归
         }
         if (r < l && r < n) {
-            gen(vals + ')', l, r + 1); // 已添加右括号的数量小于左括号的数量，才能添加右括号，r 增加 1 进入下一轮递归
+            gen(l, r + 1, res + ')'); // 已添加右括号的数量小于左括号的数量，才能添加右括号
         }
     };
-    gen('', 0, 0); // 开始递归，初始值为 0
+    gen(0, 0, ''); // 开始递归生成，初始值为 0
     return result;
 };
 console.log(generateParenthesis(3));
@@ -1271,7 +1423,8 @@ function binarySearch(nums, target) {
     let left = 0;
     let right = nums.length - 1;
     while (left <= right) {
-        const mid = Math.floor((right - left) / 2 + left); // 防止left, right过大相加导致数值溢出
+        const mid = ((left + right) / 2) >>> 0;
+        // const mid = Math.floor((right - left) / 2 + left); // 防止left, right过大相加导致数值溢出
         if (target < nums[mid]) {
             right = mid - 1;
         } else if (target > nums[mid]) {
@@ -1286,24 +1439,26 @@ console.log(binarySearch([-1, 0, 3, 5, 9, 12], 9)); // 4
 const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30];
 console.log('二分查找：', binarySearch(nums, 16));
 /**
-         * 300. 最长递增子序列
-         * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
-            子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。
-            例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
-            
-            示例 1：
-            输入：nums = [10,9,2,5,3,7,101,18]
-            输出：4
-            解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
-            示例 2：
-            输入：nums = [0,1,0,3,2,3]
-            输出：4
-            示例 3：
-            输入：nums = [7,7,7,7,7,7,7]
-            输出：1
-        */
+ * 300. 最长递增子序列
+ * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+    子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。
+    例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+    
+    示例 1：
+    输入：nums = [10,9,2,5,3,7,101,18]
+    输出：4
+    解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+    示例 2：
+    输入：nums = [0,1,0,3,2,3]
+    输出：4
+    示例 3：
+    输入：nums = [7,7,7,7,7,7,7]
+    输出：1
+*/
+// 贪心 + 二分
 var lengthOfLIS = function (nums) {
     if (!Array.isArray(nums)) return [];
+    const result = [nums[0]]; // 存放最长上升子序列数组
     const find = (nums, target) => {
         let left = 0;
         let right = nums.length - 1;
@@ -1319,18 +1474,29 @@ var lengthOfLIS = function (nums) {
         }
         return left; // 返回目标值的左边界值
     };
-    const result = [nums[0]]; //  贪心+二分
     for (let i = 0; i < nums.length; i++) {
         const cur = nums[i];
         if (cur > result[result.length - 1]) {
-            result.push(cur);
+            result.push(cur); // 比 result 中的最后一个大时，直接添加进去
         } else {
             const index = find(result, cur);
-            result[index] = cur;
+            result[index] = cur; // 否则进行二分查找，更新到对应位置
+        }
+    } // 考虑一个简单的贪心，如果我们要使上升子序列尽可能的长，则我们需要让序列上升得尽可能慢，因此我们希望每次在上升子序列最后加上的那个数尽可能的小。
+    return result.length;
+};
+// 动态规划
+var lengthOfLIS = function (nums) {
+    if (!Array.isArray(nums)) return [];
+    const dp = new Array(nums.length).fill(1); // 最小应该是 1，只有当前值的情况
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1); // 如果 i 位置的值比 j 位置大，dp[i] = dp[j] + 1
+            }
         }
     }
-    console.log(result);
-    return result.length;
+    return Math.max(...dp);
 };
 console.log(lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]));
 /**
@@ -1339,19 +1505,18 @@ console.log(lengthOfLIS([10, 9, 2, 5, 3, 7, 101, 18]));
  */
 var findLengthOfLCIS = function (nums) {
     if (nums.length < 2) return nums;
-    let left = 0;
+    let left = 0; // 滑动窗口，找到最长连续字串
     let right = 1;
     let max = 0;
-    // let result = []; // 滑动窗口，找到最长连续字串
+    // let result = [];
     while (right < nums.length) {
         if (nums[right] <= nums[right - 1]) {
             left = right; // 不是递增更新 left
         }
         if (right - left + 1 > max) {
             max = right - left + 1; // 如果从 left 到 right + 1 的长度大于 max，更新，因为 right 是索引所以需要加 1
-            // result = nums.slice(left, right + 1);
+            // result = nums.slice(left, max);
         }
-        // max = Math.max(max, right - left + 1);
         right++; // 将 right 向后移动一位，检查下一个元素
     }
     return max;
@@ -1369,103 +1534,35 @@ console.log(findLengthOfLCIS([1, 3, 5, 4, 7]));
     输出: 4
  */
 var findKthLargest = function (nums, k) {
-    if (!nums || !Array.isArray(nums)) return -1;
+    if (!Array.isArray(nums)) return;
     const exch = (arr, x, y) => {
-        [arr[y], arr[x]] = [arr[x], arr[y]];
+        [arr[x], arr[y]] = [arr[y], arr[x]];
     };
-    const sort = (arr, start, end, target) => {
-        if (start >= end) return;
-        let l = start; // 定义左右指针 l 和 r，以及一个中间指针 i
-        let r = end;
-        let i = l + 1;
-        let val = arr[start]; // 切分位值，循环完成后排定的就是该值位置
-        while (i <= r) {
-            if (arr[i] > val) {
-                exch(arr, i++, l++); // 将比 val 大的元素移到数组的左边，并将 l 和 i 都向右移动一位
-            } else if (arr[i] < val) {
-                exch(arr, i, r--); // 比 val 小的元素移到数组的右边，并将 r 和 i 都向左移动一位
+    const newArr = [...nums];
+    const sort = (arr, left, right, target) => {
+        if (left >= right) return; // 递归终止条件
+        let start = left; // 最左边未交换过的元素，起始索引标记
+        let end = right; // 最右边未交换过的元素，结束索引标记
+        let i = left + 1; // 循环索引从切分位后边开始，所以 +1
+        let val = arr[start]; // 切分位值，该轮循环完成后排定的就是该值位置
+        while (i <= end) {
+            if (arr[i] < val) {
+                exch(arr, i, end--); // 小于 切分值 的移到数组的右边，并将 end 向左移动一位
+            } else if (arr[i] > val) {
+                exch(arr, i++, start++); // 大于切分值，移到最左侧，并将 start 和 i 都向右移动一位
             } else {
-                i++; // 如果当前元素等于 val，那么直接将 i 向右移动一位
+                i++; // 如果等于 切分值，那么直接将 i 向右移动一位
             }
         }
-        // 只排 k 所在的区间，提升排序速度
-        if (l > target) {
-            sort(arr, start, l - 1, target);
-        } else if (r < target) {
-            sort(arr, r + 1, end, target);
-        }
+        if (target < start) sort(arr, left, start - 1, target); // 只排 k 所在的区间，提升排序速度
+        if (target > end) sort(arr, end + 1, right, target);
     };
-    sort(nums, 0, nums.length - 1, k - 1);
-    return nums[k - 1];
+    sort(newArr, 0, newArr.length - 1, k - 1);
+    return newArr[k - 1];
 };
 console.log(findKthLargest([3, 2, 1, 5, 6, 4], 2)); // 5
 console.log(findKthLargest([3, 2, 3, 1, 2, 4, 5, 5, 6], 4)); // 4
 console.log(findKthLargest([7, 6, 5, 4, 3, 2, 1], 5)); // 3
-/**
- * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
-   输入: [3,2,1,5,6,4]     输出: [5, 3]
- */
-var findKthLargest2 = function (nums, k = 2) {
-    if (!Array.isArray(nums) || nums.length < 2) return [];
-    const result = [];
-    nums.forEach((cur, index) => {
-        const idx = result.findIndex(item => item[0] <= cur);
-        if (idx > -1) {
-            if (result[idx][0] === cur) {
-                result[idx].push(index);
-            } else {
-                result.splice(idx, 0, [cur, index]);
-            }
-        } else {
-            result.push([cur, index]);
-        }
-    });
-    return result[k - 1] || [];
-};
-console.log(findKthLargest2([3, 2, 1, 5, 6, 4])); // [5, 3]
-console.log(findKthLargest2([3, 2, 3, 1, 2, 4, 5, 5, 6])); // [5, 6, 7]
-// /**
-//  * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
-//    输入: [3,2,1,5,6,4]     输出: [5, 3]
-//  */
-// var findKthLargest2 = function (nums, k = 1) {
-//     if (!nums || !Array.isArray(nums)) return [0, 0];
-//     const result = [];
-//     nums.forEach((val, index) => {
-//         const temp = result.findIndex(item => item[0] <= val);
-//         console.log(temp);
-//         if (temp > -1) {
-//             if (result[temp][0] === val) {
-//                 result[temp].push(index);
-//             } else {
-//                 result.splice(temp, 0, [val, index]);
-//             }
-//         } else {
-//             result.push([val, index]);
-//         }
-//     });
-//     console.log(result);
-//     const res = result[k];
-//     return res ? res.slice(0, 2) : [0, 0];
-// };
-var findKthLargest3 = function (nums) {
-    if (!nums || !Array.isArray(nums)) return [0, 0];
-    let max1 = [nums[0], 0];
-    let max2 = [nums[0], 0];
-    nums.forEach((val, index) => {
-        const _max2 = max2;
-        if (val > _max2[0]) {
-            max2 = [val, index];
-        }
-        if (val > max1[0]) {
-            max2 = max1;
-            max1 = [val, index];
-        }
-    });
-    console.log(max1, max2);
-    return max2;
-};
-// findKthLargest3([9, 11, 8, 9, 3, 2, 1, 5, 9, 6, 4]);
 
 var findKthLargest = function (nums, k) {
     if (!Array.isArray(nums)) return nums;
@@ -1557,19 +1654,81 @@ var findKthLargest = function (nums, k) {
 // console.log(findKthLargest([21, 2, 1, 5, 6, 3, 4], 2));
 // console.log(findKthLargest([21, 2, 1, 5, 5, 6, 3, 4], 2));
 /**
+ * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
+   输入: [3,2,1,5,6,4]     输出: [5, 3]
+ */
+var findKthLargest2 = function (nums, k = 2) {
+    if (!Array.isArray(nums) || nums.length < 2) return [];
+    const result = [];
+    nums.forEach((cur, index) => {
+        const idx = result.findIndex(item => item[0] <= cur);
+        if (idx > -1) {
+            if (result[idx][0] !== cur) {
+                result.splice(idx, 0, [cur, index]);
+            } else {
+                result[idx].push(index);
+            }
+        } else {
+            result.push([cur, index]);
+        }
+    });
+    console.log(result);
+    return result[k - 1] || [];
+};
+console.log(findKthLargest2([3, 2, 1, 5, 6, 4])); // [5, 3]
+console.log(findKthLargest2([3, 2, 3, 1, 2, 4, 5, 5, 6])); // [5, 6, 7]
+// /**
+//  * 数组中的第 2 大的元素，返回值和索引，如果有重复的返回第一个值的索引
+//    输入: [3,2,1,5,6,4]     输出: [5, 3]
+//  */
+// var findKthLargest2 = function (nums, k = 1) {
+//     if (!nums || !Array.isArray(nums)) return [0, 0];
+//     const result = [];
+//     nums.forEach((val, index) => {
+//         const temp = result.findIndex(item => item[0] <= val);
+//         console.log(temp);
+//         if (temp > -1) {
+//             if (result[temp][0] === val) {
+//                 result[temp].push(index);
+//             } else {
+//                 result.splice(temp, 0, [val, index]);
+//             }
+//         } else {
+//             result.push([val, index]);
+//         }
+//     });
+//     console.log(result);
+//     const res = result[k];
+//     return res ? res.slice(0, 2) : [0, 0];
+// };
+var findKthLargest3 = function (nums) {
+    if (!nums || !Array.isArray(nums)) return [0, 0];
+    let max1 = [nums[0], 0];
+    let max2 = [nums[0], 0];
+    nums.forEach((val, index) => {
+        const _max2 = max2;
+        if (val > _max2[0]) {
+            max2 = [val, index];
+        }
+        if (val > max1[0]) {
+            max2 = max1;
+            max1 = [val, index];
+        }
+    });
+    console.log(max1, max2);
+    return max2;
+};
+// findKthLargest3([9, 11, 8, 9, 3, 2, 1, 5, 9, 6, 4]);
+/**
  * 316. 去除重复字母
  * 给你一个字符串 s ，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证 返回结果的字典序最小（要求不能打乱其他字符的相对位置）。
  */
 var removeDuplicateLetters = function (s) {
-    // 1、将res作为栈存放字符
-    let res = [];
+    let res = []; // 1、将res作为栈存放字符
     for (let i = 0; i < s.length; i++) {
-        // 2、如果字符已经存在则直接跳过循环
-        if (res.includes(s[i])) continue;
-        // 3、由于两个字符直接比较大小会根据字典序输出true/false
-        // 4、所以直接将循环字符和栈顶元素比较,如果栈顶元素大于当前字符且后续还有其他字符可以作为替代时,栈顶元素出栈
+        if (res.includes(s[i])) continue; // 2、如果字符已经存在则直接跳过循环
         while (res[res.length - 1] > s[i] && s.indexOf(res[res.length - 1], i) > i) {
-            res.pop();
+            res.pop(); // 4、所以直接将循环字符和栈顶元素比较,如果栈顶元素大于当前字符且后续还有其他字符可以作为替代时,栈顶元素出栈
         }
         // 5、当前元素入栈
         res.push(s[i]);
@@ -1581,15 +1740,13 @@ var removeDuplicateLetters = function (s) {
  * 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。
  */
 var twoSum = function (nums, target) {
-    const cache = new Map();
-    for (let index = 0; index < nums.length; index++) {
-        const cur = nums[index];
-        const val = target - cur;
-        if (cache.has(cur)) {
-            return [cache.get(cur), index];
-        } else {
-            cache.set(val, index);
+    const map = new Map();
+    for (let i = 0; i < nums.length; i++) {
+        const cur = nums[i];
+        if (map.has(cur)) {
+            return [map.get(cur), i];
         }
+        map.set(target - cur, i);
     }
 };
 console.log(twoSum([2, 7, 11, 15], 9));
@@ -1692,14 +1849,13 @@ mergeAndSort(ns1, ns2);
  */
 function calc(arr) {
     if (!Array.isArray(arr)) return;
-    console.log(arr);
     return arr.reduce((sum, cur) => {
-        const left = Array.isArray(sum) ? calc(sum) : sum;
-        const right = Array.isArray(cur) ? calc(cur) : cur; // 如果 sum 或 cur 是数组，递归调用 calc 函数。
+        const left = Array.isArray(sum) ? calc(sum) : sum; // 如果 sum 是数组，递归调用 calc 函数
+        const right = Array.isArray(cur) ? calc(cur) : cur; // 如果 cur 是数组，递归调用 calc 函数
         return left - right; // 计算结果，left 和 right 肯定都是非数组
     });
 }
-calc([5, [[4, 3], 2, 1]]);
+console.log(calc([5, [[4, 3], 2, 1]]));
 /**
  * 判断完全平方数
  * 判断一个数字能不能被开平方， 比如9的开平方是3 是对的。 5没法开平方就是错的
@@ -1789,13 +1945,13 @@ const combine = (n, k) => {
     const rec = (arr, start) => {
         if (arr.length === k) {
             result.push([...arr]);
-            return; // 递归终止条件，把符合条件的放入到 result 中
+            return;
         }
         // start是枚举选择的起点，i = start 剪掉重复的元素，后边的条件也是为了剪枝，避免多余循环
         for (let i = start; i <= n && n - i + 1 >= k - arr.length; i++) {
             arr.push(i);
             rec(arr, i + 1); // 枚举出所有选择，递归选择下一个，直到 length 为 k 终止
-            arr.pop();
+            arr.pop(i);
         }
     };
     rec([], 1);
@@ -1803,6 +1959,7 @@ const combine = (n, k) => {
 };
 console.log(combine(4, 2));
 console.log(combine(4, 3));
+console.log(combine(4, 4));
 /**
         *  2624. 蜗牛排序
         * 请你编写一段代码为所有数组实现  snail(rowsCount，colsCount) 方法，该方法将 1D 数组转换为以蜗牛排序的模式的 2D 数组。
@@ -1849,14 +2006,12 @@ console.log(arr.snail(5, 4));
 function fn(arr, m) {
     const result = [];
     const rec = (i, sum, res) => {
-        const cur = arr[i];
         if (i === arr.length) {
-            if (sum === m) {
-                result.push(res); // 递归 n 次，如果结果等于 m 则添加到结果中
-            }
+            if (sum === m) result.push(res.replace(/^\+/, '')); // 递归 n 次，如果结果等于 m 则添加到结果中
             return;
         }
-        rec(i + 1, sum + cur, i === 0 ? '' + cur : `${res}+${cur}`); // 将当前的结果按加法累加，并递归
+        const cur = arr[i];
+        rec(i + 1, sum + cur, `${res}+${cur}`); // 将当前的结果按加法累加，并递归
         rec(i + 1, sum - cur, `${res}-${cur}`); // 将当前的结果按加法累加，并递归
     };
     rec(0, 0, ''); // 当前递归索引，计算结果，计算字符串
@@ -1870,35 +2025,67 @@ console.log(fn([], 1));
 /**
  * 第 2 题：合并二维有序数组成一维有序数组，归并排序的思路
  */
-function mergeArr(arr) {
+function mergeSort(arr) {
     if (!Array.isArray(arr)) return [];
     const merge = (arr1, arr2) => {
-        const res = [];
-        const len1 = arr1.length;
-        const len2 = arr2.length;
-        let index1 = 0;
-        let index2 = 0;
-        while (index1 < len1 && index2 < len2) {
-            if (arr1[index1] <= arr2[index2]) {
-                res.push(arr1[index1]);
-                index1++;
+        if (arr1[arr1.length - 1] < arr2[0]) return [...arr1, ...arr2];
+        const result = [];
+        while (arr1.length > 0 && arr2.length > 0) {
+            if (arr1[0] < arr2[0]) {
+                result.push(arr1.shift()); // 把 arr1 和 arr2 中较小的元素放到前边
             } else {
-                res.push(arr2[index2]);
-                index2++;
+                result.push(arr2.shift());
             }
         }
-        if (index1 < len1) {
-            return [...res, ...arr1.splice(index1)];
-        }
-        if (index2 < len2) {
-            return [...res, ...arr2.splice(index2)];
-        }
-        return res;
+        return result.concat(arr1, arr2);
     };
-    return arr.reduce((res, cur) => {
-        return merge(res, cur);
-    });
+    return arr.reduce(merge);
 }
+let arr1 = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 2, 3],
+    [4, 5, 6],
+];
+let arr2 = [
+    [1, 4, 6],
+    [7, 8, 10],
+    [2, 6, 9],
+    [3, 7, 13],
+    [1, 5, 12],
+];
+console.log(mergeSort(arr1));
+console.log(mergeSort(arr2));
+// function mergeArr(arr) {
+//     if (!Array.isArray(arr)) return [];
+//     const merge = (arr1, arr2) => {
+//         const res = [];
+//         const len1 = arr1.length;
+//         const len2 = arr2.length;
+//         let index1 = 0;
+//         let index2 = 0;
+//         while (index1 < len1 && index2 < len2) {
+//             if (arr1[index1] <= arr2[index2]) {
+//                 res.push(arr1[index1]);
+//                 index1++;
+//             } else {
+//                 res.push(arr2[index2]);
+//                 index2++;
+//             }
+//         }
+//         if (index1 < len1) {
+//             return [...res, ...arr1.splice(index1)];
+//         }
+//         if (index2 < len2) {
+//             return [...res, ...arr2.splice(index2)];
+//         }
+//         return res;
+//     };
+//     return arr.reduce((res, cur) => {
+//         return merge(res, cur);
+//     });
+// }
 // 方法三
 function mergeArr3(arr) {
     if (!Array.isArray(arr)) return [];
