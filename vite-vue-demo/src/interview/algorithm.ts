@@ -1,4 +1,7 @@
 // @ts-nocheck
+
+import { log } from 'console';
+
 /**
  * 3. 无重复字符的最长子串，返回最长子串
  */
@@ -565,22 +568,24 @@ console.log(longestPalindrome('aabaa'));
  * 516. 最长回文子序列
  * 给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。    子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
  */
+// 对于一个子序列而言，如果它是回文子序列，并且长度大于 2，那么将它首尾的两个字符去除之后，它仍然是个回文子序列。因此可以用动态规划的方法计算给定字符串的最长回文子序列。
 var longestPalindromeSubseq = function (s) {
     const n = s.length;
-    const dp = new Array(n).fill(0).map(() => new Array(n).fill(0)); // 这个数组用于存储最长回文子序列的长度
+    const dp = new Array(n).fill(0).map(() => new Array(n).fill(0));
+    // 因为dp[i][j]与dp[i][j-1]、dp[i+1][j-1]和dp[i+1][j]有关 所以i需要倒着遍历
     for (let i = n - 1; i >= 0; i--) {
-        dp[i][i] = 1; // 对于单个字符的子串，其长度就是 1，因此将 dp[i][i] 设置为 1
+        dp[i][i] = 1;
         const c1 = s[i];
         for (let j = i + 1; j < n; j++) {
-            const c2 = s[j]; // 对于一个子序列而言，如果它是回文子序列，并且长度大于 2，那么将它首尾的两个字符去除之后，它仍然是个回文子序列。因此可以用动态规划的方法计算给定字符串的最长回文子序列。
+            const c2 = s[j];
             if (c1 === c2) {
-                dp[i][j] = dp[i + 1][j - 1] + 2; // 如果 s[i]=s[j]s[i] = s[j]s[i]=s[j]，则首先得到 sss 的下标范围 [i+1,j−1][i+1, j-1][i+1,j−1] 内的最长回文子序列，然后在该子序列的首尾分别添加 s[i]s[i]s[i] 和 s[j]s[j]s[j]，即可得到 sss 的下标范围 [i,j][i, j][i,j] 内的最长回文子序列，因此 dp[i][j]=dp[i+1][j−1]+2\textit{dp}[i][j] = \textit{dp}[i+1][j-1] + 2dp[i][j]=dp[i+1][j−1]+2；
+                dp[i][j] = dp[i + 1][j - 1] + 2; // 如果s[i]===s[j]，则dp[i][j]就是去掉收尾相同字符后的最长回文子序列的长度+2
             } else {
-                dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]); // 如果 s[i]≠s[j]s[i] \ne s[j]s[i]=s[j]，则 s[i]s[i]s[i] 和 s[j]s[j]s[j] 不可能同时作为同一个回文子序列的首尾，因此 dp[i][j]=max⁡(dp[i+1][j],dp[i][j−1])\textit{dp}[i][j] = \max(\textit{dp}[i+1][j], \textit{dp}[i][j-1])dp[i][j]=max(dp[i+1][j],dp[i][j−1])。
+                dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]); // 否则，dp[i][j]就是去掉收尾字符其中一个后的最长回文子序列的较大者
             }
         }
     }
-    return dp[0][n - 1]; // 由于状态转移方程都是从长度较短的子序列向长度较长的子序列转移，因此需要注意动态规划的循环顺序。
+    return dp[0][n - 1];
 };
 // var longestPalindrome = function (s) {
 //     let max = '';
@@ -2261,4 +2266,75 @@ console.log(
     res2,
     res2.map(arr => arr.reduce((sum, cur) => sum + cur)),
 );
+
+/**
+ * 7. 整数反转
+ * 示例 1：  输入：x = 123       输出：321
+ * 示例 2： 输入：x = -123     输出：-321
+ * 示例 3： 输入：x = 120      输出：21
+ *   示例 4： 输入：x = 0     输出：0
+ */
+var reverse = function (x) {
+    const max = 2 ** 31 - 1; // 最大 32 位的有符号整数
+    const str = String(Math.abs(x)).split('').reverse().join(''); // 反转
+    const result = (x < 0 ? '-' : '') + str; // 判断符号
+    return result > max || result < -max ? 0 : Number(result);
+};
+var reverse = function (x) {
+    const max = 2 ** 31 - 1; // 最大 32 位的有符号整数
+    let result = 0;
+    let n = Math.abs(x); // 因为 负数 floor 下舍所以要取绝对值（-0.1 下舍结果是 -1）
+    while (n !== 0) {
+        result = result * 10 + (n % 10); // 取最后一位数添加到 result 中
+        n = Math.floor(n / 10); // 舍去最后一位
+    }
+    result = x < 0 ? -result : result; // 判断符号
+    return result > max || result < -max ? 0 : result;
+};
+console.log(reverse(123)); // 321
+console.log(reverse(-123)); // -321
+console.log(reverse(120)); // 21
+console.log(reverse(0)); // 0
+/**
+ * 136. 只出现一次的数字
+ */
+var singleNumber = function (nums) {
+    if (!Array.isArray(nums)) return;
+    const map = new Map();
+    for (let cur of nums) {
+        map.set(cur, (map.get(cur) || 0) + 1);
+    }
+    let result = 0;
+    map.forEach((val, key) => {
+        if (val === 1) result = key;
+    });
+    return result;
+};
+console.log(singleNumber([4, 1, 2, 1, 2]));
+/**
+ * 17. 电话号码的字母组合
+ */
+var letterCombinations = function (digits) {
+    if (!digits || typeof digits !== 'string') return '';
+    const opt = { 2: 'abc', 3: 'def', 4: 'ghi', 5: 'jkl', 6: 'mno', 7: 'pqrs', 8: 'tuv', 9: 'wxyz' };
+    const result = [];
+    const rec = (i, res) => {
+        const str = opt[digits[i]] || ''; // 当前数字对应的字母
+        if (res.length === digits.length) {
+            result.push(res);
+            return;
+        }
+        for (let cur of str) {
+            rec(i + 1, res + cur); // 递归下一层，拼接结果
+        }
+    };
+    rec(0, ''); // 第几层，组合结果（数字对应的层数，符合条件的结果）
+    return result;
+};
+console.log(letterCombinations('23'));
+console.log(letterCombinations('2'));
+console.log(letterCombinations('678'));
+/**
+ * 15. 三数之和
+ */
 

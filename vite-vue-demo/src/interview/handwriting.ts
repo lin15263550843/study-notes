@@ -182,6 +182,33 @@ function test(arg1, arg2, arg3) {
 const curryingTest = createCurrying(test);
 console.log('createCurrying 结果：', curryingTest(1)(2)(3));
 /**
+ * compose 函数，注意参数的顺序，从右到左
+ * compose 函数可以将需要嵌套执行的函数平铺，嵌套执行就是一个函数的返回值将作为另一个函数的参数。
+ */
+const compose = (...args) => {
+    return function (arg) {
+        return args.reduceRight((res, cur) => cur(res), arg); // 从右侧开始
+    };
+};
+// 我们的计算改为两个函数的嵌套计算，add函数的返回值作为multiply函数的参数
+const add = x => x + 10;
+const multiply = x => x * 10;
+console.log(compose(multiply, add)(10), multiply(add(10))); // 结果还是 200
+/**
+ *
+ * pipe 函数，注意参数的顺序，从左到右
+ * 和 compose 函数类似，可以将需要嵌套执行的函数平铺，嵌套执行就是一个函数的返回值将作为另一个函数的参数。
+ */
+const pipe = (...args) => {
+    return function (arg) {
+        return args.reduce((res, cur) => cur(res), arg); // 从右侧开始
+    };
+};
+// 我们的计算改为两个函数的嵌套计算，add函数的返回值作为multiply函数的参数
+const add = x => x + 10;
+const multiply = x => x * 10;
+console.log(pipe(add, multiply)(10), multiply(add(10))); // 结果还是 200
+/**
  * 实现 Object.create
  */
 function objectCreate(obj) {
@@ -2305,4 +2332,176 @@ console.log(get({ a: [{ b: 1 }] }, 'a[0].b', 3)); // output: 1
 console.log(get({ a: [{ b: 1 }] }, '1')); // output: undefined
 console.log(get(null, '', undefined)); // output: undefined
 console.log(get('abc', 'length')); // output: 3
+
+/**
+ * 设计模式
+ */
+/**
+ * 发布订阅模式
+ */
+class EventEmitter {
+    constructor(name) {
+        this.name = name;
+        this.eventMap = new Map();
+    }
+    on(eventName, callback, thisArg, isOnce = false) {
+        if (typeof callback !== 'function') throw TypeError('callback is not a function');
+        const eMap = this.eventMap;
+        if (!eMap.has(eventName)) eMap.set(eventName, []); // 如果不存在则进行初始化
+        const events = eMap.get(eventName);
+        events.push({ callback, thisArg, isOnce });
+    }
+    once(eventName, callback, thisArg) {
+        if (typeof callback !== 'function') throw TypeError('callback is not a function');
+        this.on(eventName, callback, thisArg, true); // 标记 isOnce 为  true
+    }
+    emit(eventName, ...args) {
+        const events = this.eventMap.get(eventName);
+        if (!events) return;
+        events.forEach(({ callback, thisArg, isOnce }) => {
+            callback.apply(thisArg, args);
+            if (isOnce) this.off(eventName, callback); // 如果是 once ，则执行完后直接取消监听
+        });
+    }
+    off(eventName, callback) {
+        if (!callback) {
+            this.eventMap.delete(eventName); // 如果只传入事件名，则删除所有的事件
+            return;
+        }
+        if (typeof callback !== 'function') throw TypeError('callback is not a function');
+        const events = this.eventMap.get(eventName);
+        if (!events) return;
+        for (let i = events.length - 1; i >= 0; i--) {
+            if (events[i].callback === callback) events.splice(i, 1); // 从后往前删
+        }
+    }
+}
+// class EventEmitter {
+//     constructor(name) {
+//         this.name = name;
+//         this.eventMap = new Map();
+//     }
+//     on(eventName, callback, thisArg) {
+//         if (typeof callback !== 'function') throw TypeError('callback is not a function');
+//         const eMap = this.eventMap;
+//         if (!eMap.has(eventName)) eMap.set(eventName, []); // 如果不存在则进行初始化
+//         const events = eMap.get(eventName);
+//         events.push({ callback, thisArg });
+//     }
+//     once(eventName, callback, thisArg) {
+//         if (typeof callback !== 'function') throw TypeError('callback is not a function');
+//         const cb = (...args) => {
+//             callback.apply(thisArg, args); // 只绑定一次，执行完后直接取消监听
+//             this.off(eventName, cb);
+//         };
+//         cb._callback = callback;
+//         this.on(eventName, cb, thisArg);
+//     }
+//     emit(eventName, ...args) {
+//         const events = this.eventMap.get(eventName);
+//         if (!events) return;
+//         events.forEach(({ callback, thisArg }) => callback.apply(thisArg, args));
+//     }
+//     off(eventName, callback) {
+//         if (!callback) {
+//             this.eventMap.delete(eventName); // 如果只传入事件名，则删除所有的事件
+//             return;
+//         }
+//         if (typeof callback !== 'function') throw TypeError('callback is not a function');
+//         const events = this.eventMap.get(eventName);
+//         if (!events) return;
+//         for (let i = events.length - 1; i >= 0; i--) {
+//             if (events[i].callback === callback || events[i].callback._callback === callback) events.splice(i, 1); // 从后往前删
+//         }
+//     }
+// }
+const eventBus = new EventEmitter('使用发布订阅模式实现事件总线');
+console.log('eventBus', eventBus);
+const fun = (...args) => console.log('fun', args);
+function funThis(...args) {
+    console.log('funThis', args, this);
+}
+eventBus.on('test1', fun);
+eventBus.on('test1', funThis, { _this: 'test1' });
+eventBus.emit('test1', 1);
+console.log('====== 解绑 funThis 测试 ======');
+eventBus.off('test1', funThis);
+eventBus.emit('test1', 1);
+console.log('====== once 测试 ======');
+eventBus.once('test2', fun);
+eventBus.emit('test2', 2);
+eventBus.emit('test2', 2);
+eventBus.emit('test2', 2);
+console.log('====== 解绑 once 测试 ======');
+eventBus.once('test3', fun);
+eventBus.off('test3', fun);
+eventBus.emit('test3', 3);
+
+/**
+ * 观察者模式
+ */
+// 观察者
+class Observer {
+    constructor(name) {
+        this.name = name;
+    }
+    // 当被观察的数据发生了变化，触发该函数更新
+    update(state) {
+        if (!state) return;
+        console.log(`${this.name},${state.name}正在${state.action}`);
+    }
+}
+// 被观察者
+class Observed {
+    constructor(name, state) {
+        this.name = name;
+        this.observerSet = new Set(); // 观察者集合，不支持重复添加
+    }
+    // 添加观察者
+    addObserver(observer) {
+        if (!observer) return;
+        this.observerSet.add(observer);
+    }
+    // 移除已添加的观察者
+    removeObserver(observer) {
+        if (!observer) return;
+        this.observerSet.delete(observer);
+    }
+    // 发生变更后，通知观察者
+    notify(action) {
+        this.observerSet.forEach(observer => observer.update({ name: this.name, action }));
+    }
+}
+
+const ob1 = new Observer('草丛里');
+const ob2 = new Observer('召唤师峡谷');
+const obd1 = new Observed('盖伦');
+const obd2 = new Observed('狗熊');
+
+obd1.addObserver(ob1);
+obd2.addObserver(ob1);
+obd2.addObserver(ob2);
+
+obd1.notify('跑步');
+obd1.notify('跳舞');
+obd2.notify('跳舞');
+obd2.removeObserver(ob2);
+obd2.notify('倒立');
+
+/**
+ * 单例模式
+ */
+const Dog = function (name) {
+    this.name = name;
+};
+const SingleDog = (function () {
+    let instance = null;
+    return function (name) {
+        if (!instance) instance = new Dog(name); // 不存在时创建
+        return instance; // 已存在直接返回
+    };
+})();
+const a = new SingleDog('小黑');
+const b = new SingleDog('小白');
+console.log(a === b, a, b);
 
