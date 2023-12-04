@@ -221,6 +221,40 @@ const obj = { x: 123 };
 console.log('objectCreate 结果：', Object.create(obj));
 console.log('objectCreate 结果：', objectCreate(obj));
 /**
+ * 实现 Object.freeze
+ */
+// const _objectFreeze = object => {
+//     if (typeof object !== 'object' || object == null) throw new TypeError(`${typeof object} is not a object`);
+//     const keys = Object.getOwnPropertyNames(object);
+//     const symbols = Object.getOwnPropertySymbols(object);
+//     [...keys, ...symbols].forEach(key => {
+//         Object.defineProperty(object, key, {
+//             configurable: false,
+//             writable: false,
+//         });
+//     });
+//     Object.preventExtensions(object);
+// };
+const _objectFreeze = object => {
+    if (typeof object !== 'object' || object == null) throw new TypeError(`${typeof object} is not a object`);
+    Reflect.ownKeys(object).forEach(key => {
+        console.log(key);
+        Object.defineProperty(object, key, {
+            configurable: false,
+            writable: false,
+        });
+    });
+    Object.preventExtensions(object);
+};
+const obj = { a: 1 };
+_objectFreeze(obj);
+obj.a = 11;
+obj.b = 2;
+// Object.defineProperty(obj, 'a', {
+//     configurable: true,
+// });
+console.log(obj);
+/**
  * 实现 instanceof
  */
 function myInstanceof(obj, constr) {
@@ -443,6 +477,7 @@ Promise.serialAll([p1, p2, p3, p4])
     });
 /**
  * 类型判断
+ * 获取数据类型
  */
 function getType(val) {
     if (val === null) return 'null';
@@ -776,6 +811,19 @@ console.log(isUSD('￥123.45'));
 console.log(isUSD('$123.123'));
 console.log(isUSD('$12345678'));
 /**
+ * 检查是否包含连续重复英文字符
+ */
+function containsRepeatingLetter(str) {
+    if (typeof str !== 'string') return false;
+    // return /([a-zA-Z])\1/.test(str); // \1 代表匹配第一个小括号的引用值
+    const len = str.length;
+    for (let i = 0; i < len; i++) {
+        if (str[i] === str[i + 1] && /[a-zA-Z]/.test(str[i])) return true;
+    }
+    return false;
+}
+console.log(containsRepeatingLetter('abccdef'));
+/**
  * 字符串转成对象
  */
 function parseStrToObj(obj, str, val) {
@@ -896,7 +944,35 @@ function add2(arr) {
 }
 console.log('add2 结果：', add2([1, 2, 3, [[4, 5], 6], 7, 8, 9]));
 /**
+ * 查找数组中的重复元素并返回
+ */
+function findDuplicates(arr) {
+    if (!Array.isArray(arr)) return arr;
+    // 只需要一次循环，时间复杂度为 n，但是需要使用额外空间为 n
+    const cache = new Set();
+    const res = new Set();
+    arr.forEach(n => {
+        if (cache.has(n)) {
+            res.add(n);
+        } else {
+            cache.add(n);
+        }
+    });
+    return Array.from(res);
+}
+function findDuplicates(arr) {
+    if (!Array.isArray(arr)) return arr;
+    // 不使用额外的空间，但是因为有个排序 最快时间复杂度为 nlogn
+    const a = [...arr].sort((a, b) => a - b);
+    const len = a.length;
+    const res = [];
+    for (let i = 0; i < len; i++) {
+        if (a[i] === a[i + 1] && a[i + 1] !== a[i + 2]) res.push(a[i]);
+    }
+}
+/**
  * 数组扁平化
+ *
  */
 function flat(arr, depth) {
     if (!Array.isArray(arr)) return;
@@ -914,7 +990,7 @@ console.log('flat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 2));
 console.log('flat 结果：', flat([1, [2, [3, 4, 5], [6, [7, [8], [9]]]]], 3));
 console.log('flat 结果：', [1, [2, [3, 4, 5], [6, [7, [8], [9]]]]].flat(3));
 /**
- * 数组的 flat 方法
+ * 实现数组的 flat 方法
  */
 // Array.prototype.myFlat = function (depth = 1) {
 //     if (!Array.isArray(this)) throw new TypeError(`then ${this} is not a array`);
@@ -1203,6 +1279,12 @@ function repeat(str, n) {
 }
 console.log(repeat('abc', 2));
 console.log('repeat 结果：', repeat('abc-', 3));
+/**
+ * 实现字符串的 trim 方法
+ */
+String.prototype.myTrim = function () {
+    return this.replace(/(^\s*)|(\s*$)/g, '');
+};
 /**
  * 对象扁平化
  */
@@ -2487,7 +2569,21 @@ obd1.notify('跳舞');
 obd2.notify('跳舞');
 obd2.removeObserver(ob2);
 obd2.notify('倒立');
-
+/**
+ * 装饰器模式
+ */
+const plane = {
+    fire() {
+        console.log('发射普通的子弹');
+    },
+};
+const orginFire = plane.fire; // 获取原始对象方法
+plane.fire = function (...args) {
+    console.log('before：安装导弹');
+    orginFire.apply(this, args);
+    console.log('after：发射导弹');
+};
+plane.fire();
 /**
  * 单例模式
  */
@@ -2504,4 +2600,62 @@ const SingleDog = (function () {
 const a = new SingleDog('小黑');
 const b = new SingleDog('小白');
 console.log(a === b, a, b);
+
+/**
+ * 判断一个数是否为质数/素数
+ */
+Number.prototype._isPrime = function () {
+    const num = this.valueOf();
+    if (typeof num !== 'number') throw new TypeError(`the ${num} is not a number`);
+    if (num < 2) return false;
+    for (let i = 2; i < num; i++) {
+        if (num % i === 0) return false;
+    }
+    return true; // 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数。
+};
+console.log((1)._isPrime());
+console.log((2)._isPrime());
+console.log((3)._isPrime());
+console.log((7)._isPrime());
+console.log((4)._isPrime());
+console.log((123)._isPrime());
+
+/**
+ * 1、校验邮箱格式；2、校验手机号格式
+ */
+// 校验邮箱格式
+function isAvailableEmail(sEmail) {
+    if (typeof sEmail !== 'string') return false;
+    return /^[\w._-]+@[\w]+\.[\w.]+$/.test(sEmail);
+}
+// 校验手机号格式
+function isAvailablePhone(phone) {
+    return /^1[3-9][0-9]{9}/.test(phone);
+}
+/**
+ * a 链接替换
+ */
+function link() {
+    const dom = document.getElementById('jsContainer');
+    const text = dom.innerHTML || '';
+    const arr = text.split(' ');
+    dom.innerHTML = arr
+        .map(value => {
+            if (!value) return '';
+            return value.replace(/http:\/\/\S+|https:\/\/\S+|www\.\S+/, function (v1) {
+                if (v1.slice(0, 4) === 'www.') {
+                    return `<a href="http://${v1}" target="_blank">${v1}</a>`;
+                } else {
+                    return `<a href="${v1}" target="_blank">${v1}</a>`;
+                }
+            });
+        })
+        .join(' ');
+}
+/**
+ * 生成范围内的随机数
+ */
+function genrangeRandom(start: number, end: number) {
+    return Math.floor(Math.random() * (end - start + 1) + start);
+}
 

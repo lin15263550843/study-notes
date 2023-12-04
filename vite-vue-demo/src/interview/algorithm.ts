@@ -1,7 +1,4 @@
 // @ts-nocheck
-
-import { log } from 'console';
-
 /**
  * 3. 无重复字符的最长子串，返回最长子串
  */
@@ -1549,11 +1546,12 @@ var findKthLargest = function (nums, k) {
         let start = left; // 最左边未交换过的元素，起始索引标记
         let end = right; // 最右边未交换过的元素，结束索引标记
         let i = left + 1; // 循环索引从切分位后边开始，所以 +1
-        let val = arr[start]; // 切分位值，该轮循环完成后排定的就是该值位置
+        let flag = arr[start]; // 切分位值，该轮循环完成后排定的就是该值位置
+        // i 移动到最右侧为交换过的元素位置为止，所以 i <= end
         while (i <= end) {
-            if (arr[i] < val) {
+            if (arr[i] < flag) {
                 exch(arr, i, end--); // 小于 切分值 的移到数组的右边，并将 end 向左移动一位
-            } else if (arr[i] > val) {
+            } else if (arr[i] > flag) {
                 exch(arr, i++, start++); // 大于切分值，移到最左侧，并将 start 和 i 都向右移动一位
             } else {
                 i++; // 如果等于 切分值，那么直接将 i 向右移动一位
@@ -2335,6 +2333,237 @@ console.log(letterCombinations('23'));
 console.log(letterCombinations('2'));
 console.log(letterCombinations('678'));
 /**
+ * 509. 斐波那契数
+ */
+function fib(n) {
+    if (n < 2) return n; // 方法三：优化后的动态规划
+    let pre1 = 0,
+        pre2 = 1,
+        res = 0;
+    for (let i = 2; i <= n; i++) {
+        res = pre1 + pre2;
+        pre1 = pre2;
+        pre2 = res;
+    }
+    return res;
+}
+function fib(n) {
+    const arr = new Array(n); // 方法二：动态规划
+    for (let i = 0; i <= n; i++) {
+        if (i < 2) {
+            arr[i] = i;
+        } else {
+            arr[i] = arr[i - 1] + arr[i - 2];
+        }
+    }
+    return arr[arr.length - 1];
+}
+function fib(n) {
+    // 方法一：暴力递归
+    if (n < 2) return n;
+    return fib(n - 1) + fib(n - 2);
+}
+/**
+ * 冒泡排序
+ */
+function bubbleSort(arr) {
+    if (!Array.isArray(arr)) return arr;
+    const len = arr.length;
+    const exch = (arr, x, y) => {
+        [arr[x], arr[y]] = [arr[y], arr[x]];
+    };
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - i; j++) {
+            if (arr[j] > arr[j + 1]) exch(arr, j, j + 1); // 两两比较排定最大值
+        }
+    }
+    return arr;
+}
+console.log(bubbleSort([3, 5, 4, 10, 8, 0, 1, 7, 6, 2, 9]));
+/**
+ * 插入排序
+ */
+function insterSort(arr) {
+    if (!arr || !Array.isArray(arr)) return arr;
+    const exch = (arr, x, y) => {
+        [arr[x], arr[y]] = [arr[y], arr[x]];
+    };
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = i; j > 0 && arr[j] < arr[j - 1]; j--) {
+            exch(arr, j, j - 1); // 如果 当前值比前一个值小，则一直交换
+        }
+    }
+    return arr;
+}
+console.log(insterSort([3, 5, 4, 10, 8, 0, 1, 7, 6, 2, 9]));
+/**
+ * 快排
+ */
+const quickSort = nums => {
+    if (!Array.isArray(nums)) return;
+    const exch = (arr, x, y) => ([arr[x], arr[y]] = [arr[y], arr[x]]);
+    const sort = (arr, left, right) => {
+        if (left >= right) return;
+        let start = left; // 最左边未交换过的元素，起始索引标记
+        let end = right; // 最右边未交换过的元素，结束索引标记
+        let i = start + 1; // 循环索引从切分位后边开始，所以 +1
+        let flag = arr[left]; // 切分位值，该轮循环完成后排定的就是该值位置
+        // i 移动到最右侧为交换过的元素位置为止，所以 i <= end
+        while (i <= end) {
+            if (arr[i] < flag) {
+                exch(arr, i, end--); // 小于 切分值 的移到数组的右边，并将 end 向左移动一位
+            } else if (arr[i] > flag) {
+                exch(arr, i++, start++); // 大于切分值，移到最左侧，并将 start 和 i 都向右移动一位
+            } else {
+                i++; // 如果等于 切分值，那么直接将 i 向右移动一位
+            }
+        }
+        sort(arr, left, start - 1);
+        sort(arr, end + 1, right);
+    };
+    sort(nums, 0, nums.length - 1);
+    return nums;
+};
+// const quickSort = (arr, left, right) => {
+//     if (left >= right) return; // 左指针大于等于右指针，结束排序
+//     let flag = arr[left]; // 切分位，取第一个元素，遍历数组进行交互，左边的元素都大于等于 flag，右边的元素都小于 flag
+//     let start = left + 1; // 遍历起始指针，从第二个元素开始
+//     let end = right; //  遍历的结束指针
+//     while (start < end) {
+//         while (start < end && arr[start] >= flag) {
+//             start++; // 如果当前元素，大于等于切分位，起始指针向右移动，找到需要交换的元素停下，注意不能越界
+//         }
+//         while (start < end && arr[end] < flag) {
+//             end--; // 如果当前元素小于切分位，右指针向左移动，找到需要交换的元素停下，注意不能越界
+//         }
+//         exch(arr, start, end); // 交互它们
+//     }
+//     if (arr[end] < flag) {
+//         end--; // 交换完后，右指针值跟切分位进行比较，如果小于切分位，跟切分位前边的值进行交互，右指针左移，否则直接进行交互
+//     }
+//     exch(arr, left, end);
+//     quickSort(arr, left, end - 1);
+//     quickSort(arr, end + 1, right);
+// };
+console.log(quickSort([3, 5, 4, 10, 8, 0, 1, 7, 6, 2, 9]));
+/**
+ * 301. 删除无效的括号
+ */
+var removeInvalidParentheses = function (s) {
+    // 定义一个辅助函数 isValid，检查一个字符串是否是有效的括号字符串
+    const isValid = str => {
+        let count = 0;
+        for (const c of str) {
+            if (c === '(') {
+                count++; // 遇到左括号加 1
+            } else if (c === ')') {
+                count--; // 遇到右括号减 1
+                if (count < 0) return false; // count < 0 说明右括号多
+            }
+        }
+        return count === 0; // 说明刚好匹配
+    };
+    const result = []; // 结果集，用于存储所有有效的括号字符串
+    let currSet = new Set(); // 用于存储删减括号后的所有可能集合
+    currSet.add(s); // 初始字符串集合，其中只有一个元素，即输入的字符串 s
+    // 进入一个无限循环，直到找到所有有效的括号字符串为止
+    while (true) {
+        for (const str of currSet) {
+            if (isValid(str)) result.push(str); // 遍历当前集合，把满足条件的添加到结果中
+        }
+        if (result.length > 0) return result; // 如果 result 不为空，删除最少括号的结果，说明找到了结果
+        // 当前结合没有满足条件的，进行下一轮，尝试删掉一个括号后，生成一个新的集合再去判断
+        const nextSet = new Set(); // 用来存放，尝试删掉一个括号后，生成的新的集合
+        // 遍历当前集合的所有字符串，都尝试删掉一个括号后，得到所有可能的集合
+        for (const str of currSet) {
+            // 每个位置都尝试删除，得到所有可能的集合
+            for (let i = 0; i < str.length; i++) {
+                if (i > 0 && str[i] === str[i - 1]) continue; // 如果当前字符和前一个字符相同，那么跳过当前字符，避免重复处理相同的字符串
+                if (str[i] === '(' || str[i] === ')') {
+                    nextSet.add(str.substring(0, i) + str.substring(i + 1)); // 删除当前位置的括号，添加到下一个集合中
+                }
+            }
+        }
+        currSet = nextSet; // 更新当前集合进入下一轮循环
+    }
+};
+console.log(removeInvalidParentheses('()())()')); // ["(())()","()()()"]
+console.log(removeInvalidParentheses('(a)())()')); // ["(a())()","(a)()()"]
+console.log(removeInvalidParentheses('(a)()()()()))()()()('));
+console.log(removeInvalidParentheses(')(')); // [""]
+/**
  * 15. 三数之和
  */
+var threeSum = function (nums) {
+    if (!Array.isArray(nums)) return [];
+    // 类似于快排，排好序后，先固定一个值，然后再定义左右指针，扫描剩下的值，根据三个值的结果进行移动
+    nums.sort((a, b) => a - b);
+    const result = [];
+    for (let i = 0; i < nums.length; i++) {
+        const first = nums[i];
+        let left = i + 1;
+        let right = nums.length - 1;
+        if (nums[i] > 0) break; // 如果当前数字大于0，则三数之和一定大于0，因为 i 右侧的所有值都大于 0
+        if (nums[i] === nums[i - 1]) continue; // 去重
+        while (left < right) {
+            if (left > i + 1 && nums[left] === nums[left - 1]) {
+                left++; // 去重，跳过重复值
+                continue;
+            }
+            if (nums[right] === nums[right + 1]) {
+                right--; // 去重，跳过重复值
+                continue;
+            }
+            const res = nums[left] + nums[right] + first;
+            if (res < 0) {
+                left++; // 结果小于 0，说明值小了，需要增加，右移 left
+            } else if (res > 0) {
+                right--; // 结果大于 0，说明值太大了，需要减少，左移 right
+            } else {
+                result.push([first, nums[left], nums[right]]); // 结果为 0，添加到结果集中
+                left++; // 因为，剩下的组合肯定要比当前值大，所以要右移 left
+                right--; // 因为，剩下的组合肯定要比当前值小，所以要左移  right
+            }
+        }
+    }
+    return result;
+};
+console.log(threeSum([-1, 0, 1, 2, -1, -4])); // [[-1,-1,2],[-1,0,1]]
+console.log(threeSum([-1, 0, 1, 2, -1, -4, 1, 4, 2]));
+/**
+ * 70. 爬楼梯
+ */
+var climbStairs = function (n) {
+    const dp = [0, 1, 2];
+    for (let i = 3; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2]; // 递推公式
+    }
+    return dp[n];
+};
+console.log(climbStairs(2)); // 2
+console.log(climbStairs(3)); // 3
+console.log(climbStairs(5)); // 8
+console.log(climbStairs(16)); // 3
+/**
+ * 322. 零钱兑换
+ * 给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+ * 计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+ */
+var coinChange = function (coins, amount) {
+    const dp = new Array(amount + 1).fill(Infinity); // 表示总金额为 i 的时候最少金币个数，0 对应索引 0，11 对应索引 12，所以要 +1
+    dp[0] = 0; // 凑足总金额为 0 所需钱币的个数一定是 0
+    for (let i = 0; i <= amount; i++) {
+        for (let coin of coins) {
+            // i - coin 如果小于 0 越界了，无意义
+            if (i - coin >= 0) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1); // 凑够 dp[i] 枚金币，需要 dp[i-coin] 再加上 1 枚，取最少得情况
+            }
+        }
+    }
+    return dp[amount] === Infinity ? -1 : dp[amount]; // 注意 如果 是 Infinity 则说明无法凑足这种情况
+};
+console.log(coinChange([1, 2, 5], 11)); // 3
+console.log(coinChange([1], 0)); // 0
+console.log(coinChange([2], 3)); // -1
 
