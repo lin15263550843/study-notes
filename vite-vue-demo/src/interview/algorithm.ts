@@ -158,7 +158,7 @@ console.log(permuteUnique([1, 1, 2]));
 console.log(permuteUnique([1, 2, 2, 3]));
 console.log(permuteUnique([22, 22, 33]));
 /**
- * 剑指 Offer 38. 字符串的排列
+ * 剑指 Offer 38. 字符串中字符的所有排列
  * 输入一个字符串，打印出该字符串中字符的所有排列。
  */
 // const permutation = function (s) {
@@ -2552,7 +2552,7 @@ console.log(climbStairs(16)); // 3
  */
 var coinChange = function (coins, amount) {
     const dp = new Array(amount + 1).fill(Infinity); // 表示总金额为 i 的时候最少金币个数，0 对应索引 0，11 对应索引 12，所以要 +1
-    dp[0] = 0; // 凑足总金额为 0 所需钱币的个数一定是 0
+    dp[0] = 0; // 凑足总金额为 0 所需钱币的个数一定是 0（也可以理解为 选取 i-coin = 0 时，dp[i-coin] 应该是 0）
     for (let i = 0; i <= amount; i++) {
         for (let coin of coins) {
             // i - coin 如果小于 0 越界了，无意义
@@ -2566,4 +2566,88 @@ var coinChange = function (coins, amount) {
 console.log(coinChange([1, 2, 5], 11)); // 3
 console.log(coinChange([1], 0)); // 0
 console.log(coinChange([2], 3)); // -1
+/**
+ * 518. 零钱兑换 II
+ * 给你一个整数数组 coins 表示不同面额的硬币，另给一个整数 amount 表示总金额。
+ * 请你计算并返回可以凑成总金额的硬币 组合数。如果任何硬币组合都无法凑出总金额，返回 0
+ */
+var change = function (amount, coins) {
+    const dp = new Array(amount + 1).fill(0); // 用 dp[x] 表示金额之和等于 x 的硬币组合数，目标是求 dp[amount]
+    dp[0] = 1; // 可以理解为 当 i-coin = 0 时，此时正好选取到 dp[0]，相当于初始值，应该为 1，而不是 0，否则之后将全部为 0
+    // amount 要放到里层，因为 组合 不强调元素之间的顺序，排列强调元素之间的顺序。
+    // 因为外层循环是遍历数组 coins 的值，内层循环是遍历不同的金额之和，在计算 dp[i] 的值时，可以确保金额之和等于 i 的硬币面额的顺序，由于顺序确定，因此不会重复计算不同的排列
+    // 例如，coins=[1,2]，对于 dp[3] 的计算，一定是先遍历硬币面额 1 后遍历硬币面额 2，只会出现 2 种组合
+    for (let coin of coins) {
+        for (let i = 0; i <= amount; i++) {
+            if (i - coin >= 0) dp[i] += dp[i - coin]; // dp[i] = dp[i] + dp[i-coin] 累计组合数
+        }
+    }
+    console.log(dp);
+    return dp[amount];
+};
+console.log(change(5, [1, 2, 5])); // 4
+/**
+ * 377. 组合总和 Ⅳ，
+ * 顺序不同的序列被视作不同的组合
+ */
+var combinationSum4 = function (nums, target) {
+    const dp = new Array(target + 1).fill(0);
+    dp[0] = 1;
+    for (let i = 0; i <= target; i++) {
+        for (let n of nums) {
+            if (i - n >= 0) {
+                dp[i] += dp[i - n];
+            }
+        }
+    }
+    return dp[target];
+};
+/**
+ * 139. 单词拆分
+ * 给你一个字符串 s 和一个字符串列表 wordDict 作为字典。请你判断是否可以利用字典中出现的单词拼接出 s 。
+ */
+var wordBreak = function (s, wordDict) {
+    const set = new Set(wordDict);
+    const dp = new Array(s.length + 1).fill(false);
+    dp[0] = true;
+    for (let i = 1; i <= s.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (dp[j] && set.has(s.substring(j, i))) {
+                dp[i] = true; // 当 dp[j] 为 true， 且 s[j ~ i] 在 set 种时，说明符合条件
+                break; // 已经符合条件了，直接退出循环
+            }
+        }
+    }
+    return dp[s.length];
+};
+console.log(wordBreak('leetcode', ['leet', 'code'])); // true
+console.log(wordBreak('applepenapple', ['apple', 'pen']));
+console.log(wordBreak('catsandog', ['cats', 'dog', 'sand', 'and', 'cat']));
+
+/**
+ * 39. 组合总和
+ * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
+ */
+var combinationSum = function (candidates, target) {
+    const result = [];
+    const rec = (start, target, res) => {
+        if (target === 0) {
+            result.push([...res]);
+            return;
+        }
+        // 去重逻辑：只要限制下一次选择的起点，是基于本次的选择，这样下一次就不会选到本次选择同层左边的数。即通过控制 for 遍历的起点，去掉会产生重复组合的选项。
+        for (let i = start; i < candidates.length; i++) {
+            const n = candidates[i];
+            if (target - n >= 0) {
+                res.push(n); // 选择当前值
+                rec(i, target - n, res); // start 每次都从 i 开始，下次就不会选到 i 左边的数，去掉重复值
+                res.pop(); // 回溯，回到选择candidates[i]之前的状态，继续尝试选同层右边的数
+            }
+        }
+    };
+    rec(0, target, []); // 最开始可选的数是从第 0 项开始的，传入一个空集合
+    return result;
+};
+console.log(combinationSum([2, 3, 6, 7], 7)); // [[2,2,3],[7]]
+console.log(combinationSum([2, 3, 5], 8)); //  [[2,2,2,2],[2,3,3],[3,5]]
 

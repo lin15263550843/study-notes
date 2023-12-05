@@ -15,82 +15,29 @@
         <script type="module" src="./src/_test.js"></script>
     </body>
     <script>
-        var coinChange = function (coins, amount) {
-            const dp = new Array(amount + 1).fill(Infinity); // 表示总金额为 i 的时候最少金币个数，0 对应索引 0，11 对应索引 12，所以要 +1
-            dp[0] = 0; // 凑足总金额为 0 所需钱币的个数一定是 0
-            for (let i = 0; i <= amount; i++) {
-                for (let coin of coins) {
-                    // i - coin 如果小于 0 越界了，无意义
-                    if (i - coin >= 0) {
-                        dp[i] = Math.min(dp[i], dp[i - coin] + 1); // 凑够 dp[i] 枚金币，需要 dp[i-coin] 再加上 1 枚，取最少得情况
+        // 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合。
+        var combinationSum = function (candidates, target) {
+            const result = [];
+            const rec = (start, target, res) => {
+                if (target === 0) {
+                    result.push([...res]);
+                    return;
+                }
+                // 去重逻辑：只要限制下一次选择的起点，是基于本次的选择，这样下一次就不会选到本次选择同层左边的数。即通过控制 for 遍历的起点，去掉会产生重复组合的选项。
+                for (let i = start; i < candidates.length; i++) {
+                    const n = candidates[i];
+                    if (target - n >= 0) {
+                        res.push(n); // 选择当前值
+                        rec(i, target - n, res); // start 每次都从 i 开始，下次就不会选到 i 左边的数，去掉重复值
+                        res.pop(); // 回溯，回到选择candidates[i]之前的状态，继续尝试选同层右边的数
                     }
                 }
-            }
-            return dp[amount] === Infinity ? -1 : dp[amount]; // 注意 如果 是 Infinity 则说明无法凑足这种情况
+            };
+            rec(0, target, []); // 最开始可选的数是从第 0 项开始的，传入一个空集合
+            return result;
         };
-        console.log(coinChange([1, 2, 5], 11)); // 3
-        console.log(coinChange([1], 0)); // 0
-        console.log(coinChange([2], 3)); // 0
+        console.log(combinationSum([2, 3, 6, 7], 7)); // [[2,2,3],[7]]
+        console.log(combinationSum([2, 3, 5], 8)); //  [[2,2,2,2],[2,3,3],[3,5]]
     </script>
 </html>
-<!-- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- -->
-<!---->
 
