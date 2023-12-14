@@ -2651,3 +2651,88 @@ var combinationSum = function (candidates, target) {
 console.log(combinationSum([2, 3, 6, 7], 7)); // [[2,2,3],[7]]
 console.log(combinationSum([2, 3, 5], 8)); //  [[2,2,2,2],[2,3,3],[3,5]]
 
+/**
+ * 135. 分发糖果
+ * n 个孩子站成一排。给你一个整数数组 ratings 表示每个孩子的评分。
+ * 你需要按照以下要求，给这些孩子分发糖果：
+    每个孩子至少分配到 1 个糖果。
+    相邻两个孩子评分更高的孩子会获得更多的糖果。
+    请你给每个孩子分发糖果，计算并返回需要准备的 最少糖果数目 。
+    示例 1：
+    输入：ratings = [1,0,2]
+    输出：5
+    解释：你可以分别给第一个、第二个、第三个孩子分发 2、1、2 颗糖果。
+    示例 2：
+    输入：ratings = [1,2,2]
+    输出：4
+    解释：你可以分别给第一个、第二个、第三个孩子分发 1、2、1 颗糖果。
+        第三个孩子只得到 1 颗糖果，这满足题面中的两个条件。
+ */
+var candy = function (ratings) {
+    if (!Array.isArray(ratings)) return -1;
+    const result = new Array(ratings.length).fill(1);
+    const len = ratings.length;
+    for (let i = 0; i < len; i++) {
+        if (i > 0 && ratings[i] > ratings[i - 1]) {
+            result[i] = result[i - 1] + 1; // 如果当前值大于左侧值，当前值的最小值为左侧值加 1
+        }
+    }
+    for (let i = len - 1; i >= 0; i--) {
+        if (i < len - 1 && ratings[i] > ratings[i + 1]) {
+            result[i] = Math.max(result[i + 1] + 1, result[i]); // 如果当前值大于右侧值，则当前值为右侧值加 1，要求同时满足两条规则，所以要取两条规则的最大值
+        }
+    } // 因为相邻对比，前一个值会影响后一个值，所以要从后往前遍历
+    return result.reduce((sum, cur) => sum + cur);
+};
+console.log(candy([1, 0, 2]));
+console.log(candy([1, 2, 2]));
+console.log(candy([1, 3, 4, 5, 2]));
+console.log(candy([1, 2, 87, 87, 87, 2, 1]));
+//                 1  2   3  1   3   2  1
+
+/**
+ * 42. 接雨水
+ * 给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+ */
+// 暴力版本
+var trap = function (height) {
+    if (!Array.isArray(height)) return -1;
+    const result = new Array(height.length).fill(0); // 每个柱子能接的雨水
+    const len = height.length;
+    for (let i = 1; i < len; i++) {
+        let leftMax = height[0]; // 当前柱子左侧的最大值
+        let rightMax = height[len - 1]; // 当前柱子右侧的最大值
+        for (let l = 0; l < len; l++) {
+            if (l < i && height[l] > leftMax) leftMax = height[l];
+        }
+        for (let r = len - 1; r >= 0; r--) {
+            if (r > i && height[r] > rightMax) rightMax = height[r];
+        }
+        const res = Math.min(leftMax, rightMax) - height[i]; // 找到左右最小的，计算当前柱子能接的雨水
+        result[i] = res < 0 ? 0 : res; // 如果是负数，说明接水为 0
+    }
+    return result.reduce((count, cur) => count + cur);
+};
+// 优化版本
+var trap = function (height) {
+    if (!Array.isArray(height)) return -1;
+    const result = new Array(height.length).fill(0); // 每个柱子能接的雨水
+    const leftMaxArr = new Array(height.length).fill(0); // 索引对应柱子左侧的最大值列表
+    const rightMaxArr = new Array(height.length).fill(0); // 索引对应柱子右侧的最大值列表
+    const len = height.length;
+    let max = height[0];
+    for (let i = 1; i < len; i++) {
+        leftMaxArr[i] = Math.max(height[i], max);
+        max = leftMaxArr[i]; // 计算当前柱子左侧最大值，从左往右开始遍历，默认第一个，如果有更大的则 max 为更大的值
+    }
+    max = height[len - 1];
+    for (let i = len - 2; i >= 0; i--) {
+        rightMaxArr[i] = Math.max(height[i], max);
+        max = rightMaxArr[i]; // 计算当前柱子右侧最大值，从右往左开始遍历，默认最后一个，如果有更大的则 max 为更大的值
+    }
+    for (let i = 1; i < len; i++) {
+        const res = Math.min(leftMaxArr[i], rightMaxArr[i]) - height[i]; // 找到左右最小的，计算当前柱子能接的雨水
+        result[i] = res < 0 ? 0 : res; // 如果是负数，说明接水为 0
+    }
+    return result.reduce((count, cur) => count + cur);
+};

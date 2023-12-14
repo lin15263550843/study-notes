@@ -475,6 +475,88 @@ Promise.serialAll([p1, p2, p3, p4])
     .catch(err => {
         console.log('err', err);
     });
+
+/**
+// 实现并发控制
+ */
+class Scheduler {
+    constructor() {
+        this.pending = []; // 记录promise的数组
+        this.limit = 2; // 限制器
+        this.count = 0; // 记录当前已被启动的promise
+    }
+    add(promiseCreator) {
+        this.pending.push(promiseCreator); // 单纯存储promise
+        this.run(); // 启动执行，至于能不能走run内部会控制
+    }
+    run() {
+        if (!this.pending.length || this.count >= this.limit) {
+            return; // 假设pending为空，或者调用大于限制直接返回
+        }
+        this.count++;
+        this.pending
+            .shift()()
+            .finally(() => {
+                this.count--;
+                this.run(); // 轮询
+            });
+    }
+}
+const timeout = time =>
+    new Promise(resolve => {
+        setTimeout(resolve, time);
+    });
+
+const scheduler = new Scheduler();
+
+const addTask = (time, order) => {
+    scheduler.add(() => timeout(time).then(() => console.log(order)));
+};
+
+addTask(1000, '1');
+addTask(500, '2');
+addTask(300, '3');
+addTask(400, '4');
+// output: 2 3 1 4
+
+// 最多处理3个请求的调度器
+function Scheduler(list = [], limit = 3) {
+    let count = 0;
+    // 用于统计成功的次数
+    let resLength = 0;
+    // 浅拷贝一份，原数据的length我们还有用
+    const pending = [...list];
+    const resList = [];
+
+    // 一定得返回一个promise
+    return new Promise((resolve, reject) => {
+        const run = () => {
+            if (!pending.length || count >= limit) return;
+            count++;
+            const index = list.length - pending.length;
+            const params = pending.shift();
+
+            request(params)
+                .then(res => {
+                    // 使用输出来验证限制器生效没
+                    console.log('用于验证限制器:', res);
+                    count--;
+                    resLength++;
+                    // 按index来保存结果
+                    resList[index] = res;
+                    // 全部成功了吗？没有就继续请求，否则resolve(resList)跳出递归;
+                    resLength === list.length ? resolve(resList) : run();
+                })
+                .catch(reject); // 有一个失败就直接失败
+        };
+
+        // 遍历，模拟前两次依次调用的动作，然后在run内部控制如何执行
+        list.forEach(() => run());
+    });
+}
+
+Scheduler([1, 2, 3, 4, 5]).then(console.log); // 1 2 3 4 5
+
 /**
  * 类型判断
  * 获取数据类型
@@ -1115,17 +1197,16 @@ console.log(getFrequency([1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 3, 3, 5, 6, 78, 82]));
  *      如果为 null 或者 undefined 则报错
  */
 Array.prototype.myPush = function (...items) {
-    if (!Array.isArray(this)) {
-        let length = this.length || 0;
+    if (typeof this.valueOf() === 'object' && this.valueOf() !== null && this.valueOf() !== window) {
+        let length = this.length || 0; // 使用 call 调用的时候 object 不会报错，会添加对应值
         while (items.length > 0) {
             this[length] = items.shift();
-            console.log(length, this[length]);
             length++;
         }
         this.length = length;
         return this.length;
     }
-    if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
+    if (!Array.isArray(this)) throw new TypeError(`${this} not is a array`);
     while (items.length > 0) {
         this[this.length] = items.shift();
     }
@@ -1138,6 +1219,11 @@ const obj = { 1: 1, length: 1 };
 Array.prototype.myPush.call(obj, 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
 // Array.prototype.push.call(obj, 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
 console.log(obj);
+Array.prototype.myPush.call(null, 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
+const num = 123;
+Array.prototype.myPush.call(num, 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
+console.log(num);
+Array.prototype.myPush.call('str', 1, 2, 3); // {0: 1, 1: 2, 2: 3, length: 3}
 // Array.prototype.myPush = function (...items) {
 //     if (!Array.isArray(this)) throw new Error(`the ${this} not is a array`);
 
@@ -2422,28 +2508,30 @@ console.log(get('abc', 'length')); // output: 3
  * 发布订阅模式
  */
 class EventEmitter {
-    constructor(name) {
-        this.name = name;
+    constructor(options) {
         this.eventMap = new Map();
+        this.onceOrginFun = Symbol(); // 标记 once 临时函数的原始函数，用来解绑的时候做判断
     }
-    on(eventName, callback, thisArg, isOnce = false) {
+    on(eventName, callback, thisArg) {
         if (typeof callback !== 'function') throw TypeError('callback is not a function');
         const eMap = this.eventMap;
         if (!eMap.has(eventName)) eMap.set(eventName, []); // 如果不存在则进行初始化
         const events = eMap.get(eventName);
-        events.push({ callback, thisArg, isOnce });
+        events.push({ callback, thisArg });
     }
     once(eventName, callback, thisArg) {
         if (typeof callback !== 'function') throw TypeError('callback is not a function');
-        this.on(eventName, callback, thisArg, true); // 标记 isOnce 为  true
+        const tempFun = (...args) => {
+            callback.apply(thisArg, args);
+            this.off(eventName, tempFun);
+        };
+        tempFun[this.onceOrginFun] = callback;
+        this.on(eventName, tempFun, thisArg);
     }
     emit(eventName, ...args) {
         const events = this.eventMap.get(eventName);
         if (!events) return;
-        events.forEach(({ callback, thisArg, isOnce }) => {
-            callback.apply(thisArg, args);
-            if (isOnce) this.off(eventName, callback); // 如果是 once ，则执行完后直接取消监听
-        });
+        events.forEach(({ callback, thisArg }) => callback.apply(thisArg, args));
     }
     off(eventName, callback) {
         if (!callback) {
@@ -2454,7 +2542,7 @@ class EventEmitter {
         const events = this.eventMap.get(eventName);
         if (!events) return;
         for (let i = events.length - 1; i >= 0; i--) {
-            if (events[i].callback === callback) events.splice(i, 1); // 从后往前删
+            if (callback === events[i].callback || callback === events[i].callback[this.onceOrginFun]) events.splice(i, 1); // 从后往前删
         }
     }
 }
@@ -2497,7 +2585,7 @@ class EventEmitter {
 //         }
 //     }
 // }
-const eventBus = new EventEmitter('使用发布订阅模式实现事件总线');
+const eventBus = new EventEmitter({ description: '使用发布订阅模式实现事件总线' });
 console.log('eventBus', eventBus);
 const fun = (...args) => console.log('fun', args);
 function funThis(...args) {
