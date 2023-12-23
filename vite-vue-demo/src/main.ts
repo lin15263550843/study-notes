@@ -6,6 +6,7 @@ import Antd from 'ant-design-vue';
 import About from './views/other/About.vue';
 
 import 'ant-design-vue/dist/antd.css';
+import { resolve } from 'path';
 
 // console.log('App--------------------------------->>>', App);
 const app = createApp(App).use(router).use(store).use(Antd).component('About', About);
@@ -74,4 +75,59 @@ export default app.mount('#app');
 // import '@/practice/comply/logic'; // 逻辑实现
 // import '@/practice/comply/outputResult'; // 结果输出
 // import '@/leetcode/array';
+
+// type User = {
+//     id: string;
+
+//     name: string;
+
+//     email: number;
+// };
+
+// type UserWithoutEmail = Omit<User, ''>; // UserWithoutEmail ={id: string;name: string;}
+
+/**
+ * 请实现一个 utils 方法，可以对 promise 出错进行重试，promise 每次执行可以设定超时时间，
+ * 使用 TypeScript 编写
+ */
+interface RetryOption {
+    retry: number;
+    timeout: number;
+}
+// async function retry<T>(func: () => Promise<T>, optin: RetryOption): Promise<T> {
+//     return Promise.resolve('' as T).then<T>(res => res);
+// }
+async function wrapPromise<T>(func: () => Promise<T>, options: RetryOption): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+        const { retry, timeout } = options;
+        setTimeout(reject, timeout);
+        let count = 0;
+        const rec = () => {
+            func()
+                .then(resolve)
+                .catch(err => {
+                    if (++count === retry) {
+                        reject(err);
+                        return;
+                    }
+                    rec();
+                });
+        };
+    });
+}
+const func = () => {
+    return new Promise(resolve =>
+        setTimeout(() => {
+            console.log(123123);
+            resolve(123);
+        }, 3000),
+    );
+};
+wrapPromise(func, { retry: 3, timeout: 1000 })
+    .then(res => {
+        console.log('res', res);
+    })
+    .catch(err => {
+        console.log('err', err);
+    });
 

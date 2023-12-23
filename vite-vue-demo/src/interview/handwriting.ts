@@ -477,85 +477,241 @@ Promise.serialAll([p1, p2, p3, p4])
     });
 
 /**
-// 实现并发控制
+ * 实现并发控制，最多处理 3 个请求
+ */
+function sendRequest(list = [], limit = 3) {
+    if (list.length === 0) return Promise.resolve([]); // 注意 list 为空时的返回值
+    return new Promise((resolve, reject) => {
+        const pedingList = [...list];
+        const result = [];
+        let count = 0; // 已请求的的次数
+        let len = list.length;
+        const run = () => {
+            if (pedingList.length < 1) return;
+            const index = list.length - pedingList.length; // 当前请求的对应索引
+            const fun = pedingList.shift();
+            Promise.resolve(fun())
+                .then(res => {
+                    result[index] = { value: res, type: 'success' };
+                    if (++count === len) resolve(result); // 所有结果都完成后返回
+                })
+                .catch(err => {
+                    result[index] = { value: err, type: 'error' };
+                    if (++count === len) resolve(result); // 所有结果都完成后返回
+                })
+                .finally(() => {
+                    if (pedingList.length > 0) run();
+                });
+        };
+        pedingList.slice(0, limit).forEach(() => run()); // 初始并发执行 limit 次，然后在 run 内部控制如何执行
+    });
+}
+// 测试用例
+let requestIndex = 0;
+const request = () => {
+    return new Promise((resolve, reject) => {
+        // const time = Math.round(Math.random() * 2000);
+        const time = ++requestIndex * 500;
+        console.log('request----', requestIndex, time);
+        setTimeout(() => {
+            if (time >= 2000) {
+                resolve(time);
+            } else {
+                reject(time);
+            }
+        }, time);
+    });
+};
+const requestList = [];
+for (let i = 0; i < 6; i++) requestList.push(request);
+sendRequest(requestList, 3)
+    .then(res => console.log('res-------->>>>>>>>', res))
+    .catch(err => console.log('err-------->>>>>>>>', err));
+
+/**
+// 实现并发控制类，调度器
  */
 class Scheduler {
-    constructor() {
-        this.pending = []; // 记录promise的数组
-        this.limit = 2; // 限制器
-        this.count = 0; // 记录当前已被启动的promise
+    constructor(limit) {
+        this.limit = limit; // 最大并发量
+        this.paddingList = []; // 执行任务列表
+        this.count = 0; // 当前正在执行的任务数
     }
-    add(promiseCreator) {
-        this.pending.push(promiseCreator); // 单纯存储promise
-        this.run(); // 启动执行，至于能不能走run内部会控制
+    add(task) {
+        this.paddingList.push(task);
+        this.run();
     }
     run() {
-        if (!this.pending.length || this.count >= this.limit) {
-            return; // 假设pending为空，或者调用大于限制直接返回
-        }
+        if (this.paddingList.length < 1 || this.count >= this.limit) return; // 列表为空，或当前正在执行的任务数大于 limit 直接返回
+        const fun = this.paddingList.shift();
         this.count++;
-        this.pending
-            .shift()()
-            .finally(() => {
-                this.count--;
-                this.run(); // 轮询
-            });
+        Promise.resolve(fun()).finally(res => {
+            this.count--;
+            if (this.paddingList.length > 0) this.run();
+        });
     }
 }
-const timeout = time =>
-    new Promise(resolve => {
-        setTimeout(resolve, time);
-    });
-
-const scheduler = new Scheduler();
-
+// 测试用例 1
+const scheduler1 = new Scheduler(3);
+for (let i = 0; i < 10; i++) {
+    const task = () =>
+        new Promise(resolve => {
+            // 这里 i 的值也是以前非常高频的闭包题哦
+            setTimeout(() => {
+                console.log(`task${i} complete`);
+                resolve(`task${i}`);
+            }, 1000);
+        });
+    scheduler1.add(task);
+}
+// 测试用例 2
+const timeout = time => new Promise(resolve => setTimeout(resolve, time));
+const scheduler2 = new Scheduler(2);
 const addTask = (time, order) => {
-    scheduler.add(() => timeout(time).then(() => console.log(order)));
+    scheduler2.add(() => timeout(time).then(() => console.log(order)));
 };
-
 addTask(1000, '1');
 addTask(500, '2');
 addTask(300, '3');
 addTask(400, '4');
 // output: 2 3 1 4
 
-// 最多处理3个请求的调度器
-function Scheduler(list = [], limit = 3) {
-    let count = 0;
-    // 用于统计成功的次数
-    let resLength = 0;
-    // 浅拷贝一份，原数据的length我们还有用
-    const pending = [...list];
-    const resList = [];
+// // 实现并发控制，最多处理3个请求的调度器
+// function Scheduler(list = [], limit = 3) {
+//     let count = 0;
+//     // 用于统计成功的次数
+//     let resLength = 0;
+//     // 浅拷贝一份，原数据的length我们还有用
+//     const pending = [...list];
+//     const resList = [];
 
-    // 一定得返回一个promise
+//     // 一定得返回一个promise
+//     return new Promise((resolve, reject) => {
+//         const run = () => {
+//             if (!pending.length || count >= limit) return;
+//             count++;
+//             const index = list.length - pending.length;
+//             const params = pending.shift();
+
+//             request(params)
+//                 .then(res => {
+//                     // 使用输出来验证限制器生效没
+//                     console.log('用于验证限制器:', res);
+//                     count--;
+//                     resLength++;
+//                     // 按index来保存结果
+//                     resList[index] = res;
+//                     // 全部成功了吗？没有就继续请求，否则resolve(resList)跳出递归;
+//                     resLength === list.length ? resolve(resList) : run();
+//                 })
+//                 .catch(reject); // 有一个失败就直接失败
+//         };
+
+//         // 遍历，模拟前两次依次调用的动作，然后在run内部控制如何执行
+//         list.forEach(() => run());
+//     });
+// }
+// Scheduler([1, 2, 3, 4, 5]).then(console.log); // 1 2 3 4 5
+
+/**
+ * 请实现一个 utils 方法，可以对 promise 出错进行重试，promise 每次执行可以设定超时时间，
+ * 使用 TypeScript 编写
+ */
+interface RetryOption {
+    retry: number;
+    timeout: number;
+}
+// async function retry<T>(func: () => Promise<T>, optin: RetryOption): Prmoise {}
+// async function wrapPromise<T>(func: () => Promise<T>, optin: RetryOption): Prmoise {}
+/**
+ * 实现次数内重试请求
+ * 最简单版本
+ */
+function retry(func, options) {
     return new Promise((resolve, reject) => {
-        const run = () => {
-            if (!pending.length || count >= limit) return;
-            count++;
-            const index = list.length - pending.length;
-            const params = pending.shift();
-
-            request(params)
-                .then(res => {
-                    // 使用输出来验证限制器生效没
-                    console.log('用于验证限制器:', res);
-                    count--;
-                    resLength++;
-                    // 按index来保存结果
-                    resList[index] = res;
-                    // 全部成功了吗？没有就继续请求，否则resolve(resList)跳出递归;
-                    resLength === list.length ? resolve(resList) : run();
-                })
-                .catch(reject); // 有一个失败就直接失败
+        const { retry } = options;
+        let count = 0;
+        const rec = () => {
+            Promise.resolve(func())
+                .then(resolve)
+                .catch(err => {
+                    if (++count === retry) return reject(err);
+                    rec(); // 如果咩有超过次数，则递归重试
+                });
         };
-
-        // 遍历，模拟前两次依次调用的动作，然后在run内部控制如何执行
-        list.forEach(() => run());
+        rec();
     });
 }
-
-Scheduler([1, 2, 3, 4, 5]).then(console.log); // 1 2 3 4 5
+/**
+ * 实现次数内重试请求
+ * 支持超时设置
+ */
+function retry(func, options) {
+    if (typeof func !== 'function') throw new TypeError(`func is not a function`);
+    return new Promise((resolve, reject) => {
+        const { retry, timeout } = options;
+        let count = 0;
+        const timeoutFun = () => new Promise((_, reject) => setTimeout(() => reject('超时了'), timeout));
+        const rec = () => {
+            Promise.race([func(), timeoutFun()])
+                .then(resolve)
+                .catch(err => {
+                    if (++count === retry) return reject(err);
+                    rec();
+                });
+        };
+        rec();
+    });
+}
+/**
+ * 实现次数内重试请求，
+ * 整体超时控制
+ */
+function wrapPromise(func, options) {
+    return new Promise((resolve, reject) => {
+        const { retry, timeout } = options;
+        let count = 0;
+        let isTimeout = false; // 防止超时后还会继续重试
+        const rec = () => {
+            Promise.resolve(func())
+                .then(resolve)
+                .catch(err => {
+                    if (isTimeout) return;
+                    if (++count === retry) return reject(err);
+                    rec();
+                });
+        };
+        rec();
+        setTimeout(() => {
+            isTimeout = true;
+            reject('超时了');
+        }, timeout);
+    });
+}
+// 测试用例
+const func = () => {
+    return new Promise((resolve, reject) =>
+        setTimeout(() => {
+            console.log('func');
+            // resolve('func success');
+            reject('func rejected');
+        }, 500),
+    );
+};
+retry(func, { retry: 3, timeout: 3000 })
+    .then(res => {
+        console.log('res--->>>', res);
+    })
+    .catch(err => {
+        console.log('err--->>>', err);
+    });
+wrapPromise(func, { retry: 6, timeout: 8000 })
+    .then(res => {
+        console.log('res--->>>', res);
+    })
+    .catch(err => {
+        console.log('err--->>>', err);
+    });
 
 /**
  * 类型判断
@@ -1411,6 +1567,7 @@ console.log(flatten(obj));
  */
 function comma(num) {
     if (isNaN(num)) return '';
+    // return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ','); // 方法一：正则
     const sign = num < 0;
     const [integer, decimal] = String(Math.abs(num)).split('.');
     if (integer.length <= 3) return String(num);
@@ -2746,4 +2903,46 @@ function link() {
 function genrangeRandom(start: number, end: number) {
     return Math.floor(Math.random() * (end - start + 1) + start);
 }
+
+/**
+ * 异步计算结果，以最快的速度实现
+ */
+const addRemote = async (a, b) =>
+    new Promise(resolve => {
+        const result = a + b;
+        setTimeout(() => resolve(result), result * 10);
+    });
+// 请实现本地的 add 方法，所有的加法都需要调用 addRemote
+// 以最快的实现输入数字的加法
+async function add(...inputs) {
+    return new Promise((resolve, reject) => {
+        let count = 0; // 用于累计当前正在计算中的数量，目的是为了全部计算完成时返回结果
+        const rec = () => {
+            while (inputs.length > 1) {
+                count++; // 每计算一次，累计次数加 1
+                addRemote(inputs.shift(), inputs.shift())
+                    .then(res => {
+                        inputs.push(res); // 把计算结果添加到待计算列表中
+                        count--; // 计算完，累计次数减 1
+                        rec(); // 只要有结果
+                    })
+                    .catch(reject)
+                    .finally(() => {
+                        if (count === 0) resolve(inputs[0]); // 为 0 说明全部计算完毕，返会计算结果
+                    });
+            }
+        };
+        rec();
+    });
+}
+// 请用示例验证运行结果：
+const logWithTime = promise => {
+    const start = Date.now();
+    promise.then(result => {
+        console.log(`result is: ${result}, cost: ${Date.now() - start}ms`);
+    });
+};
+logWithTime(add(1, 2, 3)); // 6
+logWithTime(add(1, 2, 3, 200, 6, 7, 3, 2, 7, 8, 9, 100)); // 348
+logWithTime(add(1, 2, 3, 20, 6, 7, 3, 2, 7, 8, 9, 10, 3, 20, 6, 7, 3, 2, 7, 8, 9, 10)); // 153
 

@@ -5,40 +5,61 @@
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Vite App</title>
+        <!-- <style>
+            .text {
+                color: greenyellow;
+            }
+        </style> -->
     </head>
 
     <body>
-        <div>···</div>
+        <!-- <div class="text" style="color: black">···</div> -->
+        <div style="color: red">···</div>
+        <!-- <div class="text">···</div> -->
         <div id="app"></div>
 
         <script type="module" src="/src/main.ts"></script>
         <script type="module" src="./src/_test.js"></script>
     </body>
     <script>
-        // 暴力版本
-        var trap = function (height) {
-            if (!Array.isArray(height)) return -1;
-            const result = new Array(height.length).fill(0); // 每个柱子能接的雨水
-            const leftMaxArr = new Array(height.length).fill(0); // 索引对应柱子左侧的最大值列表
-            const rightMaxArr = new Array(height.length).fill(0); // 索引对应柱子右侧的最大值列表
-            const len = height.length;
-            let max = height[0];
-            for (let i = 1; i < len; i++) {
-                leftMaxArr[i] = Math.max(height[i], max);
-                max = leftMaxArr[i]; // 计算当前柱子左侧最大值，从左往右开始遍历，默认第一个，如果有更大的则 max 为更大的值
-            }
-            max = height[len - 1];
-            for (let i = len - 2; i >= 0; i--) {
-                rightMaxArr[i] = Math.max(height[i], max);
-                max = rightMaxArr[i]; // 计算当前柱子右侧最大值，从右往左开始遍历，默认最后一个，如果有更大的则 max 为更大的值
-            }
-            for (let i = 1; i < len; i++) {
-                const res = Math.min(leftMaxArr[i], rightMaxArr[i]) - height[i]; // 找到左右最小的，计算当前柱子能接的雨水
-                result[i] = res < 0 ? 0 : res; // 如果是负数，说明接水为 0
-            }
-            return result.reduce((count, cur) => count + cur);
+        const addRemote = async (a, b) =>
+            new Promise(resolve => {
+                const result = a + b;
+                setTimeout(() => resolve(result), result * 10);
+            });
+        // 请实现本地的 add 方法，所有的加法都需要调用 addRemote
+        // 以最快的实现输入数字的加法
+        async function add(...inputs) {
+            return new Promise((resolve, reject) => {
+                let count = 0; // 用于累计当前正在计算中的数量，目的是为了全部计算完成时返回结果
+                const rec = () => {
+                    while (inputs.length > 1) {
+                        count++; // 每计算一次，累计次数加 1
+                        addRemote(inputs.shift(), inputs.shift())
+                            .then(res => {
+                                inputs.push(res); // 把计算结果添加到待计算列表中
+                                count--; // 计算完，累计次数减 1
+                                rec(); // 只要有结果
+                            })
+                            .catch(reject)
+                            .finally(() => {
+                                if (count === 0) resolve(inputs[0]); // 为 0 说明全部计算完毕，返会计算结果
+                            });
+                    }
+                };
+                rec();
+            });
+        }
+        // 请用示例验证运行结果：
+        const logWithTime = promise => {
+            const start = Date.now();
+            promise.then(result => {
+                console.log(`result is: ${result}, cost: ${Date.now() - start}ms`);
+            });
         };
-        console.log(trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]));
+        logWithTime(add(1, 2, 3)); // 6
+        logWithTime(add(1, 2, 3, 200, 6, 7, 3, 2, 7, 8, 9, 100)); // 348
+        logWithTime(add(1, 2, 3, 20, 6, 7, 3, 2, 7, 8, 9, 10, 3, 20, 6, 7, 3, 2, 7, 8, 9, 10)); // 153
     </script>
 </html>
 

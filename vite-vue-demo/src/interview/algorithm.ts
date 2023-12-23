@@ -1851,11 +1851,12 @@ mergeAndSort(ns1, ns2);
  * 意思就是 [5, [[4, 3], 2, 1]] 变成 (5 - ((4 - 3) - 2 - 1)) 并执行
  */
 function calc(arr) {
-    if (!Array.isArray(arr)) return;
+    if (!Array.isArray(arr)) return arr;
     return arr.reduce((sum, cur) => {
-        const left = Array.isArray(sum) ? calc(sum) : sum; // 如果 sum 是数组，递归调用 calc 函数
-        const right = Array.isArray(cur) ? calc(cur) : cur; // 如果 cur 是数组，递归调用 calc 函数
-        return left - right; // 计算结果，left 和 right 肯定都是非数组
+        // const left = Array.isArray(sum) ? calc(sum) : sum; // 如果 sum 是数组，递归调用 calc 函数
+        // const right = Array.isArray(cur) ? calc(cur) : cur; // 如果 cur 是数组，递归调用 calc 函数
+        // return left - right; // 计算结果，left 和 right 肯定都是非数组
+        return calc(sum) - calc(cur); // 计算结果，left 和 right 肯定都是非数组
     });
 }
 console.log(calc([5, [[4, 3], 2, 1]]));
@@ -2736,3 +2737,4 @@ var trap = function (height) {
     }
     return result.reduce((count, cur) => count + cur);
 };
+
