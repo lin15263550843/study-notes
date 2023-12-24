@@ -1527,6 +1527,9 @@ console.log('repeat 结果：', repeat('abc-', 3));
 String.prototype.myTrim = function () {
     return this.replace(/(^\s*)|(\s*$)/g, '');
 };
+const trim = str => {
+    return str.replace(/^\s*(.*?)\s*$/g, '$1');
+};
 /**
  * 对象扁平化
  */
@@ -2946,4 +2949,99 @@ logWithTime(add(1, 2, 3)); // 6
 logWithTime(add(1, 2, 3, 200, 6, 7, 3, 2, 7, 8, 9, 100)); // 348
 logWithTime(add(1, 2, 3, 20, 6, 7, 3, 2, 7, 8, 9, 10, 3, 20, 6, 7, 3, 2, 7, 8, 9, 10)); // 153
 
+/**
+ * 版本号排序的方法
+ * 题目描述:有一组版本号如下['0.1.1', '2.3.3', '0.302.1', '4.2', '4.3.5', '4.3.4.5']。
+ * 现在需要对其进行排序，排序的结果为 ['4.3.5','4.3.4.5','2.3.3','0.302.1','0.1.1']
+ */
+// function versionSort(versions) {
+//     if (!Array.isArray(versions)) throw new TypeError(`versions is not a array`);
+//     return versions.sort((v1, v2) => {
+//         const arr1 = v1.split('.');
+//         const arr2 = v2.split('.');
+//         let i = 0;
+//         let max = Math.min(arr1.length, arr2.length);
+//         while (i < max) {
+//             const s1 = arr1[i];
+//             const s2 = arr2[i];
+//             if (!s1 || !s2) {
+//                 return arr2.length - arr1.length; // v2 > v1 返回值大于 0 降序
+//             }
+//             const res = s2 - s1; // s2 - s1 降序拍
+//             if (res !== 0) return res;
+//             i++;
+//         }
+//     });
+// }
+function versionSort(versions) {
+    if (!Array.isArray(versions)) throw new TypeError(`versions is not a array`);
+    return versions.sort((v1, v2) => {
+        const arr1 = v1.split('.');
+        const arr2 = v2.split('.');
+        while (arr1.length > 0 || arr2.length > 0) {
+            const s1 = arr1.shift();
+            const s2 = arr2.shift();
+            if (!s1 || !s2) return !!s2 ? 1 : -1; // s2 存在，说明 v2 大。返回 1
+            const res = s2 - s1;
+            if (res !== 0) return res;
+        }
+    });
+}
+const versions = ['0.1.1', '2.3.3', '0.302.1', '4.2', '4.3.5', '4.3.4.5'];
+console.log(versionSort(versions));
+let arr = ['3.1.4.512', '0.2.5.4', '0.2.23.456', '0.3.456', '1.0'];
+console.log(versionSort(arr));
+
+/**
+ * 146. LRU 缓存
+ */
+var LRUCache = function (capacity) {
+    this.cache = new Map(); // 缓存值，map 能保证插入的顺序
+    this.capacity = capacity; // 容量，最大值
+};
+LRUCache.prototype.get = function (key) {
+    if (!this.cache.has(key)) return -1; // 不存在返回 -1
+    const value = this.cache.get(key);
+    this.cache.delete(key); // 先删除再添加，为了保证 key 的顺序在前面
+    this.cache.set(key, value);
+    return value;
+};
+LRUCache.prototype.put = function (key, value) {
+    this.cache.delete(key); // 需要先删除再添加，保证 key 的顺序
+    this.cache.set(key, value);
+    if (this.cache.size > this.capacity) {
+        const key = this.cache.keys().next().value;
+        this.cache.delete(key); // set 是有序的，找出最开始添加的 key 并删除
+    }
+};
+// var LRUCache = function (capacity) {
+//     this.cache = new Map(); // 缓存值
+//     this.keys = new Set(); // 缓存 key 的顺序
+//     this.capacity = capacity; // 容量，最大值
+// };
+// LRUCache.prototype.get = function (key) {
+//     this.keys.delete(key); // 先删除再添加，为了保证 key 的顺序
+//     this.keys.add(key);
+//     return this.cache.has(key) ? this.cache.get(key) : -1;
+// };
+// LRUCache.prototype.put = function (key, value) {
+//     this.cache.set(key, value);
+//     this.keys.delete(key); // 需要先删除再添加，保证 key 的顺序
+//     this.keys.add(key);
+//     if (this.keys.size > this.capacity) {
+//         const key = this.keys.values().next().value; // set 是有序的，找出最开始添加的 key
+//         this.keys.delete(key);
+//         this.cache.delete(key);
+//     }
+// };
+const lRUCache = new LRUCache(2);
+console.log(lRUCache.put(1, 1)); // 缓存是 {1=1}
+console.log(lRUCache.put(2, 2)); // 缓存是 {1=1, 2=2}
+console.log(lRUCache.get(1)); // 返回 1
+console.log(lRUCache.put(3, 3)); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+console.log(lRUCache.get(2)); // 返回 -1 (未找到)
+console.log(lRUCache.put(4, 4)); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+console.log(lRUCache.get(1)); // 返回 -1 (未找到)
+console.log(lRUCache.get(3)); // 返回 3
+console.log(lRUCache.get(4)); // 返回 4
 

@@ -2399,6 +2399,41 @@ function insterSort(arr) {
 }
 console.log(insterSort([3, 5, 4, 10, 8, 0, 1, 7, 6, 2, 9]));
 /**
+ * 选择排序
+ * 优化版，减少交换次数
+ */
+function selectSort(arr) {
+    if (!arr || !Array.isArray(arr)) return arr;
+    const exch = (arr, x, y) => {
+        [arr[x], arr[y]] = [arr[y], arr[x]];
+    };
+    const len = arr.length;
+    for (let i = 0; i < len; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) minIndex = j; // 先找到最小值的索引
+        }
+        if (minIndex != i) exch(arr, minIndex, i); // 防止原地交换，排定最小的值
+    }
+    return arr;
+}
+// console.log(selectSort([3, 5, 4, 10, 8, 0, 1, 7, 6, 2, 9]));
+// function selectSort(arr) {
+//     if (!arr || !Array.isArray(arr)) return arr;
+//     const exch = (arr, x, y) => {
+//         [arr[x], arr[y]] = [arr[y], arr[x]];
+//     };
+//     const len = arr.length;
+//     for (let i = 0; i < len; i++) {
+//         for (let j = i + 1; j < len; j++) {
+//             if (arr[j] < arr[i]) exch(arr, j, i); // 如果 arr[j] 小于 arr[i] 则交换，排定最小的值
+//         }
+//     }
+//     return arr;
+// }
+console.log(selectSort([3, 5, 4, 10, 8, 0, 1, 7, 6, 2, 9]));
+
+/**
  * 快排
  */
 const quickSort = nums => {
